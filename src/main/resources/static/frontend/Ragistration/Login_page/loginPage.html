@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oasis Society — Login</title>
+    <link rel="stylesheet" href="loginPage.css">
+</head>
+<body>
+
+<div class="screen">
+    <div class="app-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="1"></rect>
+            <line x1="8" y1="6" x2="8" y2="6.01"></line>
+            <line x1="12" y1="6" x2="12" y2="6.01"></line>
+            <line x1="16" y1="6" x2="16" y2="6.01"></line>
+            <line x1="8" y1="10" x2="8" y2="10.01"></line>
+            <line x1="12" y1="10" x2="12" y2="10.01"></line>
+            <line x1="16" y1="10" x2="16" y2="10.01"></line>
+            <line x1="8" y1="14" x2="8" y2="14.01"></line>
+            <line x1="12" y1="14" x2="12" y2="14.01"></line>
+            <line x1="16" y1="14" x2="16" y2="14.01"></line>
+            <path d="M10 22v-4h4v4"></path>
+        </svg>
+    </div>
+
+    <h1 class="brand">Management Hub</h1>
+    <p class="subtitle">Resident &amp; Management Portal</p>
+
+    <div class="card">
+        <h2>Welcome back</h2>
+        <p class="lead">Login to access your account</p>
+
+        <form id="loginForm">
+            <label for="mobile">Mobile Number</label>
+            <div class="field">
+                <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" autocomplete="tel" required>
+            </div>
+
+            <label for="password">Password</label>
+            <div class="field">
+                <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                <button type="button" class="toggle-eye" id="toggleEye" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="eyeIcon">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="forgot-row"><a href="#" id="forgotLink">Forgot Password?</a></div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+
+        <div class="divider">OR</div>
+        <p class="no-account">Don't have an account?</p>
+
+        <button type="button" class="btn-signin" id="signInBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <line x1="19" y1="8" x2="19" y2="14"></line>
+                <line x1="22" y1="11" x2="16" y2="11"></line>
+            </svg>
+            Sign in
+        </button>
+    </div>
+
+    <div class="secure-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <polyline points="9 12 11 14 15 10"></polyline>
+        </svg>
+        Your information is secure and protected
+    </div>
+</div>
+<script src="loginPage.js"></script>
+</body>
+</html>
