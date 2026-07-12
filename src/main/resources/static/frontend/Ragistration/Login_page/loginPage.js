@@ -3,6 +3,11 @@ const toggleEye = document.getElementById('toggleEye');
 const eyeIcon = document.getElementById('eyeIcon');
 const signIn = document.getElementById('signInBtn');
 
+// Allow only digits, max 4 characters
+passwordInput.addEventListener('input', function () {
+    passwordInput.value = passwordInput.value.replace(/\D/g, '').slice(0, 4);
+});
+
 toggleEye.addEventListener('click', () => {
     const isHidden = passwordInput.type === 'password';
     passwordInput.type = isHidden ? 'text' : 'password';
@@ -20,10 +25,17 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const mobile = document.getElementById('mobile').value.trim();
     const password = passwordInput.value;
+
     if (!mobile || !password) {
         alert('Please fill in both fields.');
         return;
     }
+
+    if (!/^\d{4}$/.test(password)) {
+        alert('Password must be exactly 4 digits.');
+        return;
+    }
+
     alert('Login submitted!\n(Connect this to your backend to authenticate.)');
 });
 
@@ -33,10 +45,9 @@ document.getElementById('forgotLink').addEventListener('click', (e) => {
 });
 
 function openPage(){
-    window.location.href = "/frontend/Ragistration/Signin_page/signinPage.html";
+    window.location.href = "../Signin_page/signinPage.html";
 }
 
 signIn.addEventListener('click' , () => {
    openPage();
 });
-

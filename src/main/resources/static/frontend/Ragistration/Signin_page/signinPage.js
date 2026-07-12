@@ -20,7 +20,6 @@ function updateHints() {
     const pass = passwordInput.value;
     const confirm = confirmInput.value;
 
-    // Digit-count hint under Password field
     if (pass.length === 0) {
         passwordHint.textContent = 'Password must be exactly 4 digits';
         passwordHint.className = 'hint-msg';
@@ -32,7 +31,6 @@ function updateHints() {
         passwordHint.className = 'hint-msg success';
     }
 
-    // Match hint under Confirm Password field
     if (confirm.length === 0) {
         confirmHint.textContent = '';
         confirmHint.className = 'hint-msg';
@@ -50,16 +48,21 @@ function updateHints() {
 
 // Validate on form submit
 document.querySelector('form').addEventListener('submit', function (e) {
+    e.preventDefault();   // hamesha sabse pehle, page reload rokne ke liye
+
     const pass = passwordInput.value;
     const confirm = confirmInput.value;
 
     if (!/^\d{4}$/.test(pass)) {
-        e.preventDefault();
         alert('Password must be exactly 4 digits.');
         return;
     }
     if (pass !== confirm) {
-        e.preventDefault();
         alert('Passwords do not match.');
+        return;
     }
+
+    // Sab sahi hai — account create ho gaya (abhi backend nahi hai, isliye direct redirect)
+    alert('Account created successfully!');
+    window.location.href = "../Login_page/loginPage.html";
 });
