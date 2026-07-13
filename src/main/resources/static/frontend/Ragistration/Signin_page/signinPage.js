@@ -89,9 +89,3 @@ document.querySelector('form').addEventListener('submit', function (e) {
         alert('Something went wrong. Check if backend is running.');
     });
 });
-
-// "Log in" link click karne par Login page pe navigate karo
-document.getElementById('loginLink').addEventListener('click', function (e) {
-    e.preventDefault();
-    window.location.href = "../Login_page/loginPage.html";
-});
