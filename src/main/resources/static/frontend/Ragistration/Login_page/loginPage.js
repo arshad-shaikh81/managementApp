@@ -33,10 +33,9 @@ document.getElementById('forgotLink').addEventListener('click', (e) => {
 });
 
 function openPage(){
-    window.location.href = "/frontend/Ragistration/Signin_page/signinPage.html";
+    window.location.href = "../Signin_page/signinPage.html";
 }
 
 signIn.addEventListener('click' , () => {
    openPage();
 });
-
