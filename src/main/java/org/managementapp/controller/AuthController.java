@@ -3,6 +3,7 @@ package org.managementapp.controller;
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterSocietyRequest;
+import org.managementapp.dto.RegisterResidentRequest;
 import org.managementapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,17 @@ public class AuthController {
     public ResponseEntity<?> registerSociety(@RequestBody RegisterSocietyRequest request) {
         try {
             String message = authService.registerSociety(request);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Resident Register (existing society me join karega)
+    @PostMapping("/register-resident")
+    public ResponseEntity<?> registerResident(@RequestBody RegisterResidentRequest request) {
+        try {
+            String message = authService.registerResident(request);
             return ResponseEntity.ok(message);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

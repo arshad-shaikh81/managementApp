@@ -10,7 +10,7 @@ public class Society {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -18,9 +18,6 @@ public class Society {
 
     @Column(name = "registration_number", nullable = false, unique = true)
     private String registrationNumber;
-
-    @Column(nullable = false)
-    private String status = "pending_verification"; // pending_verification, active
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -34,7 +31,4 @@ public class Society {
 
     public String getRegistrationNumber() { return registrationNumber; }
     public void setRegistrationNumber(String registrationNumber) { this.registrationNumber = registrationNumber; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 }

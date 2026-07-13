@@ -24,9 +24,6 @@ public class User {
     @Column(nullable = false)
     private String role; // "admin" or "resident"
 
-    @Column(nullable = false)
-    private String status = "active"; // active, pending, inactive
-
     @Column(name = "flat_number")
     private String flatNumber;
 
@@ -52,9 +49,6 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 
     public String getFlatNumber() { return flatNumber; }
     public void setFlatNumber(String flatNumber) { this.flatNumber = flatNumber; }
