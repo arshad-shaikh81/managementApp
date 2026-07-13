@@ -1,9 +1,10 @@
-*{
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-:root{
+:root {
     --bg: #eef0f7;
     --card-bg: #ffffff;
     --text-dark: #1a1f36;
@@ -12,203 +13,277 @@
     --blue: #2952e3;
     --blue-dark: #1f3fc0;
     --green: #1fa971;
+    --red: #e53935;
 }
 
-*{ box-sizing: border-box; }
-
-body{
-    margin:0;
+body {
+    margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg);
     min-height: 100vh;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     padding: 40px 16px 24px;
 }
 
-.screen{
+.screen {
     width: 100%;
     max-width: 420px;
-    text-align:center;
+    text-align: center;
 }
 
-.app-icon{
+.app-icon {
     width: 64px;
     height: 64px;
     background: var(--blue);
     border-radius: 18px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0 auto 20px;
-    box-shadow: 0 8px 20px rgba(41,82,227,0.25);
+    box-shadow: 0 8px 20px rgba(41, 82, 227, 0.25);
 }
-.app-icon svg{ width:30px; height:30px; }
 
-h1.brand{
+.app-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+h1.brand {
     font-size: 28px;
     font-weight: 700;
     color: var(--text-dark);
     margin: 0 0 6px;
 }
 
-.subtitle{
+.subtitle {
     color: var(--text-muted);
     font-size: 15px;
     margin: 0 0 28px;
 }
 
-.card{
+.card {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 28px 24px 24px;
-    text-align:left;
-    box-shadow: 0 10px 30px rgba(20,20,50,0.06);
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(20, 20, 50, 0.06);
 }
 
-.card h2{
+.card h2 {
     font-size: 22px;
     margin: 0 0 4px;
     color: var(--text-dark);
 }
 
-.card p.lead{
+.card p.lead {
     margin: 0 0 22px;
     color: var(--text-muted);
     font-size: 14.5px;
 }
 
-label{
-    display:block;
+label {
+    display: block;
     font-size: 14px;
     font-weight: 600;
     color: var(--text-dark);
     margin: 0 0 8px;
 }
 
-.field{
+.field {
     position: relative;
     margin-bottom: 18px;
 }
 
-.field svg.icon-left{
-    position:absolute;
+.field svg.icon-left {
+    position: absolute;
     left: 14px;
     top: 50%;
     transform: translateY(-50%);
     width: 18px;
     height: 18px;
     color: var(--text-muted);
+    pointer-events: none;
 }
 
-.field input{
-    width:100%;
-    padding: 14px 14px 14px 44px;
+.field input {
+    width: 100%;
+    padding: 14px 44px 14px 44px; /* Right padding for eye icon */
     border-radius: 12px;
     border: 1.5px solid var(--border);
     font-size: 15px;
     color: var(--text-dark);
     background: #fff;
     outline: none;
-    transition: border-color .15s ease;
+    transition: border-color 0.15s ease;
 }
-.field input::placeholder{ color: #b0b3c3; }
-.field input:focus{ border-color: var(--blue); }
 
-.field .toggle-eye{
-    position:absolute;
+.field input::placeholder {
+    color: #b0b3c3;
+}
+
+.field input:focus {
+    border-color: var(--blue);
+}
+
+/* Password field specific - eye icon positioning */
+.password-field .toggle-eye {
+    position: absolute;
     right: 14px;
     top: 50%;
     transform: translateY(-50%);
-    background:none;
-    border:none;
-    cursor:pointer;
-    padding:0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
     color: var(--text-muted);
-    display:flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
 }
-.field .toggle-eye svg{ width:19px; height:19px; }
 
-.forgot-row{
-    text-align:right;
+.password-field .toggle-eye svg {
+    width: 19px;
+    height: 19px;
+    transition: color 0.15s ease;
+}
+
+.password-field .toggle-eye:hover svg {
+    color: var(--text-dark);
+}
+
+/* Hint message styling */
+.hint-msg {
+    margin-top: -10px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: left;
+    padding-left: 4px;
+    transition: color 0.2s ease;
+}
+
+.hint-msg.success {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.hint-msg.error {
+    color: var(--red);
+    font-weight: 500;
+}
+
+.forgot-row {
+    text-align: right;
     margin: -6px 0 20px;
 }
-.forgot-row a{
+
+.forgot-row a {
     color: var(--blue);
     font-size: 14px;
     text-decoration: none;
     font-weight: 500;
 }
-.forgot-row a:hover{ text-decoration: underline; }
 
-.btn-login{
-    width:100%;
+.forgot-row a:hover {
+    text-decoration: underline;
+}
+
+.btn-login {
+    width: 100%;
     padding: 15px;
     background: var(--blue);
-    color:#fff;
+    color: #fff;
     font-size: 16px;
     font-weight: 700;
-    border:none;
+    border: none;
     border-radius: 12px;
-    cursor:pointer;
-    transition: background .15s ease, transform .05s ease;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
 }
-.btn-login:hover{ background: var(--blue-dark); }
-.btn-login:active{ transform: scale(0.99); }
 
-.divider{
-    display:flex;
-    align-items:center;
+.btn-login:hover {
+    background: var(--blue-dark);
+}
+
+.btn-login:active {
+    transform: scale(0.99);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
     gap: 12px;
     margin: 22px 0 16px;
     color: var(--text-muted);
     font-size: 13px;
 }
-.divider::before, .divider::after{
-    content:"";
-    flex:1;
-    height:1px;
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
     background: var(--border);
 }
 
-.no-account{
-    text-align:center;
+.no-account {
+    text-align: center;
     color: var(--text-muted);
     font-size: 14px;
     margin: 0 0 14px;
 }
 
-.btn-signin{
-    width:100%;
+.btn-signin {
+    width: 100%;
     padding: 14px;
-    background:#fff;
+    background: #fff;
     border: 1.5px solid var(--border);
     border-radius: 12px;
     color: var(--blue);
     font-size: 15px;
     font-weight: 700;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    transition: background .15s ease;
+    transition: background 0.15s ease;
 }
-.btn-signin:hover{ background:#f5f7ff; }
-.btn-signin svg{ width:19px; height:19px; }
 
-.secure-note{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
+.btn-signin:hover {
+    background: #f5f7ff;
+}
+
+.btn-signin svg {
+    width: 19px;
+    height: 19px;
+}
+
+.secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     margin-top: 22px;
     color: var(--text-muted);
     font-size: 13px;
 }
-.secure-note svg{ width:16px; height:16px; color: var(--green); }
 
-@media (max-width: 420px){
-    .card{ padding: 22px 18px 20px; }
+.secure-note svg {
+    width: 16px;
+    height: 16px;
+    color: var(--green);
+}
+
+@media (max-width: 420px) {
+    .card {
+        padding: 22px 18px 20px;
+    }
+
+    .field input {
+        padding: 13px 42px 13px 42px;
+    }
 }

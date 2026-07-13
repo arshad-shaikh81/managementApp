@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -59,7 +60,6 @@ body {
     font-weight: 700;
     color: #111827;
     margin-bottom: 6px;
-    font-family: Arial;
 }
 
 .card > p {
@@ -112,7 +112,10 @@ body {
     box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
 }
 
-.input-wrap.has-toggle input { padding-right: 42px; }
+/* Right padding for eye icon */
+.input-wrap.has-toggle input {
+    padding-right: 42px;
+}
 
 .toggle-eye {
     position: absolute;
@@ -125,17 +128,25 @@ body {
     border: none;
     padding: 0;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: stroke 0.15s;
+}
+
+.toggle-eye:hover {
+    stroke: #111827;
 }
 
 .hint-msg {
     font-size: 12.5px;
     margin-top: 6px;
     color: #9ca3af;
-    min-height: 16px;
+    min-height: 18px; /* Prevents layout jump when text changes */
+    transition: color 0.2s ease;
 }
 
 .hint-msg.error { color: #dc2626; }
-.hint-msg.success { color: #16a34a; }
+.hint-msg.success { color: #16a34a; font-weight: 500; }
 
 .submit-btn {
     width: 100%;
@@ -148,10 +159,15 @@ body {
     border-radius: 10px;
     cursor: pointer;
     margin-top: 8px;
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.05s;
 }
 
 .submit-btn:hover { background: #1d4ed8; }
+.submit-btn:active { transform: scale(0.99); }
+.submit-btn:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
 
 .footer-links {
     display: flex;

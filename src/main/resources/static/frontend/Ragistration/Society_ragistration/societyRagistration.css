@@ -1,9 +1,10 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-:root{
+:root {
     --bg: #eef1f5;
     --card-bg: #ffffff;
     --text-dark: #111827;
@@ -14,12 +15,11 @@
     --blue-hover: #2140b8;
     --blue-light: #3b5cf0;
     --red: #ef4444;
+    --green: #16a34a;
     --radius: 12px;
 }
 
-*{ box-sizing: border-box; }
-
-body{
+body {
     margin: 0;
     background: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -27,36 +27,19 @@ body{
     padding: 32px 16px 60px;
 }
 
-.page{
+.page {
     max-width: 620px;
     margin: 0 auto;
     position: relative;
 }
 
-.back-btn{
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-dark);
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    transition: background 0.15s ease;
-}
-.back-btn:hover{ background: rgba(0,0,0,0.05); }
-
-.header{
+.header {
     text-align: center;
     padding-top: 4px;
     margin-bottom: 28px;
 }
 
-.header .icon-badge{
+.header .icon-badge {
     width: 56px;
     height: 56px;
     border-radius: 16px;
@@ -68,49 +51,49 @@ body{
     box-shadow: 0 6px 16px rgba(41, 82, 227, 0.28);
 }
 
-.header h1{
+.header h1 {
     font-size: 28px;
     font-weight: 700;
     margin: 0 0 6px;
     letter-spacing: -0.02em;
 }
 
-.header p{
+.header p {
     margin: 0;
     color: var(--text-muted);
     font-size: 15px;
 }
 
-.card{
+.card {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 32px 32px 28px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 32px rgba(20,30,60,0.06);
 }
 
-.card h2{
+.card h2 {
     font-size: 20px;
     font-weight: 700;
     margin: 0 0 6px;
 }
 
-.card > p.intro{
+.card > p.intro {
     margin: 0 0 26px;
     color: var(--text-muted);
     font-size: 14.5px;
 }
 
-.field{
+.field {
     margin-bottom: 20px;
 }
 
-.field-row{
+.field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
 
-label{
+label {
     display: block;
     font-size: 14px;
     font-weight: 600;
@@ -118,18 +101,13 @@ label{
     color: var(--text-dark);
 }
 
-label .req{
-    color: var(--red);
-    margin-left: 2px;
-}
-
-.input-wrap{
+.input-wrap {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.input-wrap .icon{
+.input-wrap .icon {
     position: absolute;
     left: 14px;
     display: flex;
@@ -137,7 +115,7 @@ label .req{
     pointer-events: none;
 }
 
-.input-wrap input{
+.input-wrap input {
     width: 100%;
     padding: 13px 14px 13px 42px;
     border: 1px solid var(--border);
@@ -149,20 +127,20 @@ label .req{
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.input-wrap input::placeholder{
+.input-wrap input::placeholder {
     color: var(--text-faint);
 }
 
-.input-wrap input:focus{
+.input-wrap input:focus {
     border-color: var(--blue);
     box-shadow: 0 0 0 3px rgba(41,82,227,0.12);
 }
 
-.input-wrap input.pw{
+.input-wrap input.pw {
     padding-right: 42px;
 }
 
-.toggle-pw{
+.toggle-pw {
     position: absolute;
     right: 12px;
     background: none;
@@ -172,41 +150,54 @@ label .req{
     display: flex;
     align-items: center;
     padding: 4px;
+    transition: color 0.15s ease;
 }
-.toggle-pw:hover{ color: var(--text-muted); }
 
-.helper-text{
+.toggle-pw:hover {
+    color: var(--text-dark);
+}
+
+.helper-text {
     margin: 8px 2px 0;
     font-size: 13px;
     color: var(--text-muted);
 }
 
-.error-text{
+.error-text {
     margin: 8px 2px 0;
     font-size: 13px;
     color: var(--red);
     display: none;
 }
 
-.field.invalid input{
+.field.invalid input {
     border-color: var(--red);
 }
-.field.invalid .error-text{
+
+.field.invalid .error-text {
     display: block;
 }
 
 .hint-msg {
     font-size: 12.5px;
     margin-top: 6px;
-    color: #9ca3af;
-    min-height: 16px;
-    margin-left: 7px;
+    color: var(--text-faint);
+    min-height: 18px; /* Prevents layout jump */
+    margin-left: 2px;
+    transition: color 0.2s ease;
 }
 
-.hint-msg.error { color: #dc2626; }
-.hint-msg.success { color: #16a34a; }
+.hint-msg.error {
+    color: var(--red);
+    font-weight: 500;
+}
 
-.submit-btn{
+.hint-msg.success {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.submit-btn {
     width: 100%;
     background: var(--blue);
     color: #fff;
@@ -217,41 +208,65 @@ label .req{
     font-weight: 600;
     cursor: pointer;
     margin-top: 8px;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, transform 0.05s ease;
 }
-.submit-btn:hover{ background: var(--blue-hover); }
-.submit-btn:active{ transform: translateY(1px); }
 
-.signin-row{
+.submit-btn:hover {
+    background: var(--blue-hover);
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+}
+
+.submit-btn:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.signin-row {
     text-align: center;
     margin-top: 18px;
     font-size: 14.5px;
     color: var(--text-muted);
 }
 
-.signin-row a{
+.signin-row a {
     color: var(--blue);
     text-decoration: none;
     font-weight: 600;
 }
-.signin-row a:hover{ text-decoration: underline; }
 
-@media (max-width: 480px){
-    .card{ padding: 24px 18px 22px; }
-    .field-row{ grid-template-columns: 1fr; gap: 20px; }
-    .header h1{ font-size: 24px; }
+.signin-row a:hover {
+    text-decoration: underline;
 }
 
-.secure-note{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
+.secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     margin-top: 22px;
     color: var(--text-muted);
     font-size: 13px;
 }
-.secure-note svg{ width:16px; height:16px; color: #1fa971; }
 
+.secure-note svg {
+    width: 16px;
+    height: 16px;
+    color: var(--green);
+}
 
-
+@media (max-width: 480px) {
+    .card {
+        padding: 24px 18px 22px;
+    }
+    .field-row {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .header h1 {
+        font-size: 24px;
+    }
+}
