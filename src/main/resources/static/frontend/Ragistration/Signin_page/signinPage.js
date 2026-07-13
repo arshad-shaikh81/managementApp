@@ -34,9 +34,9 @@ form.addEventListener('submit', (e) => {
     }
 
     const payload = {
-        fullName: fullname,
+        name: fullname,
         email: email,
-        phone: phone,
+        phoneNumber: phone,
         password: password,
         societyName: society,
         flatNumber: flat
