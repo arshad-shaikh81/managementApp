@@ -1,4 +1,3 @@
-
 // password 4 digit or same condition checking
 
 function togglePassword(id, btn) {
@@ -70,6 +69,9 @@ document.querySelectorAll('.toggle-pw').forEach(btn => {
 const form = document.getElementById('registerForm');
 const pinPattern = /^[0-9]{4}$/;
 
+// Backend API base URL — change port here if your Spring Boot app runs on a different one
+const API_BASE_URL = 'http://localhost:8080';
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     let valid = true;
@@ -112,8 +114,47 @@ form.addEventListener('submit', (e) => {
         confirmField.classList.remove('invalid');
     }
 
-    if (valid) {
-        alert('Society registered successfully! (demo only — connect this to your backend)');
-        form.reset();
+    if (!valid) {
+        return;
     }
+
+    // Build payload matching RegisterSocietyRequest.java field names exactly
+    const payload = {
+        societyName: document.getElementById('societyName').value.trim(),
+        address: document.getElementById('societyAddress').value.trim(),
+        registrationNumber: document.getElementById('regNumber').value.trim(),
+        adminName: document.getElementById('adminName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password: pinInput.value
+    };
+
+    const submitBtn = form.querySelector('.submit-btn');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Registering...';
+
+    fetch(API_BASE_URL + '/api/auth/register-society', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(async (response) => {
+        const data = await response.text();
+        if (response.ok) {
+            alert(data); // "Society aur Admin account successfully create ho gaya"
+            form.reset();
+            updateHints();
+        } else {
+            alert('Error: ' + data);
+        }
+    })
+    .catch((error) => {
+        alert('Network error: could not reach server. Is the backend running on ' + API_BASE_URL + '?');
+        console.error(error);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    });
 });

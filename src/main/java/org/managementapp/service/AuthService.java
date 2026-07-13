@@ -2,6 +2,7 @@ package org.managementapp.service;
 
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
+import org.managementapp.dto.RegisterResidentRequest;
 import org.managementapp.dto.RegisterSocietyRequest;
 import org.managementapp.entity.Society;
 import org.managementapp.entity.User;
@@ -27,7 +28,7 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // 1. Register Society + First Admin
+    // 1. Register Society + First Admin (register-society page se)
     public String registerSociety(RegisterSocietyRequest request) {
 
         // Registration number already exist toh nahi karta
@@ -40,12 +41,12 @@ public class AuthService {
             throw new RuntimeException("Yeh phone number already registered hai");
         }
 
-        // Society create karo
+        // Society create karo (NAYI society)
         Society society = new Society();
         society.setName(request.getSocietyName());
         society.setAddress(request.getAddress());
         society.setRegistrationNumber(request.getRegistrationNumber());
-        society.setStatus("active"); // abhi ke liye direct active (tumne bola tha extra verification nahi chahiye)
+        society.setStatus("active");
         societyRepository.save(society);
 
         // Admin (User) create karo
@@ -62,7 +63,34 @@ public class AuthService {
         return "Society aur Admin account successfully create ho gaya";
     }
 
-    // 2. Login (Admin ya Resident dono)
+    // 2. Register Resident (signin/create-account page se) - EXISTING society me join karta hai
+    public String registerResident(RegisterResidentRequest request) {
+
+        // Existing society dhundo naam se
+        Society society = societyRepository.findByName(request.getSocietyName())
+                .orElseThrow(() -> new RuntimeException("Yeh society registered nahi hai. Pehle society register karein ya naam sahi se check karein"));
+
+        // Phone already exist toh nahi karta
+        if (userRepository.findByPhone(request.getPhone()).isPresent()) {
+            throw new RuntimeException("Yeh phone number already registered hai");
+        }
+
+        // Resident (User) create karo - role hamesha "resident"
+        User resident = new User();
+        resident.setName(request.getFullName());
+        resident.setPhone(request.getPhone());
+        resident.setEmail(request.getEmail());
+        resident.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        resident.setRole("resident");
+        resident.setStatus("active");
+        resident.setSociety(society); // NAYI society nahi, EXISTING society se link
+        resident.setFlatNumber(request.getFlatNumber());
+        userRepository.save(resident);
+
+        return "Resident account successfully create ho gaya";
+    }
+
+    // 3. Login (Admin ya Resident dono)
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByPhone(request.getPhone())

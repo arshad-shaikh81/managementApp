@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SocietyRepository extends JpaRepository<Society, Long> {
     Optional<Society> findByRegistrationNumber(String registrationNumber);
+    Optional<Society> findByName(String name); // resident ke liye existing society dhundhne ke liye
 }
