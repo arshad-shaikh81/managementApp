@@ -11,11 +11,31 @@ body {
     justify-content: center;
     padding: 48px 16px;
     color: #1e2433;
+    perspective: 1200px;
 }
 
 .page {
     width: 100%;
     max-width: 500px;
+    transform-style: preserve-3d;
+    animation: flipIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.page.leaving {
+    animation: flipOut 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes flipIn {
+    from { transform: rotateY(-55deg); opacity: 0; }
+    to   { transform: rotateY(0deg); opacity: 1; }
+}
+
+@keyframes flipOut {
+    to { transform: rotateY(55deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 
 .brand {
@@ -137,6 +157,12 @@ body {
     stroke: #111827;
 }
 
+.toggle-eye:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
 .hint-msg {
     font-size: 12.5px;
     margin-top: 6px;
@@ -145,7 +171,7 @@ body {
     transition: color 0.2s ease;
 }
 
-.hint-msg.error { color: #dc2626; }
+.hint-msg.error { color: #dc2626; font-weight: 500; }
 .hint-msg.success { color: #16a34a; font-weight: 500; }
 
 .submit-btn {
@@ -167,6 +193,12 @@ body {
 .submit-btn:disabled {
     background: #93c5fd;
     cursor: not-allowed;
+    transform: none;
+}
+
+.submit-btn:focus-visible {
+    outline: 2px solid #1d4ed8;
+    outline-offset: 2px;
 }
 
 .footer-links {
@@ -194,3 +226,9 @@ body {
 .divider { width: 1px; height: 16px; background: #d1d5db; }
 
 .footer-links svg { width: 15px; height: 15px; stroke: #2563eb; }
+
+@media (max-width: 480px) {
+    .card {
+        padding: 26px 20px;
+    }
+}

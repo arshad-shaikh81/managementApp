@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordHint = document.getElementById('password-hint');
     const confirmHint = document.getElementById('confirm-hint');
     const form = document.getElementById('registerForm');
+    const pageEl = document.querySelector('.page');
     const API_BASE_URL = 'http://localhost:8080';
 
     // ===== 1. Live Password & Confirm Password Hints =====
@@ -72,12 +73,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== 3. Sign In Link Redirect =====
+    // ===== 3. Sign In Link Redirect (with Flip Animation) =====
     const signInLink = document.getElementById('signInLink');
+    const FLIP_DURATION = 500; // ms — must match CSS animation duration
+
+    function navigateWithFlip(url) {
+        if (!pageEl) {
+            window.location.href = url;
+            return;
+        }
+        pageEl.classList.add('flip-out');
+        setTimeout(() => {
+            window.location.href = url;
+        }, FLIP_DURATION);
+    }
+
     if (signInLink) {
         signInLink.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = "../Login_page/loginPage.html";
+            navigateWithFlip("../Login_page/loginPage.html");
         });
     }
 

@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== Debug: Check if elements loaded =====
     if (!passwordInput || !toggleEye || !eyeIcon || !passwordHint) {
-        console.error('❌ One or more elements not found! Check your HTML IDs.');
+        console.error('One or more elements not found! Check your HTML IDs.');
         return;
     }
 
     // ============================================
-    // 🔢 Password Input: Digits only + Counter Hint
+    // Password Input: Digits only + Counter Hint
     // ============================================
     passwordInput.addEventListener('input', function () {
         // Allow only numbers, max 4 digits
@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 passwordHint.textContent = `${this.value.length}/4 digits entered`;
                 passwordHint.className = "hint-msg";
             } else {
-                passwordHint.textContent = "✓ Valid Password";
+                passwordHint.textContent = "Valid password";
                 passwordHint.className = "hint-msg success";
             }
         }
     });
 
     // ============================================
-    // 👁️ Toggle Password Visibility (Eye Icon)
+    // Toggle Password Visibility (Eye Icon)
     // ============================================
     toggleEye.addEventListener('click', () => {
         const isHidden = passwordInput.type === 'password';
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // 📝 Form Submission Handler
+    // Form Submission Handler
     // ============================================
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!/^\d{4}$/.test(password)) {
                 if (passwordHint) {
-                    passwordHint.textContent = "⚠ Password must be exactly 4 digits";
+                    passwordHint.textContent = "Password must be exactly 4 digits";
                     passwordHint.className = "hint-msg error";
                 }
                 return;
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // 🔗 Forgot Password Link
+    // Forgot Password Link
     // ============================================
     if (forgotLink) {
         forgotLink.addEventListener('click', (e) => {
@@ -102,11 +102,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // ➡️ Sign In Button (Go to Signup Page)
+    // Sign In Button (Go to Signup Page)
     // ============================================
     if (signInBtn) {
         signInBtn.addEventListener('click', () => {
-            window.location.href = "../Signin_page/signinPage.html";
+            const screen = document.querySelector('.screen');
+            if (screen) {
+                screen.classList.add('leaving');
+                setTimeout(() => {
+                    window.location.href = "../Signin_page/signinPage.html";
+                }, 180);
+            } else {
+                window.location.href = "../Signin_page/signinPage.html";
+            }
         });
     }
 
