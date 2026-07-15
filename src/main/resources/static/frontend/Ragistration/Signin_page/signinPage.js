@@ -7,28 +7,129 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordHint = document.getElementById('password-hint');
     const confirmHint = document.getElementById('confirm-hint');
     const toggleButtons = document.querySelectorAll('.toggle-eye');
+    const emailInput = document.getElementById('email');
+    const emailHint = document.getElementById('email-hint');
+    const phoneInput = document.getElementById('phone');
+    const phoneHint = document.getElementById('phone-hint');
+
+    // ============================================
+    // Phone field: digits only, max 10 digits + live hint
+    // ============================================
+    const phonePattern = /^[0-9]{10}$/;
+
+    function updatePhoneHint() {
+        if (!phoneInput || !phoneHint) return true;
+        const value = phoneInput.value;
+
+        if (value.length === 0) {
+            phoneHint.textContent = '';
+            phoneHint.className = 'hint-msg';
+            phoneInput.classList.remove('invalid');
+            return false;
+        }
+        if (value.length < 10) {
+            phoneHint.textContent = `${value.length}/10 digits entered`;
+            phoneHint.className = 'hint-msg';
+            phoneInput.classList.remove('invalid');
+            return false;
+        }
+        if (!phonePattern.test(value)) {
+            phoneHint.textContent = 'Enter a valid 10-digit phone number';
+            phoneHint.className = 'hint-msg error';
+            phoneInput.classList.add('invalid');
+            return false;
+        }
+        phoneHint.textContent = 'Valid phone number';
+        phoneHint.className = 'hint-msg success';
+        phoneInput.classList.remove('invalid');
+        return true;
+    }
+
+    if (phoneInput) {
+        phoneInput.addEventListener('input', () => {
+            phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+            updatePhoneHint();
+        });
+        phoneInput.addEventListener('blur', updatePhoneHint);
+    }
 
     // ============================================
     // PIN fields: digits only + live hint
+    // (Confirm PIN is checked AGAINST the Password
+    //  field, not just its own digit count, so a
+    //  mismatched PIN can no longer show "Valid PIN")
     // ============================================
-    function wireDigitField(input, hint, defaultText) {
-        if (!input || !hint) return;
+    function updatePinHints() {
+        const pass = passwordInput.value;
+        const confirm = confirmInput.value;
+
+        if (pass.length === 0) {
+            passwordHint.textContent = 'Password must be exactly 4 digits';
+            passwordHint.className = 'hint-msg';
+        } else if (pass.length < 4) {
+            passwordHint.textContent = `${pass.length}/4 digits entered`;
+            passwordHint.className = 'hint-msg';
+        } else {
+            passwordHint.textContent = 'Valid PIN';
+            passwordHint.className = 'hint-msg success';
+        }
+
+        if (confirm.length === 0) {
+            confirmHint.textContent = 'Confirm your 4-digit PIN';
+            confirmHint.className = 'hint-msg';
+        } else if (confirm.length < 4) {
+            confirmHint.textContent = `${confirm.length}/4 digits entered`;
+            confirmHint.className = 'hint-msg';
+        } else if (confirm === pass) {
+            confirmHint.textContent = 'PINs match';
+            confirmHint.className = 'hint-msg success';
+        } else {
+            confirmHint.textContent = "PINs don't match";
+            confirmHint.className = 'hint-msg error';
+        }
+    }
+
+    [passwordInput, confirmInput].forEach((input) => {
+        if (!input) return;
         input.addEventListener('input', () => {
             input.value = input.value.replace(/\D/g, '').slice(0, 4);
-            if (input.value.length === 0) {
-                hint.textContent = defaultText;
-                hint.className = 'hint-msg';
-            } else if (input.value.length < 4) {
-                hint.textContent = `${input.value.length}/4 digits entered`;
-                hint.className = 'hint-msg';
-            } else {
-                hint.textContent = 'Valid PIN';
-                hint.className = 'hint-msg success';
-            }
+            updatePinHints();
         });
+    });
+
+    // ============================================
+    // Email field: live format validation
+    // (exact "name@domain.tld" pattern, matching
+    //  the error style used elsewhere in the app)
+    // ============================================
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function validateEmail() {
+        if (!emailInput || !emailHint) return true;
+        const value = emailInput.value.trim();
+
+        if (value.length === 0) {
+            emailHint.textContent = '';
+            emailHint.className = 'hint-msg';
+            emailInput.classList.remove('invalid');
+            return false;
+        }
+        if (!emailPattern.test(value)) {
+            emailHint.textContent = 'Enter a valid email address';
+            emailHint.className = 'hint-msg error';
+            emailInput.classList.add('invalid');
+            return false;
+        }
+        emailHint.textContent = '';
+        emailHint.className = 'hint-msg';
+        emailInput.classList.remove('invalid');
+        return true;
     }
-    wireDigitField(passwordInput, passwordHint, 'Password must be exactly 4 digits');
-    wireDigitField(confirmInput, confirmHint, 'Confirm your 4-digit PIN');
+
+    if (emailInput) {
+        emailInput.addEventListener('input', validateEmail);
+        emailInput.addEventListener('blur', validateEmail);
+    }
 
     // ============================================
     // Show/hide PIN (works for both password fields)
@@ -75,6 +176,19 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             clearMessages();
+
+            if (!validateEmail()) {
+                emailInput.focus();
+                return;
+            }
+
+            if (!phonePattern.test(phoneInput.value)) {
+                phoneHint.textContent = 'Enter a valid 10-digit phone number';
+                phoneHint.className = 'hint-msg error';
+                phoneInput.classList.add('invalid');
+                phoneInput.focus();
+                return;
+            }
 
             if (!/^\d{4}$/.test(passwordInput.value)) {
                 passwordHint.textContent = 'Password must be exactly 4 digits';

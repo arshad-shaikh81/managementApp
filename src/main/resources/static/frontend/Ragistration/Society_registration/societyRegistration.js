@@ -5,7 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordHint = document.getElementById('password-hint');
     const confirmHint = document.getElementById('confirm-hint');
     const form = document.getElementById('registerForm');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
     const API_BASE_URL = 'http://localhost:8080';
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const phonePattern = /^[0-9]{10}$/;
 
     // ===== 1. Live Password & Confirm Password Hints =====
     function updateHints() {
@@ -47,6 +52,48 @@ document.addEventListener('DOMContentLoaded', () => {
             updateHints();
         });
     });
+
+    // ===== 1.5 Live Email Validation =====
+    if (emailInput) {
+        emailInput.addEventListener('input', () => {
+            const field = emailInput.closest('.field');
+            const value = emailInput.value.trim();
+            if (!value || emailPattern.test(value)) {
+                field.classList.remove('invalid');
+            } else {
+                field.classList.add('invalid');
+            }
+        });
+        emailInput.addEventListener('blur', () => {
+            const field = emailInput.closest('.field');
+            const value = emailInput.value.trim();
+            if (value && !emailPattern.test(value)) {
+                field.classList.add('invalid');
+            }
+        });
+    }
+
+    // ===== 1.6 Live Phone Validation (digits only, max 10) =====
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            const field = this.closest('.field');
+            // Only flag as invalid once the user has typed something but
+            // hasn't reached a valid 10-digit number yet is handled on blur,
+            // so we don't show an error mid-typing.
+            if (!this.value) {
+                field.classList.remove('invalid');
+            } else if (phonePattern.test(this.value)) {
+                field.classList.remove('invalid');
+            }
+        });
+        phoneInput.addEventListener('blur', function () {
+            const field = this.closest('.field');
+            if (this.value && !phonePattern.test(this.value)) {
+                field.classList.add('invalid');
+            }
+        });
+    }
 
     // ===== 2. Toggle Password Visibility with Icon Swap =====
     document.querySelectorAll('.toggle-pw').forEach(btn => {
@@ -103,11 +150,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Email validation
-        const emailInput = document.getElementById('email');
         const emailField = emailInput.closest('.field');
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (emailInput.value.trim() && !emailPattern.test(emailInput.value.trim())) {
             emailField.classList.add('invalid');
+            valid = false;
+        }
+
+        // Phone validation
+        const phoneField = phoneInput.closest('.field');
+        if (phoneInput.value.trim() && !phonePattern.test(phoneInput.value.trim())) {
+            phoneField.classList.add('invalid');
             valid = false;
         }
 

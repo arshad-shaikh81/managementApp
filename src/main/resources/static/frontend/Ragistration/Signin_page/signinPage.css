@@ -131,6 +131,15 @@ body {
     box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
 }
 
+.input-wrap input.invalid {
+    border-color: #dc2626;
+}
+
+.input-wrap input.invalid:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+}
+
 /* Right padding for eye icon */
 .input-wrap.has-toggle input {
     padding-right: 42px;
@@ -168,6 +177,11 @@ body {
     color: #9ca3af;
     min-height: 18px; /* Prevents layout jump when text changes */
     transition: color 0.2s ease;
+}
+
+.hint-msg:empty {
+    min-height: 0;
+    margin-top: 0;
 }
 
 .hint-msg.error { color: #dc2626; font-weight: 500; }
