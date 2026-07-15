@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const forgotLink = document.getElementById('forgotLink');
     const passwordHint = document.getElementById('password-hint');
+    const loginError = document.getElementById('login-error');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+
+    // Backend base URL — Spring Boot default port
+    const API_BASE_URL = 'http://localhost:8080';
 
     // ===== Debug: Check if elements loaded =====
     if (!passwordInput || !toggleEye || !eyeIcon || !passwordHint) {
@@ -70,9 +75,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const mobile = document.getElementById('mobile')?.value.trim();
             const password = passwordInput.value;
 
+            // Clear any previous server message
+            if (loginError) {
+                loginError.textContent = "";
+                loginError.className = "hint-msg";
+            }
+
             // Validation
             if (!mobile || !password) {
-                alert('Please fill in both fields.');
+                if (loginError) {
+                    loginError.textContent = "Please fill in both fields.";
+                    loginError.className = "hint-msg error";
+                }
                 return;
             }
 
@@ -84,9 +98,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Success
-            alert('Login submitted!\n(Connect this to your backend to authenticate.)');
-            // Redirect example: window.location.href = 'dashboard.html';
+            // ===== Actually call the backend to check phone + password against the DB =====
+            if (loginSubmitBtn) {
+                loginSubmitBtn.disabled = true;
+                loginSubmitBtn.textContent = "Logging in...";
+            }
+
+            fetch(API_BASE_URL + '/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: mobile, password: password })
+            })
+                .then(async (response) => {
+                    if (response.ok) {
+                        // Backend confirmed phone + password matched a real user
+                        const data = await response.json();
+
+                        // Save token so future pages can call protected APIs
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('role', data.role);
+                        localStorage.setItem('name', data.name);
+
+                        if (loginError) {
+                            loginError.textContent = `Welcome back, ${data.name}!`;
+                            loginError.className = "hint-msg success";
+                        }
+
+                        // Redirect after login
+                        // window.location.href = 'dashboard.html';
+                    } else {
+                        // Backend rejected — show exact reason (wrong phone vs wrong password)
+                        const message = await response.text();
+                        if (loginError) {
+                            loginError.textContent = message || "Invalid mobile number or password.";
+                            loginError.className = "hint-msg error";
+                        }
+                    }
+                })
+                .catch((error) => {
+                    if (loginError) {
+                        loginError.textContent = `Could not reach server. Is the backend running on ${API_BASE_URL}?`;
+                        loginError.className = "hint-msg error";
+                    }
+                    console.error('Login fetch error:', error);
+                })
+                .finally(() => {
+                    if (loginSubmitBtn) {
+                        loginSubmitBtn.disabled = false;
+                        loginSubmitBtn.textContent = "Login";
+                    }
+                });
         });
     }
 

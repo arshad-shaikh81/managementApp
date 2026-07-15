@@ -55,9 +55,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // Form submission
     // ============================================
+    const API_BASE_URL = 'http://localhost:8080';
+    const submitBtn = document.querySelector('.submit-btn');
+    const societyHint = document.getElementById('society-hint');
+    const formMessage = document.getElementById('form-message');
+
+    function clearMessages() {
+        if (societyHint) {
+            societyHint.textContent = '';
+            societyHint.className = 'hint-msg';
+        }
+        if (formMessage) {
+            formMessage.textContent = '';
+            formMessage.className = 'hint-msg';
+        }
+    }
+
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            clearMessages();
 
             if (!/^\d{4}$/.test(passwordInput.value)) {
                 passwordHint.textContent = 'Password must be exactly 4 digits';
@@ -71,8 +88,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            alert('Account created!\n(Connect this to your backend to register the user.)');
-            // Redirect example: window.location.href = '../Login_page/loginPage.html';
+            const payload = {
+                name: document.getElementById('fullname').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phoneNumber: document.getElementById('phone').value.trim(),
+                password: passwordInput.value,
+                societyName: document.getElementById('society').value.trim(),
+                flatNumber: document.getElementById('flat').value.trim()
+            };
+
+            const originalBtnText = submitBtn ? submitBtn.textContent : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating account...';
+            }
+
+            fetch(API_BASE_URL + '/api/auth/register-resident', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(async (response) => {
+                    const data = await response.text();
+                    if (response.ok) {
+                        if (formMessage) {
+                            formMessage.textContent = data || 'Account created successfully! Redirecting to login...';
+                            formMessage.className = 'hint-msg success';
+                        }
+                        // Redirect to login page after a short pause so the message is visible
+                        setTimeout(() => {
+                            window.location.href = '../Login_page/loginPage.html';
+                        }, 1200);
+                    } else if (data && data.toLowerCase().includes('society not found')) {
+                        // Show this specific error right under the Society Name field
+                        if (societyHint) {
+                            societyHint.textContent = "This society isn't registered yet. Please check the name or register your society first.";
+                            societyHint.className = 'hint-msg error';
+                        }
+                    } else {
+                        if (formMessage) {
+                            formMessage.textContent = data || 'Something went wrong. Please try again.';
+                            formMessage.className = 'hint-msg error';
+                        }
+                    }
+                })
+                .catch((error) => {
+                    if (formMessage) {
+                        formMessage.textContent = `Could not reach server. Is the backend running on ${API_BASE_URL}?`;
+                        formMessage.className = 'hint-msg error';
+                    }
+                    console.error('Fetch error:', error);
+                })
+                .finally(() => {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalBtnText;
+                    }
+                });
         });
     }
 

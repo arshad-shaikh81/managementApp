@@ -92,10 +92,10 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByPhone(request.getPhone())
-                .orElseThrow(() -> new RuntimeException("Invalid phone or password"));
+                .orElseThrow(() -> new RuntimeException("Mobile number is not registered"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new RuntimeException("Invalid phone or password");
+            throw new RuntimeException("Incorrect password");
         }
 
         String token = jwtUtil.generateToken(user.getPhone(), user.getRole());
