@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordHint = document.getElementById('password-hint');
     const confirmHint = document.getElementById('confirm-hint');
     const form = document.getElementById('registerForm');
-    const pageEl = document.querySelector('.page');
     const API_BASE_URL = 'http://localhost:8080';
 
     // ===== 1. Live Password & Confirm Password Hints =====
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordHint.textContent = `${pass.length}/4 digits entered`;
             passwordHint.className = 'hint-msg';
         } else {
-            passwordHint.textContent = '✓ Valid Password';
+            passwordHint.textContent = 'Valid password';
             passwordHint.className = 'hint-msg success';
         }
 
@@ -33,10 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmHint.textContent = `${confirm.length}/4 digits entered`;
             confirmHint.className = 'hint-msg';
         } else if (pass === confirm) {
-            confirmHint.textContent = '✓ Passwords match';
+            confirmHint.textContent = 'Passwords match';
             confirmHint.className = 'hint-msg success';
         } else {
-            confirmHint.textContent = '⚠ Passwords do not match';
+            confirmHint.textContent = 'Passwords do not match';
             confirmHint.className = 'hint-msg error';
         }
     }
@@ -73,25 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== 3. Sign In Link Redirect (with Flip Animation) =====
+    // ===== 3. Sign In Link Redirect =====
     const signInLink = document.getElementById('signInLink');
-    const FLIP_DURATION = 500; // ms — must match CSS animation duration
-
-    function navigateWithFlip(url) {
-        if (!pageEl) {
-            window.location.href = url;
-            return;
-        }
-        pageEl.classList.add('flip-out');
-        setTimeout(() => {
-            window.location.href = url;
-        }, FLIP_DURATION);
-    }
-
     if (signInLink) {
         signInLink.addEventListener('click', (e) => {
             e.preventDefault();
-            navigateWithFlip("../Login_page/loginPage.html");
+            window.location.href = "../Login_page/loginPage.html";
         });
     }
 
@@ -129,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pinField = passwordInput.closest('.field');
         if (!pinPattern.test(passwordInput.value)) {
             pinField.classList.add('invalid');
-            passwordHint.textContent = '⚠ Password must be exactly 4 digits';
+            passwordHint.textContent = 'Password must be exactly 4 digits';
             passwordHint.className = 'hint-msg error';
             valid = false;
         }
@@ -138,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmField = confirmInput.closest('.field');
         if (!pinPattern.test(confirmInput.value) || confirmInput.value !== passwordInput.value) {
             confirmField.classList.add('invalid');
-            confirmHint.textContent = '⚠ Passwords do not match';
+            confirmHint.textContent = 'Passwords do not match';
             confirmHint.className = 'hint-msg error';
             valid = false;
         }

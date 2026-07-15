@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ===== DOM Elements =====
-    const page = document.querySelector('.page');
     const form = document.querySelector('form');
     const passwordInput = document.getElementById('password');
     const confirmInput = document.getElementById('confirm-password');
     const passwordHint = document.getElementById('password-hint');
     const confirmHint = document.getElementById('confirm-hint');
     const toggleButtons = document.querySelectorAll('.toggle-eye');
-    const navLinks = document.querySelectorAll('.footer-links a');
 
     // ============================================
     // PIN fields: digits only + live hint
@@ -80,20 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // Footer links ("Register your society" / "Log in")
-    // Play the exit flip, then navigate.
+    // No JS needed -- each <a href="..."> already
+    // navigates to its own correct page normally.
     // ============================================
-    navLinks.forEach((link) => {
-        link.addEventListener('click', (e) => {
-            let href = link.getAttribute('href');
-            if (!href) return;
-            e.preventDefault();
-            if (page) {
-                page.classList.add('leaving');
-                setTimeout(() => { window.location.href = href = "../Society_registration/societyRegistration.html"; }, 180);
-            } else {
-                window.location.href = href;
-            }
-        });
-    });
 
 });

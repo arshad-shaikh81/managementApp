@@ -27,11 +27,30 @@ body {
     padding: 32px 16px 60px;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
 .page {
     max-width: 620px;
     margin: 0 auto;
     position: relative;
 }
+
+/* ============================================
+   Page-load entrance: staggered fade-up
+   Runs exactly once, automatically, when each
+   element is first painted by the browser.
+   ============================================ */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.icon-badge { animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both; }
+.header h1  { animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both; }
+.header p   { animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both; }
+.card       { animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.26s both; }
 
 .header {
     text-align: center;
@@ -157,6 +176,12 @@ label {
     color: var(--text-dark);
 }
 
+.toggle-pw:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
 .helper-text {
     margin: 8px 2px 0;
     font-size: 13px;
@@ -225,6 +250,11 @@ label {
     transform: none;
 }
 
+.submit-btn:focus-visible {
+    outline: 2px solid var(--blue-hover);
+    outline-offset: 2px;
+}
+
 .signin-row {
     text-align: center;
     margin-top: 18px;
@@ -268,43 +298,5 @@ label {
     }
     .header h1 {
         font-size: 24px;
-    }
-}
-
-/* ===== Page Flip Transition ===== */
-body {
-    perspective: 1200px;
-    overflow-x: hidden;
-}
-
-.page {
-    transform-style: preserve-3d;
-    animation: flipIn 0.5s ease forwards;
-    will-change: transform, opacity;
-}
-
-@keyframes flipIn {
-    from {
-        opacity: 0;
-        transform: rotateY(-90deg);
-    }
-    to {
-        opacity: 1;
-        transform: rotateY(0deg);
-    }
-}
-
-.page.flip-out {
-    animation: flipOut 0.5s ease forwards;
-}
-
-@keyframes flipOut {
-    from {
-        opacity: 1;
-        transform: rotateY(0deg);
-    }
-    to {
-        opacity: 0;
-        transform: rotateY(90deg);
     }
 }

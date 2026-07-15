@@ -106,15 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     if (signInBtn) {
         signInBtn.addEventListener('click', () => {
-            const screen = document.querySelector('.screen');
-            if (screen) {
-                screen.classList.add('leaving');
-                setTimeout(() => {
-                    window.location.href = "../Signin_page/signinPage.html";
-                }, 180);
-            } else {
-                window.location.href = "../Signin_page/signinPage.html";
-            }
+            window.location.href = "../Signin_page/signinPage.html";
         });
     }
 
