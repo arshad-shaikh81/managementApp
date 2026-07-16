@@ -38,7 +38,7 @@
                 <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
-                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" autocomplete="tel" required>
+                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" autocomplete="tel" inputmode="numeric" maxlength="10" required>
             </div>
 
             <!-- Password Field -->
@@ -64,24 +64,10 @@
 
             <div class="forgot-row"><a href="#" id="forgotLink">Forgot Password?</a></div>
 
-            <!-- Server-side login error/success message shows here -->
-            <div class="hint-msg" id="login-error"></div>
-
-            <button type="submit" class="btn-login" id="loginSubmitBtn">Login</button>
+            <button type="submit" class="btn-login">Login</button>
         </form>
 
-        <div class="divider">OR</div>
-        <p class="no-account">Don't have an account?</p>
-
-        <button type="button" class="btn-signin" id="signInBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <line x1="19" y1="8" x2="19" y2="14"></line>
-                <line x1="22" y1="11" x2="16" y2="11"></line>
-            </svg>
-            Sign in
-        </button>
+        <p class="no-account">Don't have an account? <a href="../Signin_page/signinPage.html" id="signInBtn">Create an account</a></p>
     </div>
 
     <div class="secure-note">

@@ -7,21 +7,21 @@
 :root {
     --bg: #eef1f5;
     --card-bg: #ffffff;
-    --text-dark: #111827;
-    --text-muted: #6b7280;
-    --text-faint: #9ca3af;
-    --border: #e2e5ea;
+    --text-dark: #1a1f36;
+    --text-muted: #8a8fa3;
+    --text-faint: #8a8fa3;
+    --border: #e3e5ee;
     --blue: #2952e3;
-    --blue-hover: #2140b8;
+    --blue-hover: #1f3fc0;
     --blue-light: #3b5cf0;
-    --red: #ef4444;
-    --green: #16a34a;
+    --red: #e53935;
+    --green: #1fa971;
     --radius: 12px;
 }
 
 body {
     margin: 0;
-    background: var(--bg);
+    background: linear-gradient(150deg, #eef2f8 0%, #e3ecf8 35%, #d3e3f7 70%, #c6dbf5 100%);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text-dark);
     padding: 32px 16px 60px;
@@ -84,7 +84,10 @@ body {
 }
 
 .card {
-    background: var(--card-bg);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
     padding: 32px 32px 28px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 32px rgba(20,30,60,0.06);

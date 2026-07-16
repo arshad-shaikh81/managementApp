@@ -3,22 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== DOM Elements =====
     const passwordInput = document.getElementById('password');
+    const mobileInput = document.getElementById('mobile');
     const toggleEye = document.getElementById('toggleEye');
     const eyeIcon = document.getElementById('eyeIcon');
-    const signInBtn = document.getElementById('signInBtn');
-    const loginForm = document.getElementById('loginForm');
     const forgotLink = document.getElementById('forgotLink');
+    const loginForm = document.getElementById('loginForm');
     const passwordHint = document.getElementById('password-hint');
-    const loginError = document.getElementById('login-error');
-    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
-
-    // Backend base URL — Spring Boot default port
-    const API_BASE_URL = 'http://localhost:8080';
 
     // ===== Debug: Check if elements loaded =====
     if (!passwordInput || !toggleEye || !eyeIcon || !passwordHint) {
         console.error('One or more elements not found! Check your HTML IDs.');
         return;
+    }
+
+    // ============================================
+    // Mobile Number: Digits only, max 10 digits
+    // ============================================
+    if (mobileInput) {
+        mobileInput.addEventListener('input', function () {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
     }
 
     // ============================================
@@ -32,13 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (passwordHint) {
             if (this.value.length === 0) {
                 passwordHint.textContent = "Password must be exactly 4 digits";
+                passwordHint.style.color = "#8A8FA3";
                 passwordHint.className = "hint-msg";
             } else if (this.value.length < 4) {
-                passwordHint.textContent = `${this.value.length}/4 digits entered`;
+                passwordHint.textContent = `${this.value.length}/4 digits entered , Password must be exactly 4 digits`;
+                passwordHint.style.color = "#ff0000";
                 passwordHint.className = "hint-msg";
             } else {
-                passwordHint.textContent = "Valid password";
-                passwordHint.className = "hint-msg success";
+                passwordHint.textContent = "4/4 entered";
+                passwordHint.style.color = "#2952E3"
+                passwordHint.className = "hint-msg info";
             }
         }
     });
@@ -75,18 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const mobile = document.getElementById('mobile')?.value.trim();
             const password = passwordInput.value;
 
-            // Clear any previous server message
-            if (loginError) {
-                loginError.textContent = "";
-                loginError.className = "hint-msg";
-            }
-
             // Validation
             if (!mobile || !password) {
-                if (loginError) {
-                    loginError.textContent = "Please fill in both fields.";
-                    loginError.className = "hint-msg error";
-                }
+                alert('Please fill in both fields.');
                 return;
             }
 
@@ -98,56 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // ===== Actually call the backend to check phone + password against the DB =====
-            if (loginSubmitBtn) {
-                loginSubmitBtn.disabled = true;
-                loginSubmitBtn.textContent = "Logging in...";
-            }
-
-            fetch(API_BASE_URL + '/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: mobile, password: password })
-            })
-                .then(async (response) => {
-                    if (response.ok) {
-                        // Backend confirmed phone + password matched a real user
-                        const data = await response.json();
-
-                        // Save token so future pages can call protected APIs
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('role', data.role);
-                        localStorage.setItem('name', data.name);
-
-                        if (loginError) {
-                            loginError.textContent = `Welcome back, ${data.name}!`;
-                            loginError.className = "hint-msg success";
-                        }
-
-                        // Redirect after login
-                        // window.location.href = 'dashboard.html';
-                    } else {
-                        // Backend rejected — show exact reason (wrong phone vs wrong password)
-                        const message = await response.text();
-                        if (loginError) {
-                            loginError.textContent = message || "Invalid mobile number or password.";
-                            loginError.className = "hint-msg error";
-                        }
-                    }
-                })
-                .catch((error) => {
-                    if (loginError) {
-                        loginError.textContent = `Could not reach server. Is the backend running on ${API_BASE_URL}?`;
-                        loginError.className = "hint-msg error";
-                    }
-                    console.error('Login fetch error:', error);
-                })
-                .finally(() => {
-                    if (loginSubmitBtn) {
-                        loginSubmitBtn.disabled = false;
-                        loginSubmitBtn.textContent = "Login";
-                    }
-                });
+            // Success
+            alert('Login submitted!\n(Connect this to your backend to authenticate.)');
+            // Redirect example: window.location.href = 'dashboard.html';
         });
     }
 
@@ -163,12 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // Sign In Button (Go to Signup Page)
+    // "Create an account" is now a plain link with
+    // its own href, so no click handler is needed.
     // ============================================
-    if (signInBtn) {
-        signInBtn.addEventListener('click', () => {
-            window.location.href = "../Signin_page/signinPage.html";
-        });
-    }
 
 });

@@ -6,11 +6,11 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #f4f5f7;
+    background: linear-gradient(150deg, #eef2f8 0%, #e3ecf8 35%, #d3e3f7 70%, #c6dbf5 100%);
     display: flex;
     justify-content: center;
     padding: 48px 16px;
-    color: #1e2433;
+    color: #1a1f36;
 }
 
 .page {
@@ -45,12 +45,13 @@ body {
 .brand-icon {
     width: 56px;
     height: 56px;
-    background: #2563eb;
+    background: #2952e3;
     border-radius: 16px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 14px;
+    box-shadow: 0 8px 20px rgba(41, 82, 227, 0.25);
 }
 
 .brand-icon svg { width: 28px; height: 28px; stroke: #fff; }
@@ -58,31 +59,35 @@ body {
 .brand h1 {
     font-size: 28px;
     font-weight: 700;
-    color: #111827;
+    color: #1a1f36;
+    letter-spacing: -0.02em;
     margin-bottom: 4px;
 }
 
 .brand p {
-    color: #6b7280;
+    color: #8a8fa3;
     font-size: 15px;
 }
 
 .card {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
     padding: 36px 32px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(20, 20, 50, 0.08);
 }
 
 .card h2 {
     font-size: 22px;
     font-weight: 700;
-    color: #111827;
+    color: #1a1f36;
     margin-bottom: 6px;
 }
 
 .card > p {
-    color: #6b7280;
+    color: #8a8fa3;
     font-size: 14px;
     margin-bottom: 26px;
 }
@@ -93,7 +98,7 @@ body {
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #1f2937;
+    color: #1a1f36;
     margin-bottom: 7px;
 }
 
@@ -108,36 +113,36 @@ body {
     left: 14px;
     width: 18px;
     height: 18px;
-    stroke: #9ca3af;
+    stroke: #8a8fa3;
     pointer-events: none;
 }
 
 .input-wrap input {
     width: 100%;
-    padding: 13px 14px 13px 42px;
-    border: 1px solid #e2e5eb;
-    border-radius: 10px;
-    font-size: 14.5px;
-    color: #111827;
+    padding: 14px 44px 14px 44px;
+    border: 1.5px solid #e3e5ee;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #1a1f36;
     background: #fff;
     outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.input-wrap input::placeholder { color: #a0a6b1; }
+.input-wrap input::placeholder { color: #b0b3c3; }
 
 .input-wrap input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    border-color: #2952e3;
+    box-shadow: 0 0 0 3px rgba(41, 82, 227, 0.10);
 }
 
 .input-wrap input.invalid {
-    border-color: #dc2626;
+    border-color: #e53935;
 }
 
 .input-wrap input.invalid:focus {
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+    border-color: #e53935;
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12);
 }
 
 /* Right padding for eye icon */
@@ -150,7 +155,7 @@ body {
     right: 14px;
     width: 18px;
     height: 18px;
-    stroke: #9ca3af;
+    stroke: #8a8fa3;
     cursor: pointer;
     background: none;
     border: none;
@@ -158,24 +163,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: stroke 0.15s;
+    transition: stroke 0.15s ease;
 }
 
 .toggle-eye:hover {
-    stroke: #111827;
+    stroke: #1a1f36;
 }
 
 .toggle-eye:focus-visible {
-    outline: 2px solid #2563eb;
+    outline: 2px solid #2952e3;
     outline-offset: 2px;
     border-radius: 4px;
 }
 
 .hint-msg {
-    font-size: 12.5px;
+    font-size: 13px;
     margin-top: 6px;
-    color: #9ca3af;
-    min-height: 18px; /* Prevents layout jump when text changes */
+    color: #8a8fa3;
+    min-height: 18px;
     transition: color 0.2s ease;
 }
 
@@ -184,24 +189,24 @@ body {
     margin-top: 0;
 }
 
-.hint-msg.error { color: #dc2626; font-weight: 500; }
-.hint-msg.success { color: #16a34a; font-weight: 500; }
+.hint-msg.error { color: #e53935; font-weight: 500; }
+.hint-msg.success { color: #1fa971; font-weight: 500; }
 
 .submit-btn {
     width: 100%;
-    padding: 14px;
-    background: #2563eb;
+    padding: 15px;
+    background: #2952e3;
     color: #fff;
-    font-size: 15.5px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     margin-top: 8px;
-    transition: background 0.15s, transform 0.05s;
+    transition: background 0.15s ease, transform 0.05s ease;
 }
 
-.submit-btn:hover { background: #1d4ed8; }
+.submit-btn:hover { background: #1f3fc0; }
 .submit-btn:active { transform: scale(0.99); }
 .submit-btn:disabled {
     background: #93c5fd;
@@ -210,7 +215,7 @@ body {
 }
 
 .submit-btn:focus-visible {
-    outline: 2px solid #1d4ed8;
+    outline: 2px solid #1f3fc0;
     outline-offset: 2px;
 }
 
@@ -221,12 +226,12 @@ body {
     gap: 12px;
     margin-top: 22px;
     font-size: 14px;
-    color: #6b7280;
+    color: #8a8fa3;
     flex-wrap: wrap;
 }
 
 .footer-links a {
-    color: #2563eb;
+    color: #2952e3;
     text-decoration: none;
     font-weight: 600;
     display: inline-flex;
@@ -234,13 +239,19 @@ body {
     gap: 5px;
 }
 
+.footer-links a:hover { text-decoration: underline; }
+
+.divider { width: 1px; height: 16px; background: #d1d5db; }
+
+.footer-links svg { width: 15px; height: 15px; stroke: #2952e3; }
+
 .secure-note {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     margin-top: 22px;
-    color: var(--text-muted);
+    color: #8a8fa3;
     font-size: 13px;
 }
 
@@ -249,12 +260,6 @@ body {
     height: 16px;
     color: #1fa971;
 }
-
-.footer-links a:hover { text-decoration: underline; }
-
-.divider { width: 1px; height: 16px; background: #d1d5db; }
-
-.footer-links svg { width: 15px; height: 15px; stroke: #2563eb; }
 
 @media (max-width: 480px) {
     .card {
