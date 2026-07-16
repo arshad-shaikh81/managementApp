@@ -303,3 +303,12 @@ label {
         font-size: 24px;
     }
 }
+
+/* Fix double-gap between password & confirm-password on mobile stack */
+.field-row .field {
+    margin-bottom: 0;
+}
+
+.confirmSpace{
+    margin-left: 6px;
+}
