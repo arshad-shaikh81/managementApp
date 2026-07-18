@@ -43,6 +43,7 @@
 <main id="top">
     <!-- HERO -->
     <section class="hero">
+        <div class="particles" id="heroParticles" aria-hidden="true"></div>
         <span class="eyebrow" data-animate="fade-up">✳️ The operating system for housing societies</span>
         <h1 class="hero-title" data-animate="fade-up">
             Run your society like&nbsp;a
@@ -76,6 +77,7 @@
 
     <!-- FEATURES + PRICING share the same soft background -->
     <div class="soft-bg">
+        <div class="particles" id="softBgParticles" aria-hidden="true"></div>
         <section class="features" id="features">
             <div class="section-head" data-animate="fade-up">
                 <span class="pill">Features</span>
@@ -230,6 +232,7 @@
     <!-- CONTACT -->
     <section id="contact">
         <div class="contact-card" data-animate="fade-up">
+            <div class="particles" id="contactParticles" aria-hidden="true"></div>
             <div class="contact-left">
                 <h2>Ready to modernise your society?</h2>
                 <p>Create your account, add your first members and publish your first notice — all in under five minutes.</p>
@@ -281,6 +284,54 @@
     </div>
 </footer>
 
+<script>
+    (function () {
+        function spawnParticles(id, count, colors) {
+            var container = document.getElementById(id);
+            if (!container) return;
+            var travel = container.offsetHeight + 80;
+            for (var i = 0; i < count; i++) {
+                var p = document.createElement('span');
+                p.className = 'particle';
+                var size = (Math.random() * 6 + 3).toFixed(1);
+                var left = (Math.random() * 100).toFixed(1);
+                var speed = Math.random() * 25 + 40; /* px per second */
+                var duration = (travel / speed).toFixed(1);
+                var delay = (Math.random() * duration).toFixed(1);
+                var drift = (Math.random() * 60 - 30).toFixed(0);
+                var color = colors[i % colors.length];
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = left + '%';
+                p.style.background = 'radial-gradient(circle, ' + color + ' 0%, rgba(59,130,246,0) 72%)';
+                p.style.animationDuration = duration + 's';
+                p.style.animationDelay = '-' + delay + 's';
+                p.style.setProperty('--drift', drift + 'px');
+                p.style.setProperty('--travel', travel + 'px');
+                container.appendChild(p);
+            }
+        }
+
+        function init() {
+            var narrow = window.innerWidth < 600;
+            spawnParticles('heroParticles', narrow ? 14 : 26, [
+                'rgba(59,130,246,0.55)', 'rgba(37,99,235,0.5)', 'rgba(14,165,233,0.45)'
+            ]);
+            spawnParticles('softBgParticles', narrow ? 12 : 22, [
+                'rgba(59,130,246,0.4)', 'rgba(37,99,235,0.35)', 'rgba(14,165,233,0.35)'
+            ]);
+            spawnParticles('contactParticles', narrow ? 8 : 16, [
+                'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.5)', 'rgba(219,234,254,0.6)'
+            ]);
+        }
+
+        if (document.readyState === 'complete') {
+            init();
+        } else {
+            window.addEventListener('load', init);
+        }
+    })();
+</script>
 <script src="homePage.js"></script>
 </body>
 </html>
