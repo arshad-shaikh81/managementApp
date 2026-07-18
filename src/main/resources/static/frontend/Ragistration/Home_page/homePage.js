@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+// Mobile nav menu: open/close state, hamburger-to-X animation,
+// auto-close on link tap, outside tap, or resize back to desktop.
+=======
 // FAQ accordion: clicking a question opens its answer and closes any other open one.
 (function initFaqAccordion() {
     const items = document.querySelectorAll('.faq-item');
@@ -49,21 +53,40 @@
 })();
 
 // Mobile nav toggle: reveal links list on small screens
+>>>>>>> aa1e6249b79ba7de0d238f17ba1850577b9256dc
 const toggle = document.getElementById('navToggle');
 const links = document.querySelector('.nav-links');
 
-toggle.addEventListener('click', () => {
-    const isOpen = links.style.display === 'flex';
-    links.style.display = isOpen ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '70px';
-    links.style.right = '24px';
-    links.style.background = 'rgba(255,255,255,0.9)';
-    links.style.backdropFilter = 'blur(14px)';
-    links.style.border = '1px solid var(--card-border)';
-    links.style.borderRadius = '16px';
-    links.style.padding = '16px 24px';
-    links.style.gap = '16px';
-    links.style.boxShadow = '0 12px 28px -12px rgba(15,27,51,0.25)';
+function openMenu(){
+    links.classList.add('open');
+    toggle.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+}
+
+function closeMenu(){
+    links.classList.remove('open');
+    toggle.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+}
+
+toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    links.classList.contains('open') ? closeMenu() : openMenu();
+});
+
+// Close the menu after tapping a nav link
+links.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+});
+
+// Close if tapping anywhere outside the menu/toggle
+document.addEventListener('click', (e) => {
+    if (!links.contains(e.target) && !toggle.contains(e.target)) {
+        closeMenu();
+    }
+});
+
+// Close automatically if the viewport grows back to desktop size
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 860) closeMenu();
 });
