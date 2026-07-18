@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oasis Society — Login</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="loginPage.css">
 </head>
 <body>
@@ -31,6 +32,12 @@
     <div class="card">
         <h2>Welcome back</h2>
         <p class="lead">Login to access your account</p>
+
+        <!-- Alert banner: hidden by default, shown by JS on submit result -->
+        <div class="alert-banner" id="form-message" role="alert" hidden>
+            <svg class="alert-icon" id="alert-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+            <span class="alert-text" id="alert-text"></span>
+        </div>
 
         <form id="loginForm">
             <label for="mobile">Mobile Number</label>

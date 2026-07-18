@@ -228,6 +228,61 @@ label {
     font-weight: 500;
 }
 
+/* ============================================
+   Alert banner (form-level success/error message)
+   Shown above the form fields, not overlapping
+   any button — matches common SaaS login UX.
+   ============================================ */
+@keyframes alertSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.alert-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    margin-bottom: 18px;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    animation: alertSlideIn 0.25s ease both;
+}
+
+.alert-banner[hidden] {
+    display: none;
+}
+
+.alert-banner .alert-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.alert-banner.success {
+    background: rgba(31, 169, 113, 0.10);
+    border-color: rgba(31, 169, 113, 0.25);
+    color: #16794f;
+}
+
+.alert-banner.error {
+    background: rgba(229, 57, 53, 0.08);
+    border-color: rgba(229, 57, 53, 0.25);
+    color: #c62828;
+}
+
+.alert-banner.success .alert-icon {
+    color: var(--green);
+}
+
+.alert-banner.error .alert-icon {
+    color: var(--red);
+}
+
 .forgot-row {
     text-align: right;
     margin: -6px 0 20px;

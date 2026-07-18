@@ -73,8 +73,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
-    // Form Submission Handler
+    // Form Submission Handler (real backend call)
     // ============================================
+    const API_BASE_URL = 'http://localhost:8080';
+    const loginBtn = document.querySelector('.btn-login');
+    const formMessage = document.getElementById('form-message');
+    const alertIcon = document.getElementById('alert-icon');
+    const alertText = document.getElementById('alert-text');
+
+    const ICONS = {
+        success: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>',
+        error: '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+    };
+
+    function showMessage(text, type) {
+        if (!formMessage) return;
+        formMessage.hidden = false;
+        formMessage.className = 'alert-banner ' + type; // 'error' or 'success'
+        if (alertIcon) alertIcon.innerHTML = ICONS[type] || '';
+        if (alertText) alertText.textContent = text;
+    }
+
+    function hideMessage() {
+        if (formMessage) formMessage.hidden = true;
+    }
+
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -82,9 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const mobile = document.getElementById('mobile')?.value.trim();
             const password = passwordInput.value;
 
+            if (formMessage) {
+                hideMessage();
+            }
+
             // Validation
             if (!mobile || !password) {
-                alert('Please fill in both fields.');
+                showMessage('Please fill in both fields.', 'error');
                 return;
             }
 
@@ -96,9 +123,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Success
-            alert('Login submitted!\n(Connect this to your backend to authenticate.)');
-            // Redirect example: window.location.href = 'dashboard.html';
+            const payload = { phone: mobile, password: password };
+
+            const originalBtnText = loginBtn ? loginBtn.textContent : '';
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.textContent = 'Logging in...';
+            }
+
+            fetch(API_BASE_URL + '/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(async (response) => {
+                    const contentType = response.headers.get('content-type') || '';
+                    const data = contentType.includes('application/json')
+                        ? await response.json()
+                        : await response.text();
+
+                    if (response.ok) {
+                        // Backend confirmed the mobile number + password match.
+                        // Save session info so the dashboard can identify the user.
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('role', data.role);
+                        localStorage.setItem('name', data.name);
+
+                        showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
+
+                        setTimeout(() => {
+                            // TODO: point this at the real dashboard page once it exists
+                            window.location.href = '../Home_page/homePage.html';
+                        }, 1000);
+                    } else {
+                        // Wrong mobile number or wrong password -> backend rejects it
+                        const errorText = typeof data === 'string' ? data : 'Incorrect mobile number or password.';
+                        showMessage(errorText, 'error');
+                    }
+                })
+                .catch((error) => {
+                    showMessage(`Could not reach server. Is the backend running on ${API_BASE_URL}?`, 'error');
+                    console.error('Fetch error:', error);
+                })
+                .finally(() => {
+                    if (loginBtn) {
+                        loginBtn.disabled = false;
+                        loginBtn.textContent = originalBtnText;
+                    }
+                });
         });
     }
 
