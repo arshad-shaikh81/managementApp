@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
 :root{
     --blue-600:#2563eb;
     --blue-700:#1d4ed8;
@@ -19,7 +25,6 @@ body{
     color:var(--ink-900);
     background:#ffffff;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
 }
 
 a{text-decoration:none; color:inherit;}
@@ -64,15 +69,9 @@ button{font:inherit; cursor:pointer;}
     letter-spacing:-0.01em;
 }
 .brand-mark{
-<<<<<<< HEAD
-    width:38px;
-    height:38px;
-    border-radius:11px;
-=======
     width:30px;
     height:30px;
     border-radius:8px;
->>>>>>> aa1e6249b79ba7de0d238f17ba1850577b9256dc
     background:linear-gradient(145deg,var(--blue-500),var(--blue-700));
     display:flex;
     align-items:center;
@@ -140,22 +139,12 @@ button{font:inherit; cursor:pointer;}
     background:none;
     border:none;
     flex-direction:column;
-    justify-content:center;
-    align-items:center;
     gap:5px;
-    width:42px;
-    height:42px;
-    border-radius:12px;
-    flex-shrink:0;
+    padding:6px;
 }
-.nav-toggle:active{background:var(--bg-soft);}
 .nav-toggle span{
-    width:20px; height:2px; background:var(--ink-900); border-radius:2px;
-    transition:transform .2s ease, opacity .2s ease;
+    width:22px; height:2px; background:var(--ink-900); border-radius:2px;
 }
-.nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.nav-toggle.open span:nth-child(2){opacity:0;}
-.nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 
 /* ---------- HERO ---------- */
 .hero{
@@ -449,94 +438,12 @@ footer{
 }
 
 /* ---------- RESPONSIVE ---------- */
-
-/* Tablets and small laptops */
 @media (max-width:860px){
-    .nav-outer{padding:14px 16px 0;}
-    .navbar{position:relative; padding:10px 12px 10px 12px;}
     .nav-links{display:none;}
-<<<<<<< HEAD
-    .nav-toggle{display:flex;}
-    .login-link{display:none;}
-    .feature-grid{grid-template-columns:1fr 1fr; gap:16px;}
-    .hero{padding:130px 20px 60px;}
-=======
     .nav-toggle{display:none;}
     .feature-grid{grid-template-columns:1fr 1fr;}
->>>>>>> aa1e6249b79ba7de0d238f17ba1850577b9256dc
 }
-
-/* Mobile dropdown menu */
-@media (max-width:860px){
-    .nav-links{
-        flex-direction:column;
-        align-items:stretch;
-        gap:4px;
-        position:absolute;
-        top:calc(100% + 10px);
-        left:0;
-        right:0;
-        background:rgba(255,255,255,0.97);
-        backdrop-filter:blur(16px);
-        -webkit-backdrop-filter:blur(16px);
-        border:1px solid var(--card-border);
-        border-radius:18px;
-        padding:10px;
-        box-shadow:0 24px 48px -20px rgba(15,27,51,0.3);
-    }
-    .nav-links.open{display:flex;}
-    .nav-links a{
-        padding:12px 14px;
-        border-radius:12px;
-        font-size:1rem;
-    }
-    .nav-links a:active{background:var(--bg-soft);}
-    .nav-actions{gap:10px;}
-}
-
-/* Phones */
 @media (max-width:600px){
-<<<<<<< HEAD
-    .wrap{padding:0 18px;}
-    .brand{font-size:1.02rem; gap:8px;}
-    .brand-mark{width:34px; height:34px; border-radius:10px;}
-    .brand-mark svg{width:18px; height:18px;}
-    .nav-cta{padding:10px 16px; font-size:0.88rem;}
-
-    .feature-grid{grid-template-columns:1fr; gap:14px;}
-    .hero{padding:118px 18px 48px;}
-    .eyebrow{font-size:0.78rem; padding:8px 14px; text-align:center;}
-    h1.hero-title{font-size:clamp(2rem, 8vw, 2.6rem); letter-spacing:-0.01em;}
-    .hero-sub{font-size:1rem; line-height:1.6; margin-top:18px;}
-
-    .hero-ctas{flex-direction:column; align-items:stretch; margin-top:28px; gap:12px;}
-    .hero-ctas .btn{width:100%; justify-content:center; padding:15px 22px;}
-
-    .trust-row{gap:14px 20px; margin-top:26px; font-size:0.84rem;}
-
-    section{padding:56px 18px;}
-    .section-head{margin-bottom:38px;}
-    .section-head h2{font-size:clamp(1.6rem, 6vw, 2rem);}
-    .section-head p{font-size:0.96rem;}
-
-    .feature-card{padding:26px 22px;}
-
-    .pricing-card{padding:36px 22px; border-radius:22px;}
-    .price .amount{font-size:3rem;}
-    .badge-blue{font-size:0.78rem;}
-}
-
-/* Small phones */
-@media (max-width:380px){
-    .nav-outer{padding:12px 12px 0;}
-    .brand{font-size:0.94rem;}
-    .nav-cta{padding:9px 13px; font-size:0.82rem;}
-    h1.hero-title{font-size:1.8rem;}
-    .hero-sub{font-size:0.94rem;}
-    .trust-row{flex-direction:column; gap:10px;}
-    .price .amount{font-size:2.6rem;}
-    .pricing-card{padding:30px 18px;}
-=======
     .feature-grid{grid-template-columns:1fr;}
     .hero{padding:110px 20px 50px;}
     section{padding:64px 20px;}
@@ -728,7 +635,6 @@ footer{
 .contact-right a:hover{text-decoration:underline;}
 @media (max-width:640px){
     .contact-card{padding:40px 28px; border-radius:22px;}
->>>>>>> aa1e6249b79ba7de0d238f17ba1850577b9256dc
 }
 
 :focus-visible{outline:2px solid var(--blue-600); outline-offset:2px;}
