@@ -17,7 +17,8 @@ document.getElementById('nav').addEventListener('click', function(e){
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function(){
-    alert('Logged out (demo only).');
+    window.location.href = "../../Ragistration/Login_page/loginPage.html";
+
 });
 
 // ---------- Bell & User dropdowns ----------
@@ -47,7 +48,7 @@ userBtn.addEventListener('click', function(e){
 
 document.getElementById('dropdownLogout').addEventListener('click', function(e){
     e.preventDefault();
-    alert('Logged out (demo only).');
+    window.location.href = "../../Ragistration/Login_page/loginPage.html";
 });
 
 document.addEventListener('click', function(){
