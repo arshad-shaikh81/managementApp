@@ -281,7 +281,7 @@ body {
     gap: 8px;
     margin-top: 22px;
     color: #8a8fa3;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .secure-note svg {
@@ -291,28 +291,32 @@ body {
 }
 
 @media (max-width: 480px) {
+    .card {
+        padding: 32px 14px;
+    }
+
     .footer-links {
         display: flex;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 6px !important;
+        gap: 3px !important;
         margin-top: 18px !important;
-        font-size: 10.5px;
+        font-size: 11px;
     }
 
     .footer-links a {
-        gap: 3px;
+        gap: 2px;
         white-space: nowrap;
     }
 
     .footer-links svg {
-        width: 12px;
-        height: 12px;
+        width: 11px;
+        height: 11px;
     }
 
     .divider {
-        height: 12px;
+        height: 11px;
     }
 }
