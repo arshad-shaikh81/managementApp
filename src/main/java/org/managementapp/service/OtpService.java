@@ -56,10 +56,16 @@ public class OtpService {
     }
 
     /**
-     * Verifies the OTP for a email + purpose. Marks it verified on success so
-     * it can only be consumed once. Throws with a user-facing message on failure.
+     * Checks whether the given OTP is currently correct for this email + purpose,
+     * WITHOUT marking it as verified/consumed. Safe to call repeatedly (e.g. for a
+     * real-time "is this OTP correct" check while the user is still typing).
+     *
+     * A wrong guess still increments attemptCount, so brute-forcing is still capped
+     * by MAX_ATTEMPTS. Throws with a user-facing message for expired/already-used/
+     * too-many-attempts/no-otp-requested cases; returns true/false for a normal
+     * correct/incorrect comparison.
      */
-    public void verify(String email, String purpose, String otp) {
+    public boolean checkOtp(String email, String purpose, String otp) {
         OtpVerification record = otpRepository.findFirstByEmailAndPurposeOrderByIdDesc(email, purpose)
                 .orElseThrow(() -> new RuntimeException("No OTP was requested for this email address"));
 
@@ -75,12 +81,25 @@ public class OtpService {
             throw new RuntimeException("Too many incorrect attempts. Please request a new OTP");
         }
 
-        if (!passwordEncoder.matches(otp, record.getOtpHash())) {
+        boolean matches = passwordEncoder.matches(otp, record.getOtpHash());
+        if (!matches) {
             record.setAttemptCount(record.getAttemptCount() + 1);
             otpRepository.save(record);
+        }
+        return matches;
+    }
+
+    /**
+     * Verifies the OTP for a email + purpose. Marks it verified on success so
+     * it can only be consumed once. Throws with a user-facing message on failure.
+     */
+    public void verify(String email, String purpose, String otp) {
+        if (!checkOtp(email, purpose, otp)) {
             throw new RuntimeException("Incorrect OTP");
         }
 
+        OtpVerification record = otpRepository.findFirstByEmailAndPurposeOrderByIdDesc(email, purpose)
+                .orElseThrow(() -> new RuntimeException("No OTP was requested for this email address"));
         record.setVerified(true);
         otpRepository.save(record);
     }

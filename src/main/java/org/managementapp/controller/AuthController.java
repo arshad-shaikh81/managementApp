@@ -2,6 +2,7 @@ package org.managementapp.controller;
 
 import org.managementapp.dto.ForgotPasswordResetRequest;
 import org.managementapp.dto.ForgotPasswordSendOtpRequest;
+import org.managementapp.dto.ForgotPasswordVerifyOtpRequest;
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterSocietyRequest;
@@ -57,6 +58,17 @@ public class AuthController {
     public ResponseEntity<?> sendForgotPasswordOtp(@RequestBody ForgotPasswordSendOtpRequest request) {
         try {
             String message = authService.sendForgotPasswordOtp(request);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Forgot Password - real-time check: is this OTP correct right now? (does NOT consume it)
+    @PostMapping("/forgot-password/verify-otp")
+    public ResponseEntity<?> verifyForgotPasswordOtp(@RequestBody ForgotPasswordVerifyOtpRequest request) {
+        try {
+            String message = authService.verifyForgotPasswordOtp(request);
             return ResponseEntity.ok(message);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

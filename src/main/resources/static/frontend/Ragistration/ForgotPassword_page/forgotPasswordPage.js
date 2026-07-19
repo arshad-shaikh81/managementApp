@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetForm = document.getElementById('resetForm');
     const resetBtn = document.getElementById('resetBtn');
     const otpInput = document.getElementById('otp');
+    const otpHint = document.getElementById('otp-hint');
     const emailDisplay = document.getElementById('emailDisplay');
     const resendLink = document.getElementById('resendLink');
 
@@ -64,6 +65,54 @@ document.addEventListener('DOMContentLoaded', () => {
     digitsOnly(otpInput, 6);
     digitsOnly(newPasswordInput, 4);
     digitsOnly(confirmPasswordInput, 4);
+
+    // ============================================
+    // Real-time OTP check: as soon as 6 digits are
+    // typed, ask the backend if it's currently correct
+    // (this call does NOT consume/verify the OTP —
+    // it's just a check, the real verification still
+    // happens on final submit).
+    // ============================================
+    let otpCheckToken = 0; // guards against out-of-order responses if user edits quickly
+
+    function setOtpHint(text, type) {
+        otpHint.textContent = text;
+        otpHint.className = 'hint-msg' + (type ? ' ' + type : '');
+    }
+
+    function checkOtpRealtime() {
+        const otp = otpInput.value.trim();
+        const thisToken = ++otpCheckToken;
+
+        if (otp.length !== 6) {
+            setOtpHint('', '');
+            return;
+        }
+
+        setOtpHint('Checking OTP...', 'info');
+
+        fetch(API_BASE_URL + '/api/auth/forgot-password/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: currentEmail, otp })
+        })
+            .then(async (res) => {
+                const text = await res.text();
+                if (thisToken !== otpCheckToken) return; // a newer check has since started, ignore this one
+
+                if (res.ok) {
+                    setOtpHint('✔ OTP is correct', 'success');
+                } else {
+                    setOtpHint(text || 'Incorrect OTP', 'error');
+                }
+            })
+            .catch(() => {
+                if (thisToken !== otpCheckToken) return;
+                setOtpHint('Could not verify OTP right now', 'error');
+            });
+    }
+
+    otpInput.addEventListener('input', checkOtpRealtime);
 
     // ============================================
     // Password visibility toggles
@@ -134,6 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailDisplay.textContent = email;
                 stepPhone.hidden = true;
                 stepReset.hidden = false;
+                otpInput.value = '';
+                setOtpHint('', '');
                 startResendCooldown();
                 showMessage('OTP sent successfully. Please check your inbox.', 'success');
             })
@@ -156,6 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hideMessage();
         requestOtp(currentEmail)
             .then(() => {
+                otpInput.value = '';
+                setOtpHint('', '');
                 startResendCooldown();
                 showMessage('A new OTP has been sent.', 'success');
             })
