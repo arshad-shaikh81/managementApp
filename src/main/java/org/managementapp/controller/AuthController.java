@@ -1,5 +1,7 @@
 package org.managementapp.controller;
 
+import org.managementapp.dto.ForgotPasswordResetRequest;
+import org.managementapp.dto.ForgotPasswordSendOtpRequest;
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterSocietyRequest;
@@ -45,6 +47,28 @@ public class AuthController {
         try {
             LoginResponse response = authService.login(request);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Forgot Password - Step 1: send OTP to registered mobile number
+    @PostMapping("/forgot-password/send-otp")
+    public ResponseEntity<?> sendForgotPasswordOtp(@RequestBody ForgotPasswordSendOtpRequest request) {
+        try {
+            String message = authService.sendForgotPasswordOtp(request);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Forgot Password - Step 2: verify OTP and set new password
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<?> resetPassword(@RequestBody ForgotPasswordResetRequest request) {
+        try {
+            String message = authService.resetPassword(request);
+            return ResponseEntity.ok(message);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

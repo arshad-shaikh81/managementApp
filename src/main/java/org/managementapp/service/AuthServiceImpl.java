@@ -1,5 +1,7 @@
 package org.managementapp.service;
 
+import org.managementapp.dto.ForgotPasswordResetRequest;
+import org.managementapp.dto.ForgotPasswordSendOtpRequest;
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterResidentRequest;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private static final String FORGOT_PASSWORD_PURPOSE = "FORGOT_PASSWORD";
+
     @Autowired
     private SocietyRepository societyRepository;
 
@@ -28,6 +32,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private OtpService otpService;
+
     // ---------------- REGISTER SOCIETY (+ Admin) ----------------
     @Override
     public String registerSociety(RegisterSocietyRequest request) {
@@ -38,6 +45,10 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRepository.findByPhone(request.getPhone()).isPresent()) {
             throw new RuntimeException("Phone number already registered");
+        }
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email is already registered");
         }
 
         if (societyRepository.findByName(request.getSocietyName()).isPresent()) {
@@ -73,6 +84,10 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Phone number already registered");
         }
 
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email is already registered");
+        }
+
         User resident = new User();
         resident.setName(request.getName());
         resident.setPhone(request.getPhoneNumber());
@@ -91,15 +106,47 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
 
-        User user = userRepository.findByPhone(request.getPhone())
-                .orElseThrow(() -> new RuntimeException("Mobile number is not registered"));
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email is not registered"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new RuntimeException("Incorrect password");
         }
 
-        String token = jwtUtil.generateToken(user.getPhone(), user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
         return new LoginResponse(token, user.getRole(), user.getName());
+    }
+
+    // ---------------- FORGOT PASSWORD: SEND OTP ----------------
+    @Override
+    public String sendForgotPasswordOtp(ForgotPasswordSendOtpRequest request) {
+
+        userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("No account found with this email address"));
+
+        otpService.generateAndSend(request.getEmail(), FORGOT_PASSWORD_PURPOSE);
+
+        return "OTP sent to your email address";
+    }
+
+    // ---------------- FORGOT PASSWORD: VERIFY OTP + RESET ----------------
+    @Override
+    public String resetPassword(ForgotPasswordResetRequest request) {
+
+        if (request.getNewPassword() == null || !request.getNewPassword().matches("\\d{4}")) {
+            throw new RuntimeException("Password must be exactly 4 digits");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("No account found with this email address"));
+
+        // Throws with a user-facing message if OTP is wrong/expired/already used
+        otpService.verify(request.getEmail(), FORGOT_PASSWORD_PURPOSE, request.getOtp());
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return "Password reset successfully";
     }
 }

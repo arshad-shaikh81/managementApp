@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== DOM Elements =====
     const passwordInput = document.getElementById('password');
-    const mobileInput = document.getElementById('mobile');
+    const emailInput = document.getElementById('email');
     const toggleEye = document.getElementById('toggleEye');
     const eyeIcon = document.getElementById('eyeIcon');
     const forgotLink = document.getElementById('forgotLink');
@@ -14,15 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!passwordInput || !toggleEye || !eyeIcon || !passwordHint) {
         console.error('One or more elements not found! Check your HTML IDs.');
         return;
-    }
-
-    // ============================================
-    // Mobile Number: Digits only, max 10 digits
-    // ============================================
-    if (mobileInput) {
-        mobileInput.addEventListener('input', function () {
-            this.value = this.value.replace(/\D/g, '').slice(0, 10);
-        });
     }
 
     // ============================================
@@ -102,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const mobile = document.getElementById('mobile')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
             const password = passwordInput.value;
 
             if (formMessage) {
@@ -110,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Validation
-            if (!mobile || !password) {
+            if (!email || !password) {
                 showMessage('Please fill in both fields.', 'error');
                 return;
             }
@@ -123,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const payload = { phone: mobile, password: password };
+            const payload = { email: email, password: password };
 
             const originalBtnText = loginBtn ? loginBtn.textContent : '';
             if (loginBtn) {
@@ -143,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         : await response.text();
 
                     if (response.ok) {
-                        // Backend confirmed the mobile number + password match.
+                        // Backend confirmed the email + password match.
                         // Save session info so the dashboard can identify the user.
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('role', data.role);
@@ -156,8 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.location.href = '../Home_page/homePage.html';
                         }, 1000);
                     } else {
-                        // Wrong mobile number or wrong password -> backend rejects it
-                        const errorText = typeof data === 'string' ? data : 'Incorrect mobile number or password.';
+                        // Wrong email or wrong password -> backend rejects it
+                        const errorText = typeof data === 'string' ? data : 'Incorrect email or password.';
                         showMessage(errorText, 'error');
                     }
                 })
@@ -176,14 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // Forgot Password Link
+    // Now a plain link with its own href pointing
+    // to the working Forgot Password page, so no
+    // click handler / preventDefault is needed.
     // ============================================
-    if (forgotLink) {
-        forgotLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Redirect to password reset flow here.');
-            // window.location.href = 'forgot-password.html';
-        });
-    }
 
     // ============================================
     // "Create an account" is now a plain link with
