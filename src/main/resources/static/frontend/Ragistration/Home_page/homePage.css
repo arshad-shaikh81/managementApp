@@ -204,7 +204,10 @@ button{font:inherit; cursor:pointer;}
     0%{transform:translate(0,0); opacity:0;}
     8%{opacity:1;}
     85%{opacity:1;}
-    100%{transform:translate(var(--drift,0px), calc(-1 * var(--travel, 640px))); opacity:0;}
+    100%{
+        opacity:0;}
+    100%{transform:translate(var(--drift,0px), calc(-1 * var(--travel, 640px)));
+    }
 }
 @media (prefers-reduced-motion: reduce){
     .particle{animation:none !important; display:none;}
