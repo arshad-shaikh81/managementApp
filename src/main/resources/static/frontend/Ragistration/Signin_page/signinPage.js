@@ -269,3 +269,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
 
 });
+
+// ============================================
+// Floating particles (crystal live background)
+// Self-contained: runs independently of the
+// form logic above.
+// ============================================
+(function () {
+    function spawnParticles(id, count, colors) {
+        var container = document.getElementById(id);
+        if (!container) return;
+        var travel = window.innerHeight + 80;
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement('span');
+            p.className = 'particle';
+            var size = (Math.random() * 6 + 3).toFixed(1);
+            var left = (Math.random() * 100).toFixed(1);
+            var speed = Math.random() * 25 + 40;
+            var duration = (travel / speed).toFixed(1);
+            var delay = (Math.random() * duration).toFixed(1);
+            var drift = (Math.random() * 60 - 30).toFixed(0);
+            var color = colors[i % colors.length];
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = left + '%';
+            p.style.background = 'radial-gradient(circle, ' + color + ' 0%, rgba(59,130,246,0) 72%)';
+            p.style.animationDuration = duration + 's';
+            p.style.animationDelay = '-' + delay + 's';
+            p.style.setProperty('--drift', drift + 'px');
+            p.style.setProperty('--travel', travel + 'px');
+            container.appendChild(p);
+        }
+    }
+
+    function init() {
+        var narrow = window.innerWidth < 600;
+        spawnParticles('signinParticles', narrow ? 14 : 24, [
+            'rgba(59,130,246,0.55)', 'rgba(37,99,235,0.5)', 'rgba(14,165,233,0.45)'
+        ]);
+    }
+
+    if (document.readyState === 'complete') {
+        init();
+    } else {
+        window.addEventListener('load', init);
+    }
+})();

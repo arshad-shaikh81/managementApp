@@ -41,6 +41,35 @@ body {
     * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 
+/* ============================================
+   Floating particles (crystal live background)
+   ============================================ */
+.particles-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.particle {
+    position: absolute;
+    bottom: -24px;
+    border-radius: 50%;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+}
+@keyframes floatUp {
+    0%   { transform: translate(0, 0); opacity: 0; }
+    8%   { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { transform: translate(var(--drift, 0px), calc(-1 * var(--travel, 640px))); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .particle { animation: none !important; display: none; }
+}
+
 .screen {
     width: 100%;
     max-width: 420px;
