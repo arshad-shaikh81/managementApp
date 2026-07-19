@@ -78,6 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function setOtpHint(text, type) {
         otpHint.textContent = text;
         otpHint.className = 'hint-msg' + (type ? ' ' + type : '');
+
+        otpInput.classList.remove('otp-invalid', 'otp-valid');
+        if (type === 'error') {
+            otpInput.classList.add('otp-invalid');
+        } else if (type === 'success') {
+            otpInput.classList.add('otp-valid');
+        }
     }
 
     function checkOtpRealtime() {
