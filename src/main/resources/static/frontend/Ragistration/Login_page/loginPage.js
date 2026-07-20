@@ -143,8 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 
                         setTimeout(() => {
-                            // TODO: point this at the real dashboard page once it exists
-                            window.location.href = '../Home_page/homePage.html';
+                            window.location.href = '../../Dashboard/Main_dashboard/mainDashboard.html';
                         }, 1000);
                     } else {
                         // Wrong email or wrong password -> backend rejects it
