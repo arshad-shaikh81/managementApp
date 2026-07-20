@@ -656,10 +656,28 @@ html,body{
     text-decoration:none;
     font-weight:500;
 }
+
+/* #activitiesList / #membersList / #noticesList wrappers also need to be
+   allowed to shrink, otherwise a long unbroken word/name can force the
+   whole column wider than the panel and the ellipsis rules below never
+   get a chance to kick in. */
+#activitiesList, #membersList, #noticesList{
+    min-width:0;
+    width:100%;
+}
+
+/* Recent Activities / Recent Members / Latest Notices rows.
+   min-width:0 on every level of this chain (.item -> .item-body -> p)
+   is what actually lets the ellipsis work; without min-width:0 on each
+   flex item, browsers use the content's natural width and the tag/time
+   gets pushed off or overlapped instead of the text clipping. */
 .item{
     display:flex;
-    align-items:flex-start;
+    align-items:center;
+    flex-wrap:nowrap;
     gap:12px;
+    width:100%;
+    min-width:0;
     padding:10px 0;
     border-bottom:1px solid var(--border);
     opacity:0;
@@ -676,25 +694,39 @@ html,body{
     display:flex;
     align-items:center;
     justify-content:center;
-    flex-shrink:0;
+    flex:0 0 auto; /* never shrinks, never gets squeezed by long text */
     font-weight:700;
     font-size:12px;
 }
 .item-pin{
     color:var(--blue);
-    flex-shrink:0;
-    margin-top:3px;
+    flex:0 0 auto;
+    margin-top:0;
     display:flex;
 }
 .item-body{
-    flex:1;
-    min-width:0;
+    flex:1 1 0%;
+    min-width:0; /* critical: lets long text truncate instead of stretching the row */
+    overflow:hidden;
 }
 .item-body p{
     margin:0 0 3px 0;
     font-size:13.5px;
     color:var(--text);
     line-height:1.35;
+    max-width:100%;
+    /* single-line clamp: this works even with nested <b> tags inside the
+       paragraph (used for activity text), unlike plain text-overflow
+       which can fail to engage on inline children in some browsers */
+    display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.item-body p b{
+    font-weight:600;
 }
 .item-body p.title-bold{
     font-weight:600;
@@ -705,13 +737,17 @@ html,body{
     text-overflow:ellipsis;
 }
 .item-body span{
+    display:block;
     font-size:12px;
     color:var(--text-soft);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .tag{
     display:inline-flex;
     align-items:center;
-    flex-shrink:0;
+    flex:0 0 auto; /* fixed width, never merges/overlaps with text */
     margin-left:8px;
     font-size:11px;
     padding:4px 10px;
@@ -735,6 +771,7 @@ html,body{
         transform:translateX(-100%);
         transition:transform .25s ease;
         box-shadow:none;
+        padding-top: max(20px, env(safe-area-inset-top)); /* notch-safe on iPhones */
     }
     .sidebar.open{
         transform:translateX(0);
@@ -754,11 +791,20 @@ html,body{
     }
     .search{
         width:100%;
+        padding:10px 12px;
+        gap:8px;
     }
     .search kbd{ display:none; }
+    .search input{ font-size:15px; } /* 15px+ stops iOS auto-zoom-on-focus */
 
     .user-text{ display:none; }
     .topbar-right{ gap:10px; }
+
+    /* Bigger tap targets */
+    .nav a{ padding:13px 12px; font-size:15px; }
+    .hamburger{ width:42px; height:42px; }
+    .bell{ padding:10px; }
+    .avatar{ width:34px; height:34px; }
 
     .greeting{ padding-top:16px; }
     .greeting h1{ font-size:21px; }
@@ -766,6 +812,7 @@ html,body{
 
     .stats{ grid-template-columns:1fr; gap:14px; }
     .stat-card{ padding:16px; }
+    .stat-card:hover{ transform:none; } /* avoid hover-lift causing sideways scroll on touch */
 
     .charts{ grid-template-columns:1fr; gap:14px; }
     .panel{ padding:16px; }
@@ -777,8 +824,9 @@ html,body{
         padding-right:0;
         height:190px;
     }
-    .y-axis{ display:none; }
-    .plot{ padding:0 4px; }
+    .y-axis{ width: 20px;font-size: 9.5px }
+    #Prices{margin-right: 5px;}
+    .plot{ padding-right:4px; }
     .month-group{
         width:auto;
         flex:1 1 0;
@@ -792,16 +840,95 @@ html,body{
         font-size:10px;
     }
 
+    /* Keep the bar-chart tooltip inside the viewport instead of overflowing off-screen */
+    .chart-tooltip{
+        max-width: calc(100vw - 32px);
+        left: 16px !important;
+        right: 16px;
+    }
+
     .donut-wrap{ height:230px; align-items:center; }
     .donut-chart-wrap{ width:180px; height:180px; margin:0 auto; }
+    .donut-tooltip{ font-size:12.5px; padding:8px 14px; }
     .legend{ justify-content:center; }
 
     .lists{ grid-template-columns:1fr; gap:14px; }
 
+    /* Recent Activities / Recent Members / Latest Notices: touch-friendly row height */
+    .item{ padding:12px 0; gap:10px; }
+    .item-icon{ width:30px; height:30px; }
+    .item-body p{ font-size:13px; }
+    .item-body span{ font-size:11.5px; }
+    .tag{ font-size:10.5px; padding:3px 8px; }
+
     .dropdown{ position:fixed; left:16px; right:16px; width:auto !important; top:64px; }
+
+    /* Stop any stray wide element from causing sideways page scroll */
+    html, body{ overflow-x: hidden; }
 }
 
 @media (max-width: 400px){
     .stat-value{ font-size:22px; }
     .greeting h1{ font-size:19px; }
+    .search input{ font-size:14px; }
+    .item-body p{ font-size:12.5px; }
+    .item-body span{ font-size:11px; }
+    .tag{ display:none; } /* very tight width: hide the tag chip so name/title has full room */
+    .stat-icon{ width:32px; height:32px; }
+}
+
+/* ---- Dedicated tuning for ~430px width phones (iPhone Pro Max etc.) ---- */
+@media (max-width: 460px){
+    .main{ padding:0 14px 28px 14px; }
+
+    .topbar{
+        margin:0 -14px 16px -14px;
+        width:calc(100% + 28px);
+        padding:9px 14px;
+    }
+    .search{ padding:9px 11px; }
+    .search input{ font-size:14px; }
+
+    .greeting{ padding-top:14px; padding-left: 8px}
+    .greeting h1{ font-size:20px; }
+    .greeting p{ font-size:12.5px; margin-bottom:16px; }
+
+    .stats{ gap:12px; }
+    .stat-card{ padding:14px; }
+    .stat-top{ margin-bottom:10px; }
+    .stat-label{ font-size:12.5px; }
+    .stat-icon{ width:32px; height:32px; }
+    .stat-value{ font-size:21px; margin-bottom:4px; }
+    .stat-sub{ font-size:11.5px; }
+
+    .charts{ gap:12px; }
+    #ChartMedia{ height: 240px; width: 400px}
+    .panel{ padding:14px; width: 400px ; }
+    .panel h3{ font-size:14.5px; margin-bottom:14px; }
+
+    .bar-chart{ height:170px; }
+    .month-group{ max-width:42px; }
+    .bar{ width:9px; }
+    .bars-pair{ gap:4px; }
+    .month-label{ font-size:9.5px; bottom:-20px; }
+
+    .donut-wrap{ height:200px; }
+    .donut-chart-wrap{ width:150px; height:150px; }
+    .donut-tooltip{ font-size:11.5px; padding:7px 12px; }
+    .legend{ font-size:10.5px; gap:8px; }
+
+    .lists{ gap:12px; }
+    .list-head{ margin-bottom:12px; }
+    .list-head h3{ font-size:14.5px; }
+    .view-all{ font-size:12px; }
+
+    .item{ padding:10px 0; gap:8px; }
+    .item-icon{ width:28px; height:28px; font-size:11px; }
+    .item-body p{ font-size:12.5px; }
+    .item-body span{ font-size:11px; }
+    .tag{ font-size:10px; padding:3px 7px; }
+
+    .avatar{ width:32px; height:32px; font-size:12px; }
+    .hamburger{ width:40px; height:40px; }
+    .bell{ padding:9px; }
 }
