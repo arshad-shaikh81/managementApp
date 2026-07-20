@@ -7,6 +7,28 @@
     document.getElementById('greetingText').innerHTML = `${greet}, shaikh <span class="wave-emoji">👋</span>`;
 })();
 
+// ---------- Mobile sidebar (hamburger) ----------
+const sidebar = document.getElementById('sidebar');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar(){
+    sidebar.classList.add('open');
+    sidebarOverlay.classList.add('show');
+}
+function closeSidebar(){
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('show');
+}
+
+hamburgerBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (sidebar.classList.contains('open')) closeSidebar();
+    else openSidebar();
+});
+
+sidebarOverlay.addEventListener('click', closeSidebar);
+
 // ---------- Sidebar nav active state ----------
 document.getElementById('nav').addEventListener('click', function(e){
     const link = e.target.closest('a');
@@ -14,11 +36,11 @@ document.getElementById('nav').addEventListener('click', function(e){
     e.preventDefault();
     document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
     link.classList.add('active');
+    closeSidebar(); // auto-close on mobile after picking a page
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function(){
     window.location.href = "../../Ragistration/Login_page/loginPage.html";
-
 });
 
 // ---------- Bell & User dropdowns ----------
@@ -155,7 +177,7 @@ const statusCounts = statusOrder
     .filter(s => s.count > 0);
 const totalComplaints = statusCounts.reduce((sum, s) => sum + s.count, 0);
 
-const R = 80, CX = 100, CY = 100, GAP = 6;
+const R = 80, CX = 100, CY = 100, GAP = 0;
 const CIRC = 2 * Math.PI * R;
 const availableLength = CIRC - GAP * statusCounts.length;
 
@@ -164,9 +186,10 @@ let svgArcs = '';
 statusCounts.forEach(s => {
     const segLen = (s.count / totalComplaints) * availableLength;
     svgArcs += `<circle class="donut-arc" data-status="${s.status}" data-count="${s.count}"
+        data-start="${cumulative}" data-len="${segLen}"
         cx="${CX}" cy="${CY}" r="${R}" fill="none"
-        stroke="${statusColors[s.status]}" stroke-width="30" stroke-linecap="round"
-        stroke-dasharray="${segLen} ${CIRC - segLen}"
+        stroke="${statusColors[s.status]}" stroke-width="30" stroke-linecap="butt"
+        stroke-dasharray="0 ${CIRC}"
         stroke-dashoffset="${-cumulative}"
         transform="rotate(-90 ${CX} ${CY})"></circle>`;
     cumulative += segLen + GAP;
@@ -180,6 +203,30 @@ donutWrap.innerHTML = `
 
 const donutTooltip = document.getElementById('donutTooltip');
 const donutArcs = donutWrap.querySelectorAll('.donut-arc');
+
+// ---------- Arc Sweep (Circular Reveal) animation on dashboard load ----------
+// A single continuous line sweeps once around the full circle; each color
+// segment gets "painted in" the moment the sweep passes over it.
+function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+function animateDonutSweep(duration){
+    const startTime = performance.now();
+    function frame(now){
+        const t = Math.min((now - startTime) / duration, 1);
+        const sweepLength = easeOutCubic(t) * CIRC;
+        donutArcs.forEach(arc => {
+            const start = parseFloat(arc.dataset.start);
+            const len = parseFloat(arc.dataset.len);
+            const revealed = Math.max(0, Math.min(sweepLength - start, len));
+            arc.setAttribute('stroke-dasharray', `${revealed} ${CIRC - revealed}`);
+        });
+        if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+}
+
+setTimeout(() => animateDonutSweep(1300), 200);
+
 donutArcs.forEach(arc => {
     arc.addEventListener('mouseenter', () => {
         donutTooltip.textContent = `${arc.dataset.status.toLowerCase()} : ${arc.dataset.count}`;
