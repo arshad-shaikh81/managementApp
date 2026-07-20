@@ -32,11 +32,20 @@ html,body{
     background:var(--bg);
     color:var(--text);
     -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    max-width:100%;
 }
 
 .app{
-    display:flex;
-    min-height:100vh;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+html{
+    scrollbar-width: none;
+}
+html::-webkit-scrollbar{
+    display: none;
 }
 
 /* ---------------- SIDEBAR ---------------- */
@@ -559,7 +568,6 @@ html,body{
 }
 
 /* ---------------- DONUT ---------------- */
-/* Bigger ring + smooth "opening" sweep animation on load, ending as a full circle */
 .donut-wrap{
     display:flex;
     flex-direction:column;
@@ -640,7 +648,7 @@ html,body{
 /* ---------------- BOTTOM LISTS ---------------- */
 .lists{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(3, minmax(0, 1fr));
     gap:20px;
 }
 .list-head{
@@ -656,28 +664,10 @@ html,body{
     text-decoration:none;
     font-weight:500;
 }
-
-/* #activitiesList / #membersList / #noticesList wrappers also need to be
-   allowed to shrink, otherwise a long unbroken word/name can force the
-   whole column wider than the panel and the ellipsis rules below never
-   get a chance to kick in. */
-#activitiesList, #membersList, #noticesList{
-    min-width:0;
-    width:100%;
-}
-
-/* Recent Activities / Recent Members / Latest Notices rows.
-   min-width:0 on every level of this chain (.item -> .item-body -> p)
-   is what actually lets the ellipsis work; without min-width:0 on each
-   flex item, browsers use the content's natural width and the tag/time
-   gets pushed off or overlapped instead of the text clipping. */
 .item{
     display:flex;
-    align-items:center;
-    flex-wrap:nowrap;
+    align-items:flex-start;
     gap:12px;
-    width:100%;
-    min-width:0;
     padding:10px 0;
     border-bottom:1px solid var(--border);
     opacity:0;
@@ -694,7 +684,82 @@ html,body{
     display:flex;
     align-items:center;
     justify-content:center;
-    flex:0 0 auto; /* never shrinks, never gets squeezed by long text */
+    flex-shrink:0;
+    font-weight:700;
+    font-size:12px;
+}
+.item-pin{
+    color:var(--blue);
+    flex-shrink:0;
+    margin-top:3px;
+    display:flex;
+}
+.item-body{
+    flex:1;
+    min-width:0;
+}
+.item-body p{
+    margin:0 0 3px 0;
+    font-size:13.5px;
+    color:var(--text);
+    line-height:1.35;
+}
+.item-body p.title-bold{
+    font-weight:600;
+}
+.item-body p.truncate{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.item-body span{
+    font-size:12px;
+    color:var(--text-soft);
+}
+.tag{
+    display:inline-flex;
+    align-items:center;
+    flex-shrink:0;
+    margin-left:8px;
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:20px;
+    background:#eef0f4;
+    color:var(--text-mid);
+    font-weight:600;
+    white-space:nowrap;
+}
+
+
+/* Recent Activities / Recent Members / Latest Notices rows.
+   Every row is forced to a single line (icon | text+time | tag), matching
+   the reference layout: no wrapping, ellipsis on overflow, consistent
+   row height and vertical centering across all three panels. */
+.item{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:12px;
+    width:100%;
+    min-width:0;
+    padding:11px 0;
+    border-bottom:1px solid var(--border);
+    opacity:0;
+    animation:fadeSlideUp .4s ease both;
+}
+.item.item-center{ align-items:center; }
+.item:last-child{ border-bottom:none; padding-bottom:0; }
+.item:first-child{ padding-top:0; }
+.item-icon{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--blue-light);
+    color:var(--blue);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
     font-weight:700;
     font-size:12px;
 }
@@ -704,9 +769,24 @@ html,body{
     margin-top:0;
     display:flex;
 }
+
+.item-pin{
+    color:var(--blue);
+    flex:0 0 auto;
+    margin-top:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.item-pin svg{
+    width:14px;
+    height:14px;
+    fill:var(--blue);
+    display:block;
+}
 .item-body{
     flex:1 1 0%;
-    min-width:0; /* critical: lets long text truncate instead of stretching the row */
+    min-width:0;
     overflow:hidden;
 }
 .item-body p{
@@ -715,15 +795,8 @@ html,body{
     color:var(--text);
     line-height:1.35;
     max-width:100%;
-    /* single-line clamp: this works even with nested <b> tags inside the
-       paragraph (used for activity text), unlike plain text-overflow
-       which can fail to engage on inline children in some browsers */
-    display:-webkit-box;
-    -webkit-box-orient:vertical;
-    -webkit-line-clamp:1;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    white-space:normal;
+    display:block;
 }
 .item-body p b{
     font-weight:600;
@@ -747,7 +820,7 @@ html,body{
 .tag{
     display:inline-flex;
     align-items:center;
-    flex:0 0 auto; /* fixed width, never merges/overlaps with text */
+    flex:0 0 auto;
     margin-left:8px;
     font-size:11px;
     padding:4px 10px;
@@ -771,7 +844,7 @@ html,body{
         transform:translateX(-100%);
         transition:transform .25s ease;
         box-shadow:none;
-        padding-top: max(20px, env(safe-area-inset-top)); /* notch-safe on iPhones */
+        padding-top: max(20px, env(safe-area-inset-top));
     }
     .sidebar.open{
         transform:translateX(0);
@@ -795,12 +868,11 @@ html,body{
         gap:8px;
     }
     .search kbd{ display:none; }
-    .search input{ font-size:15px; } /* 15px+ stops iOS auto-zoom-on-focus */
+    .search input{ font-size:15px; }
 
     .user-text{ display:none; }
     .topbar-right{ gap:10px; }
 
-    /* Bigger tap targets */
     .nav a{ padding:13px 12px; font-size:15px; }
     .hamburger{ width:42px; height:42px; }
     .bell{ padding:10px; }
@@ -812,7 +884,7 @@ html,body{
 
     .stats{ grid-template-columns:1fr; gap:14px; }
     .stat-card{ padding:16px; }
-    .stat-card:hover{ transform:none; } /* avoid hover-lift causing sideways scroll on touch */
+    .stat-card:hover{ transform:none; }
 
     .charts{ grid-template-columns:1fr; gap:14px; }
     .panel{ padding:16px; }
@@ -840,7 +912,6 @@ html,body{
         font-size:10px;
     }
 
-    /* Keep the bar-chart tooltip inside the viewport instead of overflowing off-screen */
     .chart-tooltip{
         max-width: calc(100vw - 32px);
         left: 16px !important;
@@ -854,7 +925,6 @@ html,body{
 
     .lists{ grid-template-columns:1fr; gap:14px; }
 
-    /* Recent Activities / Recent Members / Latest Notices: touch-friendly row height */
     .item{ padding:12px 0; gap:10px; }
     .item-icon{ width:30px; height:30px; }
     .item-body p{ font-size:13px; }
@@ -863,7 +933,6 @@ html,body{
 
     .dropdown{ position:fixed; left:16px; right:16px; width:auto !important; top:64px; }
 
-    /* Stop any stray wide element from causing sideways page scroll */
     html, body{ overflow-x: hidden; }
 }
 
@@ -873,11 +942,10 @@ html,body{
     .search input{ font-size:14px; }
     .item-body p{ font-size:12.5px; }
     .item-body span{ font-size:11px; }
-    .tag{ display:none; } /* very tight width: hide the tag chip so name/title has full room */
+    .tag{ display:none; }
     .stat-icon{ width:32px; height:32px; }
 }
 
-/* ---- Dedicated tuning for ~430px width phones (iPhone Pro Max etc.) ---- */
 @media (max-width: 460px){
     .main{ padding:0 14px 28px 14px; }
 

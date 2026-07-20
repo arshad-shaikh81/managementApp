@@ -43,6 +43,7 @@ document.getElementById('logoutBtn').addEventListener('click', function(){
     window.location.href = "../../Ragistration/Login_page/loginPage.html";
 });
 
+
 // ---------- Bell & User dropdowns ----------
 const bellBtn = document.getElementById('bellBtn');
 const notifDropdown = document.getElementById('notifDropdown');
