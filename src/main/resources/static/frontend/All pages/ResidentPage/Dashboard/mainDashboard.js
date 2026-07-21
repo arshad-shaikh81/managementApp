@@ -133,7 +133,7 @@ const activityIcons = {
     payment: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>'
 };
 
-const pinIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+const pinIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30  " viewBox="0 4 19 19" fill="none"><path d="M8 5H16C16 7 15 8.5 13.5 9.5V12L16 15H8L10.5 12V9.5C9 8.5 8 7 8 5Z" stroke="#4F7EFF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/><path d="M12 15V20" stroke="#4F7EFF" stroke-width="1.8" stroke-linecap="round"/></svg>';
 
 const chartData = [
     { month: 'Feb', billed: 0,     collected: 0 },

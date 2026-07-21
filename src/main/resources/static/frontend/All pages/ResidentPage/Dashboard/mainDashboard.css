@@ -34,11 +34,13 @@ html,body{
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
     max-width:100%;
+    width:100%;
 }
 
 .app{
     overflow-x: hidden;
     width: 100%;
+    display:flex;
 }
 
 html{
@@ -46,6 +48,10 @@ html{
 }
 html::-webkit-scrollbar{
     display: none;
+}
+
+img, svg{
+    max-width:100%;
 }
 
 /* ---------------- SIDEBAR ---------------- */
@@ -61,6 +67,7 @@ html::-webkit-scrollbar{
     top:0;
     left:0;
     height:100vh;
+    height:100dvh;
     overflow-y:auto;
     z-index:300;
 }
@@ -153,6 +160,7 @@ html::-webkit-scrollbar{
     min-width:0;
     padding:0 32px 48px 32px;
     margin-left:250px;
+    width:100%;
 }
 
 /* ---------------- TOPBAR (sticky) ---------------- */
@@ -170,6 +178,7 @@ html::-webkit-scrollbar{
     width:calc(100% + 64px);
     padding:12px 32px;
     box-shadow: 0 1px 0 rgba(22,24,29,.09);
+    gap:16px;
 }
 .search{
     display:flex;
@@ -180,6 +189,7 @@ html::-webkit-scrollbar{
     border-radius:10px;
     padding:9px 14px;
     width:340px;
+    max-width:100%;
     color:var(--text-soft);
     font-size:14px;
 }
@@ -189,6 +199,7 @@ html::-webkit-scrollbar{
     background:transparent;
     font-size:14px;
     flex:1;
+    min-width:0;
     font-family:inherit;
     color:var(--text);
 }
@@ -198,12 +209,14 @@ html::-webkit-scrollbar{
     background:var(--bg);
     border-radius:5px;
     padding:2px 6px;
+    flex-shrink:0;
 }
 
 .topbar-right{
     display:flex;
     align-items:center;
     gap:20px;
+    flex-shrink:0;
 }
 
 /* ---------------- HAMBURGER (mobile only) ---------------- */
@@ -263,6 +276,7 @@ html::-webkit-scrollbar{
     padding:6px 12px 6px 6px;
     border-radius:12px;
     transition:background .15s ease;
+    min-width:0;
 }
 .user:hover{
     background:var(--blue-light);
@@ -290,6 +304,7 @@ html::-webkit-scrollbar{
 
 .notif-dropdown{
     width:280px;
+    max-width:calc(100vw - 32px);
     padding:16px;
 }
 .dropdown-title{
@@ -306,6 +321,7 @@ html::-webkit-scrollbar{
 
 .user-dropdown{
     width:230px;
+    max-width:calc(100vw - 32px);
     padding:8px;
 }
 .dropdown-email{
@@ -343,10 +359,15 @@ html::-webkit-scrollbar{
     font-size:13px;
     flex-shrink:0;
 }
+.user-text{ min-width:0; }
 .user-text .uname{
     font-size:13.5px;
     font-weight:600;
     line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:140px;
 }
 .user-text .urole{
     font-size:12px;
@@ -362,6 +383,7 @@ html::-webkit-scrollbar{
     font-size:26px;
     margin:0 0 6px 0;
     font-weight:800;
+    word-break:break-word;
 }
 .greeting p{
     margin:0 0 24px 0;
@@ -401,6 +423,7 @@ html::-webkit-scrollbar{
     padding:20px;
     box-shadow:var(--shadow);
     opacity:0;
+    min-width:0;
     animation:cardPopIn .55s cubic-bezier(.34,1.56,.64,1) both;
     transition:transform .2s ease, box-shadow .2s ease;
 }
@@ -417,6 +440,7 @@ html::-webkit-scrollbar{
     align-items:flex-start;
     justify-content:space-between;
     margin-bottom:14px;
+    gap:10px;
 }
 .stat-label{
     font-size:13.5px;
@@ -439,6 +463,7 @@ html::-webkit-scrollbar{
     font-size:26px;
     font-weight:800;
     margin-bottom:6px;
+    word-break:break-word;
 }
 .stat-sub{
     font-size:12.5px;
@@ -459,6 +484,7 @@ html::-webkit-scrollbar{
     padding:22px;
     box-shadow:var(--shadow);
     opacity:0;
+    min-width:0;
     animation:fadeSlideUp .5s ease .3s both;
 }
 .panel h3{
@@ -579,6 +605,7 @@ html::-webkit-scrollbar{
     position:relative;
     width:220px;
     height:220px;
+    max-width:100%;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -586,6 +613,9 @@ html::-webkit-scrollbar{
 .donut-chart-wrap svg{
     display:block;
     overflow:visible;
+    width:100%;
+    height:auto;
+    max-width:220px;
 }
 .donut-arc{
     cursor:pointer;
@@ -618,7 +648,7 @@ html::-webkit-scrollbar{
 }
 .legend{
     display:flex;
-    flex-wrap:nowrap;
+    flex-wrap:wrap;
     gap:10px;
     justify-content:center;
     margin-top:18px;
@@ -656,6 +686,7 @@ html::-webkit-scrollbar{
     align-items:center;
     justify-content:space-between;
     margin-bottom:16px;
+    gap:10px;
 }
 .list-head h3{ margin:0; font-size:15.5px; font-weight:700; }
 .view-all{
@@ -663,73 +694,8 @@ html::-webkit-scrollbar{
     color:var(--blue);
     text-decoration:none;
     font-weight:500;
-}
-.item{
-    display:flex;
-    align-items:flex-start;
-    gap:12px;
-    padding:10px 0;
-    border-bottom:1px solid var(--border);
-    opacity:0;
-    animation:fadeSlideUp .4s ease both;
-}
-.item.item-center{ align-items:center; }
-.item:last-child{ border-bottom:none; padding-bottom:0; }
-.item-icon{
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    background:var(--blue-light);
-    color:var(--blue);
-    display:flex;
-    align-items:center;
-    justify-content:center;
     flex-shrink:0;
-    font-weight:700;
-    font-size:12px;
 }
-.item-pin{
-    color:var(--blue);
-    flex-shrink:0;
-    margin-top:3px;
-    display:flex;
-}
-.item-body{
-    flex:1;
-    min-width:0;
-}
-.item-body p{
-    margin:0 0 3px 0;
-    font-size:13.5px;
-    color:var(--text);
-    line-height:1.35;
-}
-.item-body p.title-bold{
-    font-weight:600;
-}
-.item-body p.truncate{
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-.item-body span{
-    font-size:12px;
-    color:var(--text-soft);
-}
-.tag{
-    display:inline-flex;
-    align-items:center;
-    flex-shrink:0;
-    margin-left:8px;
-    font-size:11px;
-    padding:4px 10px;
-    border-radius:20px;
-    background:#eef0f4;
-    color:var(--text-mid);
-    font-weight:600;
-    white-space:nowrap;
-}
-
 
 /* Recent Activities / Recent Members / Latest Notices rows.
    Every row is forced to a single line (icon | text+time | tag), matching
@@ -767,13 +733,7 @@ html::-webkit-scrollbar{
     color:var(--blue);
     flex:0 0 auto;
     margin-top:0;
-    display:flex;
-}
-
-.item-pin{
-    color:var(--blue);
-    flex:0 0 auto;
-    margin-top:0;
+    margin-bottom: 10px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -831,11 +791,29 @@ html::-webkit-scrollbar{
     white-space:nowrap;
 }
 
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   ===================================================== */
+
+/* ---- Tablet / small laptop ---- */
 @media (max-width: 1100px){
     .stats{ grid-template-columns:repeat(2,1fr); }
     .charts{ grid-template-columns:1fr; }
     .lists{ grid-template-columns:1fr; }
 }
+
+/* ---- Narrow tablet (sidebar still visible, tighten spacing) ---- */
+@media (max-width: 900px){
+    .main{ padding:0 22px 40px 22px; }
+    .topbar{
+        margin:0 -22px 24px -22px;
+        width:calc(100% + 44px);
+        padding:12px 22px;
+    }
+    .search{ width:260px; }
+}
+
+/* ---- Mobile: collapse sidebar into off-canvas drawer ---- */
 @media (max-width: 700px){
     .hamburger{ display:flex; }
 
@@ -845,6 +823,8 @@ html::-webkit-scrollbar{
         transition:transform .25s ease;
         box-shadow:none;
         padding-top: max(20px, env(safe-area-inset-top));
+        width:80vw;
+        max-width:280px;
     }
     .sidebar.open{
         transform:translateX(0);
@@ -887,7 +867,7 @@ html::-webkit-scrollbar{
     .stat-card:hover{ transform:none; }
 
     .charts{ grid-template-columns:1fr; gap:14px; }
-    .panel{ padding:16px; }
+    .panel{ padding:16px; width:100%; }
 
     .panel h3{ text-align:center; }
 
@@ -931,21 +911,12 @@ html::-webkit-scrollbar{
     .item-body span{ font-size:11.5px; }
     .tag{ font-size:10.5px; padding:3px 8px; }
 
-    .dropdown{ position:fixed; left:16px; right:16px; width:auto !important; top:64px; }
+    .dropdown{ position:fixed; left:16px; right:16px; width:auto !important; max-width:none; top:64px; }
 
     html, body{ overflow-x: hidden; }
 }
 
-@media (max-width: 400px){
-    .stat-value{ font-size:22px; }
-    .greeting h1{ font-size:19px; }
-    .search input{ font-size:14px; }
-    .item-body p{ font-size:12.5px; }
-    .item-body span{ font-size:11px; }
-    .tag{ display:none; }
-    .stat-icon{ width:32px; height:32px; }
-}
-
+/* ---- Small phones ---- */
 @media (max-width: 460px){
     .main{ padding:0 14px 28px 14px; }
 
@@ -970,8 +941,8 @@ html::-webkit-scrollbar{
     .stat-sub{ font-size:11.5px; }
 
     .charts{ gap:12px; }
-    #ChartMedia{ height: 240px; width: 400px}
-    .panel{ padding:14px; width: 400px ; }
+    #ChartMedia{ height: auto; width:100%; }
+    .panel{ padding:14px; width:100%; }
     .panel h3{ font-size:14.5px; margin-bottom:14px; }
 
     .bar-chart{ height:170px; }
@@ -999,4 +970,15 @@ html::-webkit-scrollbar{
     .avatar{ width:32px; height:32px; font-size:12px; }
     .hamburger{ width:40px; height:40px; }
     .bell{ padding:9px; }
+}
+
+/* ---- Extra small phones ---- */
+@media (max-width: 400px){
+    .stat-value{ font-size:22px; }
+    .greeting h1{ font-size:19px; }
+    .search input{ font-size:14px; }
+    .item-body p{ font-size:12.5px; }
+    .item-body span{ font-size:11px; }
+    .tag{ display:none; }
+    .stat-icon{ width:32px; height:32px; }
 }
