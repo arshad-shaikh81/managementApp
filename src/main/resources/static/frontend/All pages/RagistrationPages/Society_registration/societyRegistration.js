@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signInLink) {
         signInLink.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = "../Login_page/loginPage.html";
+            window.location.href = "/login";
         });
     }
 

@@ -40,7 +40,7 @@ document.getElementById('nav').addEventListener('click', function(e){
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function(){
-    window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    window.location.href = "/login";
 });
 
 

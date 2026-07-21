@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => {
                 showMessage('Password reset successfully! Redirecting to login...', 'success');
                 setTimeout(() => {
-                    window.location.href = '../Login_page/loginPage.html';
+                    window.location.href = '/login';
                 }, 1500);
             })
             .catch((err) => {

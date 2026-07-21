@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 
                         setTimeout(() => {
-                            window.location.href = '../../ResidentPage/Dashboard/mainDashboard.html';                        }, 1000);
+                            window.location.href = '/Dashboard';                      }, 1000);
                     } else {
                         // Wrong email or wrong password -> backend rejects it
                         const errorText = typeof data === 'string' ? data : 'Incorrect email or password.';
