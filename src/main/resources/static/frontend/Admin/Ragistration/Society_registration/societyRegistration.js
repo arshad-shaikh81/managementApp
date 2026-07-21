@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('registerForm');
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
-    const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const phonePattern = /^[0-9]{10}$/;

@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // Form submission
     // ============================================
-    const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
     const submitBtn = document.querySelector('.submit-btn');
     const societyHint = document.getElementById('society-hint');
     const formMessage = document.getElementById('form-message');

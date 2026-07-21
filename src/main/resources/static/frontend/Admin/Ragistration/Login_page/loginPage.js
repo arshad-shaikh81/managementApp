@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // Form Submission Handler (real backend call)
     // ============================================
-    const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
     const loginBtn = document.querySelector('.btn-login');
     const formMessage = document.getElementById('form-message');
     const alertIcon = document.getElementById('alert-icon');

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const API_BASE_URL = 'http://localhost:8080';
+    const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
     const RESEND_COOLDOWN_SECONDS = 60;
 
     // ===== DOM Elements =====
