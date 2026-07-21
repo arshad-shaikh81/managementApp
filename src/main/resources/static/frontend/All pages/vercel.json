@@ -2,15 +2,15 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
+    { "source": "/", "destination": "/index" },
 
-    { "source": "/home", "destination": "/ResidentPage/Home_page/homePage.html" },
-    { "source": "/dashboard", "destination": "/ResidentPage/Dashboard/mainDashboard.html" },
-    { "source": "/profile", "destination": "/ResidentPage/My_profile/profile.html" },
-    { "source": "/login", "destination": "/RagistrationPages/Login_page/loginPage.html" },
-    { "source": "/signup", "destination": "/RagistrationPages/Signin_page/signinPage.html" },
-    { "source": "/register-society", "destination": "/RagistrationPages/Society_registration/societyRegistration.html" },
-    { "source": "/forgot-password", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage.html" },
+    { "source": "/home", "destination": "/ResidentPage/Home_page/homePage" },
+    { "source": "/dashboard", "destination": "/ResidentPage/Dashboard/mainDashboard" },
+    { "source": "/profile", "destination": "/ResidentPage/My_profile/profile" },
+    { "source": "/login", "destination": "/RagistrationPages/Login_page/loginPage" },
+    { "source": "/signup", "destination": "/RagistrationPages/Signin_page/signinPage" },
+    { "source": "/register-society", "destination": "/RagistrationPages/Society_registration/societyRegistration" },
+    { "source": "/forgot-password", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage" },
 
     { "source": "/favicon.svg", "destination": "/favicon.svg" },
 
