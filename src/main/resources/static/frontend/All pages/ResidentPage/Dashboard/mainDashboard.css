@@ -512,20 +512,14 @@ img, svg{
     width:40px;
     display:flex;
     flex-direction:column;
-    justify-content:space-between;
+    justify-content:space-evenly;
     font-size:11.5px;
     color:var(--text-soft);
     text-align:right;
-    line-height:1;
-}
-.y-axis span{
-    transform: translateY(50%);
-}
-.y-axis span:first-child{
-    transform: translateY(0);
-}
-.y-axis span:last-child{
-    transform: translateY(100%);
+    font-size: 13px;
+    height: 310px;
+    transform: translateY(-44px);
+    margin-left: 5px;
 }
 .plot{
     flex:1;
@@ -658,6 +652,9 @@ img, svg{
 .donut-tooltip.show{
     opacity:1;
     transform:translate(-50%,-50%) scale(1);
+}
+.donut-arc.dimmed{
+    opacity: 0.2;
 }
 .legend{
     display:flex;
@@ -890,24 +887,14 @@ img, svg{
         height:190px;
     }
     .y-axis{
-        width: 20px;
+        width: 24px;
+        height: 180px;
         font-size: 9.5px;
-        line-height: 1;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        transform: translateY(-10px);
     }
-    .y-axis span{
-        display: block;
-        line-height: 1;
-    }
-    .y-axis span:first-child{
-        margin-top: -3px;
-    }
-    .y-axis span:last-child{
-        margin-bottom: -3px;
-    }
-    #Prices{margin-right:5px; font-size: 9px}
     .plot{ padding-right:4px; }
     .month-group{
         width:auto;
@@ -921,11 +908,21 @@ img, svg{
         width:100%;
         font-size:10px;
     }
-
     .chart-tooltip{
-        max-width: calc(100vw - 32px);
-        left: 16px !important;
-        right: 16px;
+        max-width: 150px !important;
+        width: max-content !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    .chart-tooltip .tt-month{
+        font-size: 11.5px !important;
+        margin-bottom: 3px !important;
+    }
+    .chart-tooltip .tt-row{
+        font-size: 10px !important;
+    }
+    .bar-chart{
+        margin-top: 40px;
     }
 
     .donut-wrap{ height:230px; align-items:center; }

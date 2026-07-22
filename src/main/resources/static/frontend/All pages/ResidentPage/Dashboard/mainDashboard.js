@@ -236,6 +236,18 @@ donutArcs.forEach(arc => {
     arc.addEventListener('mouseleave', () => {
         donutTooltip.classList.remove('show');
     });
+    arc.addEventListener('click', (e) => {
+        e.stopPropagation();
+        donutArcs.forEach(a => a.classList.remove('dimmed'));
+        donutTooltip.textContent = `${arc.dataset.status.toLowerCase()} : ${arc.dataset.count}`;
+        donutTooltip.classList.add('show');
+        arc.classList.add('dimmed');
+    });
+});
+
+document.addEventListener('click', () => {
+    donutTooltip.classList.remove('show');
+    donutArcs.forEach(a => a.classList.remove('dimmed'));
 });
 
 document.getElementById('complaintLegend').innerHTML = statusCounts.map(s =>
@@ -261,7 +273,11 @@ function showTooltip(e, d){
 }
 function positionTooltip(e){
     const rect = e.currentTarget.getBoundingClientRect();
-    tooltip.style.left = (rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+    let left = rect.left + window.scrollX + rect.width / 2 - tooltip.offsetWidth / 2;
+    const minLeft = 8 + window.scrollX;
+    const maxLeft = window.scrollX + document.documentElement.clientWidth - tooltip.offsetWidth - 8;
+    left = Math.max(minLeft, Math.min(left, maxLeft));
+    tooltip.style.left = left + 'px';
     tooltip.style.top  = (rect.top + window.scrollY - tooltip.offsetHeight - 10) + 'px';
 }
 function hideTooltip(){
