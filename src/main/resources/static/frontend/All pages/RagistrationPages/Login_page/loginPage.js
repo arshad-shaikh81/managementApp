@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // assume the Render free-tier server was asleep and let the
             // user know instead of leaving them staring at a stuck button.
             const wakeUpTimer = setTimeout(() => {
-                showMessage('Waking up the server... this can take up to a minute on first use.', 'info');
+                showMessage('Just a moment — our server is waking up from idle. This can take up to a minute on your first try.', 'info');
             }, WAKE_UP_THRESHOLD_MS);
 
             fetch(API_BASE_URL + '/api/auth/login', {
@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 
                         setTimeout(() => {
-                            window.location.href = '/dashboard';                      }, 1000);
+                            window.location.href = '../../ResidentPage/Dashboard/mainDashboard.html';
+                        }, 1000);
                     } else {
                         // Wrong email or wrong password -> backend rejects it
                         const errorText = typeof data === 'string' ? data : 'Incorrect email or password.';
