@@ -25,6 +25,10 @@
     --shadow: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.03);
 }
 
+html{
+    -webkit-tap-highlight-color: transparent;
+}
+
 *{box-sizing:border-box;}
 body{margin:0;}
 html,body{
@@ -518,7 +522,7 @@ img, svg{
     text-align:right;
     font-size: 13px;
     height: 310px;
-    transform: translateY(-44px);
+    transform: translateY(-42px);
     margin-left: 5px;
 }
 .plot{
@@ -548,7 +552,7 @@ img, svg{
     cursor:pointer;
 }
 .bar{
-    width:26px;
+    width:32px;
     border-radius:6px 6px 0 0;
     transition:height .6s cubic-bezier(.34,1.4,.64,1), opacity .6s cubic-bezier(.34,1.4,.64,1), filter .15s ease;
 }
@@ -652,9 +656,6 @@ img, svg{
 .donut-tooltip.show{
     opacity:1;
     transform:translate(-50%,-50%) scale(1);
-}
-.donut-arc.dimmed{
-    opacity: 0.2;
 }
 .legend{
     display:flex;
@@ -821,6 +822,132 @@ img, svg{
         padding:12px 22px;
     }
     .search{ width:200px; }
+    .bar{ width:18px;}
+}
+
+/* ---- This is for Tablet and I pads like big screen of mobile---- */
+
+@media (max-width: 850px){
+    .hamburger{ display:flex; }
+
+    .sidebar{
+        display:flex;
+        transform:translateX(-100%);
+        transition:transform .25s ease;
+        box-shadow:none;
+        padding-top: max(20px, env(safe-area-inset-top));
+        width:80vw;
+        max-width:280px;
+    }
+    .sidebar.open{
+        transform:translateX(0);
+        box-shadow:0 0 30px rgba(16,24,40,.25);
+    }
+
+    .main{
+        margin-left:0;
+        padding:0 16px 32px 16px;
+    }
+
+    .topbar{
+        gap:10px;
+        margin:0 -16px 20px -16px;
+        width:calc(100% + 32px);
+        padding:10px 16px;
+    }
+    .search{
+        width:650px;
+        padding:10px 12px;
+        gap:8px;
+    }
+    .search kbd{ display:none; }
+    .search input{ font-size:15px; }
+
+    .user-text{ display:none; }
+    .topbar-right{ gap:10px; }
+
+    .nav a{ padding:13px 12px; font-size:15px; }
+    .hamburger{ width:42px; height:42px; }
+    .bell{ padding:10px; }
+    .avatar{ width:34px; height:34px; }
+
+    .greeting{ padding-top:16px; }
+    .greeting h1{ font-size:21px; }
+    .greeting p{ font-size:13px; margin-bottom:18px; }
+
+    .stats{ grid-template-columns:1fr; gap:14px; }
+    .stat-card{ padding:16px; }
+    .stat-card:hover{ transform:none; }
+
+    .charts{ grid-template-columns:1fr; gap:14px; }
+    .panel{ padding:16px; width:100%; }
+
+    .panel h3{ text-align:center; }
+
+    .bar-chart{
+        padding-left:0;
+        padding-right:0;
+        height:190px;
+    }
+    .y-axis{
+        width: 24px;
+        height: 200px;
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transform: translateX(10px);
+        transform: translateY(-16px);
+        padding-right: 5px;
+        padding-left: 8px;
+    }
+    .plot{ padding-right:4px; margin-left: 20px;}
+    .month-group{
+        width:30px;
+        flex:1 1 0;
+        min-width:0;
+        max-width:50px;
+    }
+    .bars-pair{ gap:5px; }
+    .bar{ width:23px; }
+    .month-label{
+        width:100%;
+        font-size:10px;
+    }
+    .chart-tooltip{
+        max-width: 150px !important;
+        width: max-content !important;
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+    }
+    .chart-tooltip .tt-month{
+        font-size: 11.5px !important;
+        margin-bottom: 3px !important;
+    }
+    .chart-tooltip .tt-row{
+        font-size: 10px !important;
+    }
+    .bar-chart{
+        margin-top: 40px;
+    }
+    #ChartMedia{ height: 305px; width:100%; padding: 16px 16px 16px 0px;}
+
+    .donut-wrap{ height:230px; align-items:center; }
+    .donut-chart-wrap{ width:180px; height:180px; margin:0 auto; }
+    .donut-tooltip{ font-size:12.5px; padding:8px 14px; }
+    .legend{ justify-content:center; }
+
+    .lists{ grid-template-columns:1fr; gap:14px; }
+
+    .item{ padding:12px 0; gap:10px; }
+    .item-icon{ width:30px; height:30px; }
+    .item-body p{ font-size:13px; }
+    .item-body span{ font-size:11.5px; }
+    .tag{ font-size:10.5px; padding:3px 8px; }
+
+    .dropdown{ position:fixed; left:16px; right:16px; width:220px !important; max-width:none; top:64px; margin-left: 570px }
+
+    html, body{ overflow-x: hidden; }
 }
 
 /* ---- Mobile: collapse sidebar into off-canvas drawer ---- */
@@ -877,7 +1004,7 @@ img, svg{
     .stat-card:hover{ transform:none; }
 
     .charts{ grid-template-columns:1fr; gap:14px; }
-    .panel{ padding:16px ; width:100%; }
+    .panel{ padding:16px; width:100%; }
 
     .panel h3{ text-align:center; }
 
@@ -893,17 +1020,20 @@ img, svg{
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        transform: translateX(10px);
         transform: translateY(-10px);
+        padding-right: 10px;
+        padding-left: 8px;
     }
-    .plot{ padding-right:4px; }
+    .plot{ padding-right:4px; margin-left: 20px;}
     .month-group{
-        width:auto;
+        width:30px;
         flex:1 1 0;
         min-width:0;
         max-width:50px;
     }
     .bars-pair{ gap:5px; }
-    .bar{ width:10px; }
+    .bar{ width:15px; }
     .month-label{
         width:100%;
         font-size:10px;
@@ -968,13 +1098,13 @@ img, svg{
     .stat-sub{ font-size:11.5px; }
 
     .charts{ gap:12px;}
-    #ChartMedia{ height: auto; width:100%; }
+    #ChartMedia{ height: 290px; width:100%; padding: 16px 16px 16px 0px;}
     .panel{width:100%;}
     .panel h3{ font-size:14.5px; margin-bottom:14px; }
 
     .bar-chart{ height:170px; }
     .month-group{ max-width:42px; }
-    .bar{ width:9px; }
+    .bar{ width:15px; }
     .bars-pair{ gap:4px; }
     .month-label{ font-size:9.5px; bottom:-20px; margin-bottom: 6px }
 
@@ -1009,5 +1139,6 @@ img, svg{
     .item-body span{ font-size:11px; }
     .tag{ display:none; }
     .stat-icon{ width:32px; height:32px; }
+    .bar{ width:12px; }
     .dropdown{ position:fixed; left:16px; right:16px; width:200px !important; max-width:none; top:64px; margin-left: 120px }
 }
