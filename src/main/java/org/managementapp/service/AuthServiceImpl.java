@@ -1,8 +1,5 @@
 package org.managementapp.service;
 
-import org.managementapp.dto.ForgotPasswordResetRequest;
-import org.managementapp.dto.ForgotPasswordSendOtpRequest;
-import org.managementapp.dto.ForgotPasswordVerifyOtpRequest;
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterResidentRequest;
@@ -19,8 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private static final String FORGOT_PASSWORD_PURPOSE = "FORGOT_PASSWORD";
-
     @Autowired
     private SocietyRepository societyRepository;
 
@@ -32,9 +27,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
-
-    @Autowired
-    private OtpService otpService;
 
     // ---------------- REGISTER SOCIETY (+ Admin) ----------------
     @Override
@@ -117,55 +109,5 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
         return new LoginResponse(token, user.getRole(), user.getName());
-    }
-
-    // ---------------- FORGOT PASSWORD: SEND OTP ----------------
-    @Override
-    public String sendForgotPasswordOtp(ForgotPasswordSendOtpRequest request) {
-
-        userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("No account found with this email address"));
-
-        otpService.generateAndSend(request.getEmail(), FORGOT_PASSWORD_PURPOSE);
-
-        return "OTP sent to your email address";
-    }
-
-    // ---------------- FORGOT PASSWORD: CHECK OTP ONLY (real-time, doesn't consume it) ----------------
-    @Override
-    public String verifyForgotPasswordOtp(ForgotPasswordVerifyOtpRequest request) {
-
-        userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("No account found with this email address"));
-
-        // Throws with a user-facing message if no OTP / expired / already used / too many attempts.
-        // Returns false (rather than throwing) for a plain wrong digit-guess so the caller can
-        // show "Incorrect OTP" without it looking like a hard error.
-        boolean correct = otpService.checkOtp(request.getEmail(), FORGOT_PASSWORD_PURPOSE, request.getOtp());
-        if (!correct) {
-            throw new RuntimeException("Incorrect OTP");
-        }
-
-        return "OTP verified";
-    }
-
-    // ---------------- FORGOT PASSWORD: VERIFY OTP + RESET ----------------
-    @Override
-    public String resetPassword(ForgotPasswordResetRequest request) {
-
-        if (request.getNewPassword() == null || !request.getNewPassword().matches("\\d{4}")) {
-            throw new RuntimeException("Password must be exactly 4 digits");
-        }
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("No account found with this email address"));
-
-        // Throws with a user-facing message if OTP is wrong/expired/already used
-        otpService.verify(request.getEmail(), FORGOT_PASSWORD_PURPOSE, request.getOtp());
-
-        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(user);
-
-        return "Password reset successfully";
     }
 }

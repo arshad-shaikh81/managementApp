@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const sendOtpForm = document.getElementById('sendOtpForm');
     const sendOtpBtn = document.getElementById('sendOtpBtn');
-    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
 
     const resetForm = document.getElementById('resetForm');
     const resetBtn = document.getElementById('resetBtn');
     const otpInput = document.getElementById('otp');
     const otpHint = document.getElementById('otp-hint');
-    const emailDisplay = document.getElementById('emailDisplay');
+    const phoneDisplay = document.getElementById('phoneDisplay');
     const resendLink = document.getElementById('resendLink');
 
     const newPasswordInput = document.getElementById('newPassword');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertIcon = document.getElementById('alert-icon');
     const alertText = document.getElementById('alert-text');
 
-    let currentEmail = '';
+    let currentPhone = '';
     let resendTimer = null;
 
     // ============================================
@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = this.value.replace(/\D/g, '').slice(0, maxLen);
         });
     }
+    digitsOnly(phoneInput, 10);
     digitsOnly(otpInput, 6);
     digitsOnly(newPasswordInput, 4);
     digitsOnly(confirmPasswordInput, 4);
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(API_BASE_URL + '/api/auth/forgot-password/verify-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: currentEmail, otp })
+            body: JSON.stringify({ phone: currentPhone, otp })
         })
             .then(async (res) => {
                 const text = await res.text();
@@ -158,11 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // STEP 1: Send OTP
     // ============================================
-    function requestOtp(email) {
+    function requestOtp(phone) {
         return fetch(API_BASE_URL + '/api/auth/forgot-password/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ phone })
         }).then(async (res) => {
             const text = await res.text();
             if (!res.ok) throw new Error(text || 'Could not send OTP');
@@ -174,9 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         hideMessage();
 
-        const email = emailInput.value.trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            showMessage('Please enter a valid email address', 'error');
+        const phone = phoneInput.value.trim();
+        if (!/^\d{10}$/.test(phone)) {
+            showMessage('Please enter a valid 10-digit phone number', 'error');
             return;
         }
 
@@ -184,16 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalText = sendOtpBtn.textContent;
         sendOtpBtn.textContent = 'Sending...';
 
-        requestOtp(email)
+        requestOtp(phone)
             .then(() => {
-                currentEmail = email;
-                emailDisplay.textContent = email;
+                currentPhone = phone;
+                phoneDisplay.textContent = phone;
                 stepPhone.hidden = true;
                 stepReset.hidden = false;
                 otpInput.value = '';
                 setOtpHint('', '');
                 startResendCooldown();
-                showMessage('OTP sent successfully. Please check your inbox.', 'success');
+                showMessage('OTP sent successfully. Please check your messages.', 'success');
             })
             .catch((err) => {
                 showMessage(err.message || 'Could not reach server. Is the backend running?', 'error');
@@ -212,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (resendLink.classList.contains('disabled')) return;
 
         hideMessage();
-        requestOtp(currentEmail)
+        requestOtp(currentPhone)
             .then(() => {
                 otpInput.value = '';
                 setOtpHint('', '');
@@ -259,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(API_BASE_URL + '/api/auth/forgot-password/reset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: currentEmail, otp, newPassword })
+            body: JSON.stringify({ phone: currentPhone, otp, newPassword })
         })
             .then(async (res) => {
                 const text = await res.text();
