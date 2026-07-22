@@ -477,6 +477,9 @@ img, svg{
     gap:20px;
     margin-bottom:20px;
 }
+#diffCharts{
+    height: 330px;
+}
 .panel{
     background:var(--card);
     border:1px solid var(--border);
@@ -513,6 +516,16 @@ img, svg{
     font-size:11.5px;
     color:var(--text-soft);
     text-align:right;
+    line-height:1;
+}
+.y-axis span{
+    transform: translateY(50%);
+}
+.y-axis span:first-child{
+    transform: translateY(0);
+}
+.y-axis span:last-child{
+    transform: translateY(100%);
 }
 .plot{
     flex:1;
@@ -876,7 +889,24 @@ img, svg{
         padding-right:0;
         height:190px;
     }
-    .y-axis{ width: 20px;font-size: 9.5px }
+    .y-axis{
+        width: 20px;
+        font-size: 9.5px;
+        line-height: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .y-axis span{
+        display: block;
+        line-height: 1;
+    }
+    .y-axis span:first-child{
+        margin-top: -3px;
+    }
+    .y-axis span:last-child{
+        margin-bottom: -3px;
+    }
     #Prices{margin-right:5px; font-size: 9px}
     .plot{ padding-right:4px; }
     .month-group{
@@ -983,5 +1013,4 @@ img, svg{
     .tag{ display:none; }
     .stat-icon{ width:32px; height:32px; }
     .dropdown{ position:fixed; left:16px; right:16px; width:200px !important; max-width:none; top:64px; margin-left: 120px }
-
 }
