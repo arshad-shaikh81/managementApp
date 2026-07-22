@@ -312,6 +312,27 @@ label {
     color: var(--red);
 }
 
+/* NEW: info-style banner used for the "server waking up" message */
+.alert-banner.info {
+    background: var(--blue-soft);
+    border-color: rgba(41, 82, 227, 0.25);
+    color: var(--blue-dark);
+}
+
+.alert-banner.info .alert-icon {
+    color: var(--blue);
+}
+
+.alert-banner.info .alert-icon svg {
+    animation: spin 1s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
 .forgot-row {
     text-align: right;
     margin: -6px 0 20px;
@@ -352,6 +373,11 @@ label {
 .btn-login:focus-visible {
     outline: 2px solid var(--blue-dark);
     outline-offset: 2px;
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .no-account {

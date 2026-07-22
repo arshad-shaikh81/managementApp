@@ -72,15 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertIcon = document.getElementById('alert-icon');
     const alertText = document.getElementById('alert-text');
 
+    // How long to wait before assuming the Render server is asleep (ms)
+    const WAKE_UP_THRESHOLD_MS = 3000;
+
     const ICONS = {
         success: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>',
-        error: '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+        error: '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>',
+        // Simple spinner-style icon (spun via CSS) used for the "waking up" state
+        info: '<circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10"></path>'
     };
 
     function showMessage(text, type) {
         if (!formMessage) return;
         formMessage.hidden = false;
-        formMessage.className = 'alert-banner ' + type; // 'error' or 'success'
+        formMessage.className = 'alert-banner ' + type; // 'error', 'success', or 'info'
         if (alertIcon) alertIcon.innerHTML = ICONS[type] || '';
         if (alertText) alertText.textContent = text;
     }
@@ -122,6 +127,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginBtn.textContent = 'Logging in...';
             }
 
+            // If the backend doesn't respond within WAKE_UP_THRESHOLD_MS,
+            // assume the Render free-tier server was asleep and let the
+            // user know instead of leaving them staring at a stuck button.
+            const wakeUpTimer = setTimeout(() => {
+                showMessage('Waking up the server... this can take up to a minute on first use.', 'info');
+            }, WAKE_UP_THRESHOLD_MS);
+
             fetch(API_BASE_URL + '/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -155,6 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Fetch error:', error);
                 })
                 .finally(() => {
+                    // Whatever happened, the "waking up" message no longer applies
+                    clearTimeout(wakeUpTimer);
                     if (loginBtn) {
                         loginBtn.disabled = false;
                         loginBtn.textContent = originalBtnText;
@@ -162,6 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
+
+    // ============================================
+    // Pre-warm the server as soon as the login page
+    // loads, so by the time the user finishes typing
+    // their email/password the server is often already
+    // awake and login feels instant.
+    // ============================================
+    fetch(API_BASE_URL + '/actuator/health').catch(() => {
+        // Silently ignore - this is just a best-effort warm-up ping.
+        // If /actuator/health isn't exposed on your backend, replace
+        // this with any lightweight GET endpoint that exists.
+    });
 
     // ============================================
     // Forgot Password Link
