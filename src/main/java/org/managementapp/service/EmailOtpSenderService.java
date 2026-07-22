@@ -1,6 +1,9 @@
 package org.managementapp.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,8 +13,17 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Sends real OTP emails via Brevo's HTTP API (not SMTP, so it works fine on
+ * Render's free tier where SMTP ports are blocked). Marked @Primary so this
+ * is the OtpSenderService implementation used by default, ahead of
+ * ConsoleOtpSenderService and Msg91OtpSenderService.
+ */
 @Service
-public class EmailOtpSenderService {
+@Primary
+public class EmailOtpSenderService implements OtpSenderService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmailOtpSenderService.class);
 
     @Value("${brevo.api.key}")
     private String brevoApiKey;
@@ -24,7 +36,8 @@ public class EmailOtpSenderService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public boolean sendOtpEmail(String toEmail, String otp) {
+    @Override
+    public void sendOtp(String toEmail, String otp) {
         String url = "https://api.brevo.com/v3/smtp/email";
 
         HttpHeaders headers = new HttpHeaders();
@@ -48,10 +61,10 @@ public class EmailOtpSenderService {
 
         try {
             restTemplate.postForEntity(url, request, String.class);
-            return true;
+            log.info("OTP email sent via Brevo to {}", toEmail);
         } catch (Exception e) {
-            System.out.println("Failed to send OTP email via Brevo: " + e.getMessage());
-            return false;
+            log.error("Failed to send OTP email via Brevo to {}: {}", toEmail, e.getMessage());
+            throw new RuntimeException("Could not send OTP email. Please try again.");
         }
     }
 }
