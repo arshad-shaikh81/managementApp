@@ -379,3 +379,16 @@ recentNotices.forEach((n, i) => {
         <span class="tag">${n.tag}</span>
       </div>`;
 });
+
+// ---------- Footer: Meet the team dropdown ----------
+const teamToggle = document.getElementById('teamToggle');
+const teamDropdown = document.getElementById('teamDropdown');
+
+teamToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    teamDropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', function(){
+    teamDropdown.classList.remove('show');
+});
