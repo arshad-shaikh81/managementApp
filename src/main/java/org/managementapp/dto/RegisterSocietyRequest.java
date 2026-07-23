@@ -5,6 +5,7 @@ public class RegisterSocietyRequest {
     private String address;
     private String registrationNumber;
     private String adminName;
+    private String flatNumber;
     private String phone;
     private String email;
     private String password;
@@ -21,6 +22,9 @@ public class RegisterSocietyRequest {
 
     public String getAdminName() { return adminName; }
     public void setAdminName(String adminName) { this.adminName = adminName; }
+
+    public String getFlatNumber() { return flatNumber; }
+    public void setFlatNumber(String flatNumber) { this.flatNumber = flatNumber; }
 
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
