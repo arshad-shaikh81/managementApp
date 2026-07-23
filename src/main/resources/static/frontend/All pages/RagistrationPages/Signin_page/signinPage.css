@@ -221,6 +221,34 @@ body {
 .hint-msg.error { color: #e53935; font-weight: 500; }
 .hint-msg.success { color: #1fa971; font-weight: 500; }
 
+/* NEW: info-style banner used for the "server waking up" message */
+.hint-msg.info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1f3fc0;
+    font-weight: 600;
+    background: rgba(41, 82, 227, 0.08);
+    border: 1px solid rgba(41, 82, 227, 0.22);
+    border-radius: 12px;
+    padding: 12px 14px;
+    min-height: 0;
+}
+
+.hint-msg.info .spinner {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    border: 2px solid rgba(41, 82, 227, 0.25);
+    border-top-color: #2952e3;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 .submit-btn {
     width: 100%;
     padding: 15px;

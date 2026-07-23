@@ -53,7 +53,7 @@ document.getElementById('nav').addEventListener('click', function(e){
     closeSidebar();
 });
 document.getElementById('logoutBtn').addEventListener('click', function(){
-    window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    window.location.href = "../../RagistrationPages/Login_page/index.html";
 });
 
 
@@ -84,7 +84,7 @@ userBtn.addEventListener('click', function(e){
 
 document.getElementById('dropdownLogout').addEventListener('click', function(e){
     e.preventDefault();
-    window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    window.location.href = "../../RagistrationPages/Login_page/index.html";
 });
 
 document.addEventListener('click', function(){

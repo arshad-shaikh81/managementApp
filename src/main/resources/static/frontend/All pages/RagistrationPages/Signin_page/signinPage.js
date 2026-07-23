@@ -161,6 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const societyHint = document.getElementById('society-hint');
     const formMessage = document.getElementById('form-message');
 
+    // How long to wait before assuming the Render server is asleep (ms)
+    const WAKE_UP_THRESHOLD_MS = 3000;
+
     function clearMessages() {
         if (societyHint) {
             societyHint.textContent = '';
@@ -217,6 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.textContent = 'Creating account...';
             }
 
+            // If the backend doesn't respond within WAKE_UP_THRESHOLD_MS,
+            // assume the Render free-tier server was asleep and let the
+            // user know instead of leaving them staring at a stuck button.
+            const wakeUpTimer = setTimeout(() => {
+                if (formMessage) {
+                    formMessage.innerHTML = '<span class="spinner"></span><span>Just a moment — our server is waking up from idle. This can take up to a minute on your first try.</span>';
+                    formMessage.className = 'hint-msg info';
+                }
+            }, WAKE_UP_THRESHOLD_MS);
+
             fetch(API_BASE_URL + '/api/auth/register-resident', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -231,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         // Redirect to login page after a short pause so the message is visible
                         setTimeout(() => {
-                            window.location.href = '/login';
+                            window.location.href = '../Login_page/index.html';
                         }, 1200);
                     } else if (data && data.toLowerCase().includes('society not found')) {
                         // Show this specific error right under the Society Name field
@@ -254,6 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Fetch error:', error);
                 })
                 .finally(() => {
+                    // Whatever happened, the "waking up" message no longer applies
+                    clearTimeout(wakeUpTimer);
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.textContent = originalBtnText;
@@ -261,6 +276,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
+
+    // ============================================
+    // Pre-warm the server as soon as the signup page
+    // loads, so by the time the user finishes filling
+    // the form the server is often already awake.
+    // ============================================
+    fetch(API_BASE_URL + '/actuator/health').catch(() => {
+        // Silently ignore - this is just a best-effort warm-up ping.
+        // If /actuator/health isn't exposed on your backend, replace
+        // this with any lightweight GET endpoint that exists.
+    });
 
     // ============================================
     // Footer links ("Register your society" / "Log in")

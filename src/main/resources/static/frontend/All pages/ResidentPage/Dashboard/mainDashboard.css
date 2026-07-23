@@ -356,10 +356,6 @@ img, svg{
 .dropdown-item:hover{ background:var(--bg); }
 .dropdown-item.logout-item{ color:#e5484d; }
 .dropdown-item.logout-item svg{ color:#e5484d; }
-.dropdown-item.logout-item:hover{
-    background:#fdecec;
-    color:#e5484d;
-}
 .avatar{
     width:36px;
     height:36px;
@@ -821,7 +817,7 @@ img, svg{
     padding:28px 32px 22px 32px;
     margin-top:24px;
     height: 150px;
-    width: 16px;
+    width: 16p
 }
 .footer-top{
     display:flex;
