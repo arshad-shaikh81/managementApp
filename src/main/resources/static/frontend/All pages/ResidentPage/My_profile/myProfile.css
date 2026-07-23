@@ -601,6 +601,27 @@ input.input-error {
     transform: scale(0.98);
 }
 
+.secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: transparent;
+    color:lightslategrey;
+    border: none ;
+    border-radius: 10px;
+    font-size: 13.2px;
+    font-weight: 500;
+    margin-bottom: 100px;
+    font-family:'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.secure-note svg {
+    flex-shrink: 0;
+    color:#2fa860;
+}
 /* =======================================================
    RESPONSIVE BREAKPOINTS
 ======================================================== */
