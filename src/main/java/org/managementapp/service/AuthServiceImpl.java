@@ -2,6 +2,7 @@ package org.managementapp.service;
 
 import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
+import org.managementapp.dto.ProfileResponse;
 import org.managementapp.dto.RegisterResidentRequest;
 import org.managementapp.dto.RegisterSocietyRequest;
 import org.managementapp.entity.Society;
@@ -112,5 +113,32 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
         return new LoginResponse(token, user.getRole(), user.getName());
+    }
+
+    // ---------------- GET LOGGED-IN USER'S REAL PROFILE ----------------
+    @Override
+    public ProfileResponse getProfile(String token) {
+
+        String email;
+        try {
+            email = jwtUtil.extractEmail(token);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid or expired session. Please login again.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Society society = user.getSociety();
+
+        return new ProfileResponse(
+                user.getName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole(),
+                user.getFlatNumber(),
+                society != null ? society.getName() : null,
+                society != null ? society.getAddress() : null
+        );
     }
 }

@@ -1,14 +1,58 @@
-// ---------- Greeting based on time of day ----------
-(function setGreeting(){
-    const hour = new Date().getHours();
-    let greet = "Good evening";
-    if (hour < 12) greet = "Good morning";
-    else if (hour < 17) greet = "Good afternoon";
-    const greetingEl = document.getElementById('greetingText');
-    if (greetingEl) {
-        greetingEl.innerHTML = `${greet}, shaikh <span class="wave-emoji">👋</span>`;
+// =====================================================
+// ---------- FETCH REAL LOGGED-IN RESIDENT'S DATA ----------
+// =====================================================
+const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
+
+function loadRealProfile() {
+    const token = localStorage.getItem('token');
+
+    // No session -> back to login
+    if (!token) {
+        window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+        return;
     }
-})();
+
+    fetch(API_BASE_URL + '/api/auth/me', {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+        .then(async (response) => {
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Token invalid/expired -> session khatam, dobara login karo
+                localStorage.clear();
+                window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+                return;
+            }
+
+            const fullNameEl = document.getElementById('fullName');
+            const phoneEl = document.getElementById('phone');
+            const homeNoEl = document.getElementById('homeNo');
+            const emailEl = document.getElementById('email');
+            const greetingEl = document.getElementById('greetingText');
+
+            if (fullNameEl) fullNameEl.value = data.name || '';
+            if (phoneEl) phoneEl.value = data.phone || '';
+            if (homeNoEl) homeNoEl.value = data.flatNumber || '';
+            if (emailEl) emailEl.value = data.email || '';
+
+            syncProfileName(data.name || '');
+            syncProfileEmail(data.email || '');
+
+            if (greetingEl) {
+                const hour = new Date().getHours();
+                let greet = "Good evening";
+                if (hour < 12) greet = "Good morning";
+                else if (hour < 17) greet = "Good afternoon";
+                const firstName = (data.name || '').trim().split(/\s+/)[0] || '';
+                greetingEl.innerHTML = `${greet}, ${firstName} <span class="wave-emoji">👋</span>`;
+            }
+        })
+        .catch((error) => {
+            console.error('Could not load profile:', error);
+        });
+}
 
 // ---------- Mobile sidebar (hamburger drawer) ----------
 const sidebar = document.getElementById('sidebar');
@@ -161,7 +205,7 @@ function syncProfileEmail(newEmail) {
 
 // Page Load Initialization
 if (fullNameInput) {
-    syncProfileName(fullNameInput.value);
+    if (fullNameInput.value) syncProfileName(fullNameInput.value);
 
     fullNameInput.addEventListener('input', function(e) {
         syncProfileName(e.target.value);
@@ -169,7 +213,7 @@ if (fullNameInput) {
 }
 
 if (emailInput) {
-    syncProfileEmail(emailInput.value);
+    if (emailInput.value) syncProfileEmail(emailInput.value);
 
     emailInput.addEventListener('input', function(e) {
         syncProfileEmail(e.target.value);
@@ -234,6 +278,9 @@ if (profileForm) {
         }
     });
 }
+
+// Ab jaake real data load karo
+loadRealProfile();
 
 // Handle Photo Upload
 if (avatarCamBtn && avatarInput) {
