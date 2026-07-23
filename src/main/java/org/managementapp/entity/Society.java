@@ -19,6 +19,9 @@ public class Society {
     @Column(name = "registration_number", nullable = false, unique = true)
     private String registrationNumber;
 
+    @Column
+    private String email;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -31,4 +34,7 @@ public class Society {
 
     public String getRegistrationNumber() { return registrationNumber; }
     public void setRegistrationNumber(String registrationNumber) { this.registrationNumber = registrationNumber; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }

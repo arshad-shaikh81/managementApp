@@ -52,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
         society.setName(request.getSocietyName());
         society.setAddress(request.getAddress());
         society.setRegistrationNumber(request.getRegistrationNumber());
+        society.setEmail(request.getEmail());
         societyRepository.save(society);
 
         User admin = new User();
