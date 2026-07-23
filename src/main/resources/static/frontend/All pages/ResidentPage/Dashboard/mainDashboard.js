@@ -405,3 +405,57 @@ teamToggle.addEventListener('click', function(e){
 document.addEventListener('click', function(){
     teamDropdown.classList.remove('show');
 });
+const API_BASE_URL = "https://managementapp-38ex.onrender.com";
+
+async function loadResidentProfile() {
+
+    const token = localStorage.getItem("token");
+
+    if(!token){
+        window.location.href="../../RagistrationPages/Login_page/loginPage.html";
+        return;
+    }
+
+    const response = await fetch(API_BASE_URL+"/api/auth/me",{
+        headers:{
+            Authorization:"Bearer "+token
+        }
+    });
+
+    const data = await response.json();
+
+    document.getElementById("topbarUserName").innerText=data.name;
+    document.getElementById("topbarUserEmail").innerText=data.email;
+
+    const firstName=data.name.split(" ")[0];
+
+    const hour=new Date().getHours();
+
+    let greet="Good evening";
+
+    if(hour<12) greet="Good morning";
+    else if(hour<17) greet="Good afternoon";
+
+    document.getElementById("greetingText").innerHTML=
+        `${greet}, ${firstName} <span class="wave-emoji">👋</span>`;
+
+    if(data.avatar){
+
+        document.getElementById("topbarAvatar").innerHTML=
+            `<img src="${data.avatar}">`;
+
+    }else{
+
+        const initials=data.name
+            .split(" ")
+            .map(x=>x[0])
+            .join("")
+            .substring(0,2)
+            .toUpperCase();
+
+        document.getElementById("topbarAvatar").innerText=initials;
+    }
+
+}
+
+loadResidentProfile();
