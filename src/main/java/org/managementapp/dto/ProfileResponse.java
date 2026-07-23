@@ -8,9 +8,11 @@ public class ProfileResponse {
     private String flatNumber;
     private String societyName;
     private String societyAddress;
+    private String avatar; // base64 data-URL of the profile photo, e.g. "data:image/png;base64,..."
 
     public ProfileResponse(String name, String email, String phone, String role,
-                            String flatNumber, String societyName, String societyAddress) {
+                           String flatNumber, String societyName, String societyAddress,
+                           String avatar) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -18,6 +20,7 @@ public class ProfileResponse {
         this.flatNumber = flatNumber;
         this.societyName = societyName;
         this.societyAddress = societyAddress;
+        this.avatar = avatar;
     }
 
     public String getName() { return name; }
@@ -40,4 +43,7 @@ public class ProfileResponse {
 
     public String getSocietyAddress() { return societyAddress; }
     public void setSocietyAddress(String societyAddress) { this.societyAddress = societyAddress; }
+
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 }

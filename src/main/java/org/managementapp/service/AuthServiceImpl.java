@@ -139,7 +139,8 @@ public class AuthServiceImpl implements AuthService {
                 user.getRole(),
                 user.getFlatNumber(),
                 society != null ? society.getName() : null,
-                society != null ? society.getAddress() : null
+                society != null ? society.getAddress() : null,
+                user.getAvatar()
         );
     }
 
@@ -167,6 +168,11 @@ public class AuthServiceImpl implements AuthService {
             user.setFlatNumber(request.getFlatNumber().trim());
         }
 
+        // Profile photo update (base64 data-URL sent from frontend)
+        if (request.getAvatar() != null && !request.getAvatar().trim().isEmpty()) {
+            user.setAvatar(request.getAvatar().trim());
+        }
+
         userRepository.save(user);
 
         Society society = user.getSociety();
@@ -185,7 +191,8 @@ public class AuthServiceImpl implements AuthService {
                 user.getRole(),
                 user.getFlatNumber(),
                 society != null ? society.getName() : null,
-                society != null ? society.getAddress() : null
+                society != null ? society.getAddress() : null,
+                user.getAvatar()
         );
     }
 }

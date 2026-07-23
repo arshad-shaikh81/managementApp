@@ -22,6 +22,23 @@
 
     // Expose the first name for the greeting below
     window.__loggedInFirstName = name.trim().split(/\s+/)[0] || name;
+
+    // Agar profile photo save hui hai backend me, use yahan bhi dikhao (initials ki jagah)
+    const token = localStorage.getItem('token');
+    if (avatarEl && token) {
+        fetch('https://managementapp-38ex.onrender.com/api/auth/me', {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+            .then(res => res.ok ? res.json() : null)
+            .then(data => {
+                if (data && data.avatar) {
+                    avatarEl.innerHTML = `<img src="${data.avatar}" alt="Profile Photo">`;
+                    avatarEl.style.padding = '0';
+                }
+            })
+            .catch(() => { /* initials fallback already shown, no big deal */ });
+    }
 })();
 
 // ---------- Greeting based on time of day ----------

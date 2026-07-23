@@ -28,6 +28,11 @@ public class User {
     @Column(name = "flat_number")
     private String flatNumber;
 
+    // Profile photo, base64 data-URL (e.g. "data:image/png;base64,...") stored as TEXT so it survives restarts
+    @Lob
+    @Column(name = "avatar", columnDefinition = "TEXT")
+    private String avatar;
+
     @ManyToOne
     @JoinColumn(name = "society_id")
     private Society society;
@@ -53,6 +58,9 @@ public class User {
 
     public String getFlatNumber() { return flatNumber; }
     public void setFlatNumber(String flatNumber) { this.flatNumber = flatNumber; }
+
+    public String getAvatar() { return avatar; }
+    public void setAvatar(String avatar) { this.avatar = avatar; }
 
     public Society getSociety() { return society; }
     public void setSociety(Society society) { this.society = society; }

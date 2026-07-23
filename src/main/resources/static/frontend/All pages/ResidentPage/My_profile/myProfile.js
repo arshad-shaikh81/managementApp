@@ -40,6 +40,9 @@ function loadRealProfile() {
             syncProfileName(data.name || '');
             syncProfileEmail(data.email || '');
 
+            // Saved profile photo dikhao (agar pehle se database me hai)
+            if (data.avatar) renderAvatarImage(data.avatar);
+
             if (greetingEl) {
                 const hour = new Date().getHours();
                 let greet = "Good evening";
@@ -152,6 +155,24 @@ const avatarCamBtn = document.getElementById('avatarCamBtn');
 const avatarInput = document.getElementById('avatarInput');
 const mainAvatar = document.getElementById('mainAvatar');
 const topbarAvatar = document.getElementById('topbarAvatar');
+
+// Newly selected photo (base64 data-URL) waiting to be sent on "Save changes".
+// Stays null until user picks a file; backend leaves the photo untouched if this is null.
+let selectedAvatarBase64 = null;
+
+// Show a photo (base64 data-URL) on both avatar circles
+function renderAvatarImage(imageUrl) {
+    if (!imageUrl) return;
+    const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
+    if (mainAvatar) {
+        mainAvatar.innerHTML = imgTag;
+        mainAvatar.style.padding = '0';
+    }
+    if (topbarAvatar) {
+        topbarAvatar.innerHTML = imgTag;
+        topbarAvatar.style.padding = '0';
+    }
+}
 
 // Form Input Elements
 const fullNameInput = document.getElementById('fullName');
@@ -314,7 +335,8 @@ if (profileForm) {
 
         const payload = {
             name: fullNameInput ? fullNameInput.value.trim() : '',
-            flatNumber: homeNoInput ? homeNoInput.value.trim() : ''
+            flatNumber: homeNoInput ? homeNoInput.value.trim() : '',
+            avatar: selectedAvatarBase64 // null jab tak koi nayi photo select nahi ki, backend isko ignore karega
         };
 
         fetch(API_BASE_URL + '/api/auth/me', {
@@ -339,6 +361,8 @@ if (profileForm) {
 
                 syncProfileName(data.name || '');
                 syncProfileEmail(data.email || '');
+                if (data.avatar) renderAvatarImage(data.avatar);
+                selectedAvatarBase64 = null; // already saved, ab tak ka "pending" upload clear karo
 
                 showToast('Profile details saved successfully!', 'success');
             })
@@ -366,21 +390,45 @@ if (avatarCamBtn && avatarInput) {
 
     avatarInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const imageUrl = event.target.result;
-                const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
-                if (mainAvatar) {
-                    mainAvatar.innerHTML = imgTag;
-                    mainAvatar.style.padding = '0';
+        if (!file || !file.type.startsWith('image/')) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const rawImageUrl = event.target.result;
+
+            // Photo ko chhota kar do (max 300x300) taaki upload fast ho aur
+            // database me bohot bada base64 store na ho
+            const img = new Image();
+            img.onload = function () {
+                const maxSize = 300;
+                let { width, height } = img;
+                if (width > height && width > maxSize) {
+                    height = Math.round(height * (maxSize / width));
+                    width = maxSize;
+                } else if (height > maxSize) {
+                    width = Math.round(width * (maxSize / height));
+                    height = maxSize;
                 }
-                if (topbarAvatar) {
-                    topbarAvatar.innerHTML = imgTag;
-                    topbarAvatar.style.padding = '0';
-                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
+                const compressedUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+                // Turant preview dikhao
+                renderAvatarImage(compressedUrl);
+
+                // Save changes dabane par yehi backend ko jayega
+                selectedAvatarBase64 = compressedUrl;
             };
-            reader.readAsDataURL(file);
-        }
+            img.onerror = function () {
+                renderAvatarImage(rawImageUrl);
+                selectedAvatarBase64 = rawImageUrl;
+            };
+            img.src = rawImageUrl;
+        };
+        reader.readAsDataURL(file);
     });
 }
