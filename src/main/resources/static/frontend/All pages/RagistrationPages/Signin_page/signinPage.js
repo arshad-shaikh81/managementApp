@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         // Redirect to login page after a short pause so the message is visible
                         setTimeout(() => {
-                            window.location.href = '../Login_page/loginPage.html';
+                            window.location.href = '../Login_page/index.html';
                         }, 1200);
                     } else if (data && data.toLowerCase().includes('society not found')) {
                         // Show this specific error right under the Society Name field
