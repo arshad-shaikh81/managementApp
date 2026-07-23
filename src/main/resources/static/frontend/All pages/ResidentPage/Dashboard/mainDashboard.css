@@ -814,14 +814,15 @@ img, svg{
 
 /* ---------------- FOOTER ---------------- */
 .site-footer{
-    background:var(--card);
+    background: var(--card);
     border:1px solid var(--border);
     border-radius:var(--radius);
     box-shadow:var(--shadow);
-    padding:28px 32px 22px 32px;
+    padding:28px 32px 22px;
     margin-top:24px;
-    height: 150px;
-    width: 16px;
+
+    width:100%;
+    height:auto;
 }
 .footer-top{
     display:flex;
@@ -1283,4 +1284,7 @@ img, svg{
     .stat-icon{ width:32px; height:32px; }
     .bar{ width:12px; }
     .dropdown{ position:fixed; left:16px; right:16px; width:200px !important; max-width:none; top:64px; margin-left: 120px }
+}
+html{
+    scroll-behavior:smooth;
 }
