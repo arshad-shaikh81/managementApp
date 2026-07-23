@@ -154,6 +154,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ============================================
+    // Society dropdown: show custom text field only
+    // when "Other" is selected
+    // ============================================
+    const societySelect = document.getElementById('society');
+    const societyOtherField = document.getElementById('societyOtherField');
+    const societyOtherInput = document.getElementById('societyOther');
+
+    function getSelectedSocietyName() {
+        if (!societySelect) return '';
+        if (societySelect.value === '__other__') {
+            return societyOtherInput ? societyOtherInput.value.trim() : '';
+        }
+        return societySelect.value;
+    }
+
+    if (societySelect) {
+        societySelect.addEventListener('change', () => {
+            const isOther = societySelect.value === '__other__';
+            if (societyOtherField) {
+                societyOtherField.style.display = isOther ? 'block' : 'none';
+            }
+            if (societyOtherInput) {
+                societyOtherInput.required = isOther;
+                if (!isOther) societyOtherInput.value = '';
+            }
+        });
+    }
+
+    // ============================================
     // Form submission
     // ============================================
     const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
@@ -193,6 +222,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const selectedSociety = getSelectedSocietyName();
+            if (!selectedSociety) {
+                if (societyHint) {
+                    societyHint.textContent = societySelect && societySelect.value === '__other__'
+                        ? 'Please type your society name'
+                        : 'Please select your society';
+                    societyHint.className = 'hint-msg error';
+                }
+                if (societySelect && societySelect.value === '__other__' && societyOtherInput) {
+                    societyOtherInput.focus();
+                } else if (societySelect) {
+                    societySelect.focus();
+                }
+                return;
+            }
+
             if (!/^\d{4}$/.test(passwordInput.value)) {
                 passwordHint.textContent = 'Password must be exactly 4 digits';
                 passwordHint.className = 'hint-msg error';
@@ -210,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: document.getElementById('email').value.trim(),
                 phoneNumber: document.getElementById('phone').value.trim(),
                 password: passwordInput.value,
-                societyName: document.getElementById('society').value.trim(),
+                societyName: selectedSociety,
                 flatNumber: document.getElementById('flat').value.trim()
             };
 
