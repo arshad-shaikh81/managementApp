@@ -439,12 +439,18 @@ async function loadResidentProfile() {
     document.getElementById("greetingText").innerHTML=
         `${greet}, ${firstName} <span class="wave-emoji">👋</span>`;
 
-    if(data.avatar){
+    const avatarValue = data.avatar;
+
+    if (
+        avatarValue &&
+        typeof avatarValue === "string" &&
+        (avatarValue.startsWith("http") || avatarValue.startsWith("/"))
+    ) {
 
         topbarAvatar.innerHTML =
-            `<img src="${data.avatar}" alt="Profile">`;
+            `<img src="${avatarValue}" alt="Profile">`;
 
-    }else{
+    } else {
 
         topbarAvatar.innerHTML =
             `<img src="/frontend/All%20pages/images/avatar.png" alt="Default Avatar">`;
