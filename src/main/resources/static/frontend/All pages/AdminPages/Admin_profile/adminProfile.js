@@ -278,6 +278,29 @@ function validateEmail() {
     return true;
 }
 
+// =====================================================
+// ---------- TOAST (chota nice popup, alert() ki jagah) ----------
+// =====================================================
+function showToast(message, type) {
+    let toast = document.getElementById('profileToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'profileToast';
+        document.body.appendChild(toast);
+    }
+    toast.className = 'profile-toast ' + (type === 'error' ? 'profile-toast-error' : 'profile-toast-success');
+    toast.textContent = message;
+
+    // Reflow taaki animation dobara trigger ho har baar
+    void toast.offsetWidth;
+    toast.classList.add('show');
+
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 // Save changes form submit
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
@@ -293,9 +316,67 @@ if (profileForm) {
             return;
         }
 
-        if (isPhoneValid && isEmailValid) {
-            alert('Profile details saved successfully!');
+        if (!isPhoneValid || !isEmailValid) return;
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+            return;
         }
+
+        const saveBtn = profileForm.querySelector('button[type="submit"]');
+        const originalBtnText = saveBtn ? saveBtn.innerText : '';
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerText = 'Saving...';
+        }
+
+        const homeNoInput = document.getElementById('homeNo');
+        const addressInput = document.getElementById('address');
+
+        const payload = {
+            name: fullNameInput ? fullNameInput.value.trim() : '',
+            flatNumber: homeNoInput ? homeNoInput.value.trim() : '',
+            address: addressInput ? addressInput.value.trim() : ''
+        };
+
+        fetch(API_BASE_URL + '/api/auth/me', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(async (response) => {
+                const data = await response.json().catch(() => null);
+
+                if (!response.ok) {
+                    const errMsg = (data && typeof data === 'string') ? data : 'Could not save changes. Please try again.';
+                    showToast(errMsg, 'error');
+                    return;
+                }
+
+                // Backend se aaya saved data se form/header sync karo
+                if (fullNameInput && data.name !== undefined) fullNameInput.value = data.name || '';
+                if (homeNoInput && data.flatNumber !== undefined) homeNoInput.value = data.flatNumber || '';
+                if (addressInput && data.societyAddress !== undefined) addressInput.value = data.societyAddress || '';
+
+                syncProfileName(data.name || '');
+                syncProfileEmail(data.email || '');
+
+                showToast('Profile details saved successfully!', 'success');
+            })
+            .catch((error) => {
+                console.error('Profile save failed:', error);
+                showToast('Network error. Please check your connection and try again.', 'error');
+            })
+            .finally(() => {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerText = originalBtnText;
+                }
+            });
     });
 }
 

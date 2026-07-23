@@ -716,3 +716,53 @@ input.input-error {
         text-align: center;
     }
 }
+/* =====================================================
+   TOAST NOTIFICATION (replaces browser alert())
+===================================================== */
+.profile-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%) translateY(20px);
+    min-width: 260px;
+    max-width: 90vw;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(16, 24, 40, 0.18), 0 2px 6px rgba(16, 24, 40, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.profile-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.profile-toast-success {
+    background: #1f9d55;
+}
+
+.profile-toast-error {
+    background: #e0473f;
+}
+
+@media (max-width: 640px) {
+    .profile-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 20px;
+        transform: translateY(20px);
+        min-width: 0;
+        max-width: none;
+        text-align: center;
+    }
+
+    .profile-toast.show {
+        transform: translateY(0);
+    }
+}

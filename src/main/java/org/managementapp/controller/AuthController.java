@@ -4,6 +4,7 @@ import org.managementapp.dto.LoginRequest;
 import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.RegisterSocietyRequest;
 import org.managementapp.dto.RegisterResidentRequest;
+import org.managementapp.dto.UpdateProfileRequest;
 import org.managementapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,21 @@ public class AuthController {
             }
             String token = authHeader.substring(7); // "Bearer " ke baad ka part
             return ResponseEntity.ok(authService.getProfile(token));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
+    // Profile update (naam, flat number, address) - "Save changes" button isko call karega
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMe(@RequestHeader("Authorization") String authHeader,
+                                      @RequestBody UpdateProfileRequest request) {
+        try {
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).body("Missing or invalid Authorization header");
+            }
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(authService.updateProfile(token, request));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }

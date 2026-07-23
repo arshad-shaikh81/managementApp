@@ -5,6 +5,7 @@ import org.managementapp.dto.LoginResponse;
 import org.managementapp.dto.ProfileResponse;
 import org.managementapp.dto.RegisterResidentRequest;
 import org.managementapp.dto.RegisterSocietyRequest;
+import org.managementapp.dto.UpdateProfileRequest;
 import org.managementapp.entity.Society;
 import org.managementapp.entity.User;
 import org.managementapp.repository.SocietyRepository;
@@ -130,6 +131,52 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Society society = user.getSociety();
+
+        return new ProfileResponse(
+                user.getName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole(),
+                user.getFlatNumber(),
+                society != null ? society.getName() : null,
+                society != null ? society.getAddress() : null
+        );
+    }
+
+    // ---------------- UPDATE LOGGED-IN USER'S PROFILE ----------------
+    @Override
+    public ProfileResponse updateProfile(String token, UpdateProfileRequest request) {
+
+        String email;
+        try {
+            email = jwtUtil.extractEmail(token);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Invalid or expired session. Please login again.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Naam update
+        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            user.setName(request.getName().trim());
+        }
+
+        // Flat / house number update
+        if (request.getFlatNumber() != null && !request.getFlatNumber().trim().isEmpty()) {
+            user.setFlatNumber(request.getFlatNumber().trim());
+        }
+
+        userRepository.save(user);
+
+        Society society = user.getSociety();
+
+        // Address society-level hai, isliye sirf admin hi society address update kar sakta he
+        if (society != null && "admin".equalsIgnoreCase(user.getRole())
+                && request.getAddress() != null && !request.getAddress().trim().isEmpty()) {
+            society.setAddress(request.getAddress().trim());
+            societyRepository.save(society);
+        }
 
         return new ProfileResponse(
                 user.getName(),
