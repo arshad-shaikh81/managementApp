@@ -8,9 +8,91 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const phoneInput = document.getElementById('phone');
     const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
+    const LOGIN_PAGE_URL = '../Login_page/loginPage.html';
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const phonePattern = /^[0-9]{10}$/;
+
+    // ===== 0. Toast Notification System (replaces alert()) =====
+    (function injectToastStyles() {
+        if (document.getElementById('toast-style-tag')) return;
+        const style = document.createElement('style');
+        style.id = 'toast-style-tag';
+        style.textContent = `
+            #toast-container {
+                position: fixed;
+                top: 24px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+                pointer-events: none;
+            }
+            .toast {
+                min-width: 260px;
+                max-width: 90vw;
+                padding: 14px 20px;
+                border-radius: 10px;
+                font-size: 14.5px;
+                font-weight: 500;
+                color: #fff;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                opacity: 0;
+                transform: translateY(-16px);
+                animation: toast-in 0.35s ease forwards;
+                pointer-events: auto;
+            }
+            .toast.hide {
+                animation: toast-out 0.3s ease forwards;
+            }
+            .toast-success { background: linear-gradient(135deg, #16a34a, #15803d); }
+            .toast-error   { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+            .toast-icon { flex-shrink: 0; display: flex; }
+            @keyframes toast-in {
+                from { opacity: 0; transform: translateY(-16px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes toast-out {
+                from { opacity: 1; transform: translateY(0); }
+                to   { opacity: 0; transform: translateY(-16px); }
+            }
+        `;
+        document.head.appendChild(style);
+    })();
+
+    function getToastContainer() {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            document.body.appendChild(container);
+        }
+        return container;
+    }
+
+    function showToast(message, type = 'success', duration = 3200) {
+        const container = getToastContainer();
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        const iconSvg = type === 'success'
+            ? '<svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>'
+            : '<svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="13"></line><line x1="12" y1="16" x2="12" y2="16"></line></svg>';
+
+        toast.innerHTML = `${iconSvg}<span>${message}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('hide');
+            toast.addEventListener('animationend', () => toast.remove(), { once: true });
+        }, duration);
+    }
 
     // ===== 1. Live Password & Confirm Password Hints =====
     function updateHints() {
@@ -78,9 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         phoneInput.addEventListener('input', function () {
             this.value = this.value.replace(/\D/g, '').slice(0, 10);
             const field = this.closest('.field');
-            // Only flag as invalid once the user has typed something but
-            // hasn't reached a valid 10-digit number yet is handled on blur,
-            // so we don't show an error mid-typing.
             if (!this.value) {
                 field.classList.remove('invalid');
             } else if (phonePattern.test(this.value)) {
@@ -108,12 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
             input.type = isHidden ? 'text' : 'password';
             btn.setAttribute('aria-label', isHidden ? 'Hide PIN' : 'Show PIN');
 
-            // Swap SVG icon paths
             if (isHidden) {
-                // Eye-Off (Crossed out)
                 svg.innerHTML = `<path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.94 20.94 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a20.9 20.9 0 0 1-3.22 4.44M14.12 14.12a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
             } else {
-                // Eye (Normal)
                 svg.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
             }
         });
@@ -124,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signInLink) {
         signInLink.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = "../Login_page/loginPage.html";
+            window.location.href = LOGIN_PAGE_URL;
         });
     }
 
@@ -135,10 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         let valid = true;
 
-        // Clear previous invalid states
         document.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
 
-        // Check required fields
         const requiredFields = ['societyName', 'societyAddress', 'regNumber', 'adminName', 'phone', 'email'];
         requiredFields.forEach(id => {
             const input = document.getElementById(id);
@@ -149,21 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Email validation
         const emailField = emailInput.closest('.field');
         if (emailInput.value.trim() && !emailPattern.test(emailInput.value.trim())) {
             emailField.classList.add('invalid');
             valid = false;
         }
 
-        // Phone validation
         const phoneField = phoneInput.closest('.field');
         if (phoneInput.value.trim() && !phonePattern.test(phoneInput.value.trim())) {
             phoneField.classList.add('invalid');
             valid = false;
         }
 
-        // Password validation
         const pinField = passwordInput.closest('.field');
         if (!pinPattern.test(passwordInput.value)) {
             pinField.classList.add('invalid');
@@ -172,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
             valid = false;
         }
 
-        // Confirm Password validation
         const confirmField = confirmInput.closest('.field');
         if (!pinPattern.test(confirmInput.value) || confirmInput.value !== passwordInput.value) {
             confirmField.classList.add('invalid');
@@ -182,10 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!valid) {
-            return; // Stop submission if invalid
+            return;
         }
 
-        // Build payload
         const payload = {
             societyName: document.getElementById('societyName').value.trim(),
             address: document.getElementById('societyAddress').value.trim(),
@@ -199,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitBtn = form.querySelector('.submit-btn');
         const originalBtnText = submitBtn.textContent;
 
-        // Loading state
         submitBtn.disabled = true;
         submitBtn.textContent = 'Registering...';
 
@@ -211,28 +279,34 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(async (response) => {
                 const data = await response.text();
                 if (response.ok) {
-                    alert(data || 'Society aur Admin account successfully create ho gaya!');
+                    showToast(data || 'Society & Admin account created successfully!', 'success');
                     form.reset();
-                    updateHints(); // Reset hints to default
+                    updateHints();
+                    submitBtn.textContent = 'Redirecting to login...';
+                    setTimeout(() => {
+                        window.location.href = LOGIN_PAGE_URL;
+                    }, 1500);
+                    return; // keep button disabled while redirecting
                 } else {
-                    alert('Error: ' + data);
+                    showToast(data || 'Something went wrong. Please try again.', 'error');
                 }
             })
             .catch((error) => {
-                alert('Network error: could not reach server. Is the backend running on ' + API_BASE_URL + '?');
+                showToast('Network error: could not reach server.', 'error');
                 console.error('Fetch error:', error);
             })
             .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
+                // Only re-enable if we're NOT redirecting (i.e. an error happened)
+                if (!submitBtn.textContent.includes('Redirecting')) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
             });
     });
 });
 
 // ============================================
 // Floating particles (crystal live background)
-// Self-contained: runs independently of the
-// form logic above.
 // ============================================
 (function () {
     function spawnParticles(id, count, colors) {
