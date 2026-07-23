@@ -2,23 +2,23 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/index" },
+    { "source": "/", "destination": "/index.html" },
 
-    { "source": "/home", "destination": "/ResidentPage/Home_page/homePage" },
-    { "source": "/dashboard", "destination": "/ResidentPage/Dashboard/mainDashboard" },
-    { "source": "/profile", "destination": "/ResidentPage/My_profile/profile" },
-    { "source": "/login", "destination": "/RagistrationPages/Login_page/loginPage" },
-    { "source": "/signup", "destination": "/RagistrationPages/Signin_page/signinPage" },
-    { "source": "/register-society", "destination": "/RagistrationPages/Society_registration/societyRegistration" },
-    { "source": "/forgot-password", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage" },
+    { "source": "/home", "destination": "/RagistrationPages/Home_page/homePage.html" },
+    { "source": "/login", "destination": "/RagistrationPages/Login_page/loginPage.html" },
+    { "source": "/signup", "destination": "/RagistrationPages/Signin_page/signinPage.html" },
+    { "source": "/register-society", "destination": "/RagistrationPages/Society_registration/societyRegistration.html" },
+    { "source": "/forgot-password", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage.html" },
+
+    { "source": "/dashboard", "destination": "/ResidentPage/Dashboard/mainDashboard.html" },
+    { "source": "/profile", "destination": "/ResidentPage/My_profile/profile.html" },
+
+    { "source": "/admin", "destination": "/AdminPages/index.html" },
 
     { "source": "/favicon.svg", "destination": "/favicon.svg" },
 
-    { "source": "/homePage.css", "destination": "/ResidentPage/Home_page/homePage.css" },
-    { "source": "/homePage.js", "destination": "/ResidentPage/Home_page/homePage.js" },
-    { "source": "/mainDashboard.css", "destination": "/ResidentPage/Dashboard/mainDashboard.css" },
-    { "source": "/mainDashboard.js", "destination": "/ResidentPage/Dashboard/mainDashboard.js" },
-    { "source": "/profile.css", "destination": "/ResidentPage/My_profile/profile.css" },
+    { "source": "/homePage.css", "destination": "/RagistrationPages/Home_page/homePage.css" },
+    { "source": "/homePage.js", "destination": "/RagistrationPages/Home_page/homePage.js" },
     { "source": "/loginPage.css", "destination": "/RagistrationPages/Login_page/loginPage.css" },
     { "source": "/loginPage.js", "destination": "/RagistrationPages/Login_page/loginPage.js" },
     { "source": "/signinPage.css", "destination": "/RagistrationPages/Signin_page/signinPage.css" },
@@ -26,6 +26,9 @@
     { "source": "/societyRegistration.css", "destination": "/RagistrationPages/Society_registration/societyRegistration.css" },
     { "source": "/societyRegistration.js", "destination": "/RagistrationPages/Society_registration/societyRegistration.js" },
     { "source": "/forgotPasswordPage.css", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage.css" },
-    { "source": "/forgotPasswordPage.js", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage.js" }
+    { "source": "/forgotPasswordPage.js", "destination": "/RagistrationPages/ForgotPassword_page/forgotPasswordPage.js" },
+    { "source": "/mainDashboard.css", "destination": "/ResidentPage/Dashboard/mainDashboard.css" },
+    { "source": "/mainDashboard.js", "destination": "/ResidentPage/Dashboard/mainDashboard.js" },
+    { "source": "/profile.css", "destination": "/ResidentPage/My_profile/profile.css" }
   ]
 }
