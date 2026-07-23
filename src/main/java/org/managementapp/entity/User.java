@@ -28,8 +28,11 @@ public class User {
     @Column(name = "flat_number")
     private String flatNumber;
 
-    // Profile photo, base64 data-URL (e.g. "data:image/png;base64,...") stored as TEXT so it survives restarts
-    @Lob
+    // Profile photo, base64 data-URL (e.g. "data:image/png;base64,...") stored as TEXT
+    // so it survives restarts. NOTE: @Lob removed on purpose — Supabase's pooled
+    // connection (PgBouncer, port 6543) doesn't support Hibernate's LOB streaming
+    // and throws "Unable to access lob stream". Plain @Column(columnDefinition
+    // = "TEXT") stores/reads it as a normal string column instead, which works fine.
     @Column(name = "avatar", columnDefinition = "TEXT")
     private String avatar;
 
