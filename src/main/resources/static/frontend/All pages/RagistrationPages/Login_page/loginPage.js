@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 
                         setTimeout(() => {
-                            window.location.href = '../../ResidentPage/Dashboard/index.html';
+                            window.location.href = '../../ResidentPage/Dashboard/mainDashboard.html';
                         }, 1000);
                     } else {
                         // Wrong email or wrong password -> backend rejects it
