@@ -441,19 +441,14 @@ async function loadResidentProfile() {
 
     if(data.avatar){
 
-        document.getElementById("topbarAvatar").innerHTML=
-            `<img src="${data.avatar}">`;
+        topbarAvatar.innerHTML =
+            `<img src="${data.avatar}" alt="Profile">`;
 
     }else{
 
-        const initials=data.name
-            .split(" ")
-            .map(x=>x[0])
-            .join("")
-            .substring(0,2)
-            .toUpperCase();
+        topbarAvatar.innerHTML =
+            `<img src="/images/avatar.png" alt="Default Avatar">`;
 
-        document.getElementById("topbarAvatar").innerText=initials;
     }
 
 }
