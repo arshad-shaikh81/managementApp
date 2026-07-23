@@ -53,12 +53,14 @@ public class AuthServiceImpl implements AuthService {
         society.setAddress(request.getAddress());
         society.setRegistrationNumber(request.getRegistrationNumber());
         society.setEmail(request.getEmail());
+        society.setFlatNumber(request.getFlatNumber());
         societyRepository.save(society);
 
         User admin = new User();
         admin.setName(request.getAdminName());
         admin.setPhone(request.getPhone());
         admin.setEmail(request.getEmail());
+        admin.setFlatNumber(request.getFlatNumber());
         admin.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         admin.setRole("admin");
         admin.setSociety(society);

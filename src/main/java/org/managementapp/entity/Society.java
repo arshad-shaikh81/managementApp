@@ -22,6 +22,9 @@ public class Society {
     @Column
     private String email;
 
+    @Column(name = "flat_number")
+    private String flatNumber;
+
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -37,4 +40,7 @@ public class Society {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getFlatNumber() { return flatNumber; }
+    public void setFlatNumber(String flatNumber) { this.flatNumber = flatNumber; }
 }
