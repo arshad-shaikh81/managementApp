@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         localStorage.setItem('token', data.token);
                         localStorage.setItem('role', data.role);
                         localStorage.setItem('name', data.name);
+                        localStorage.setItem('email', email);
 
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 

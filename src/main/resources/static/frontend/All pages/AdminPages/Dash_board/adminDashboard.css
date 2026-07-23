@@ -820,8 +820,7 @@ img, svg{
     box-shadow:var(--shadow);
     padding:28px 32px 22px 32px;
     margin-top:24px;
-    height: 150px;
-    width: 16px;
+    width:100%;
 }
 .footer-top{
     display:flex;

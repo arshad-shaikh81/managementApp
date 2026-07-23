@@ -1,10 +1,37 @@
+// ---------- Populate logged-in admin's info ----------
+(function populateAdminInfo(){
+    const name = localStorage.getItem('name') || 'Admin';
+    const email = localStorage.getItem('email') || '';
+
+    // Initials for the avatar circle (e.g. "Shaikh Arshad" -> "SA")
+    const initials = name
+        .trim()
+        .split(/\s+/)
+        .map(part => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
+
+    const avatarEl = document.querySelector('#userBtn .avatar');
+    const unameEl = document.querySelector('#userBtn .uname');
+    const dropdownEmailEl = document.querySelector('.dropdown-email');
+
+    if (avatarEl) avatarEl.textContent = initials || 'A';
+    if (unameEl) unameEl.textContent = name;
+    if (dropdownEmailEl && email) dropdownEmailEl.textContent = email;
+
+    // Expose the first name for the greeting below
+    window.__loggedInFirstName = name.trim().split(/\s+/)[0] || name;
+})();
+
 // ---------- Greeting based on time of day ----------
 (function setGreeting(){
     const hour = new Date().getHours();
     let greet = "Good evening";
     if (hour < 12) greet = "Good morning";
     else if (hour < 17) greet = "Good afternoon";
-    document.getElementById('greetingText').innerHTML = `${greet}, shaikh <span class="wave-emoji">👋</span>`;
+    const firstName = window.__loggedInFirstName || 'Admin';
+    document.getElementById('greetingText').innerHTML = `${greet}, ${firstName} <span class="wave-emoji">👋</span>`;
 })();
 
 // ---------- Mobile sidebar (hamburger) ----------
