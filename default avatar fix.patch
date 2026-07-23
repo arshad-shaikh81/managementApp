@@ -1,0 +1,254 @@
+diff --git a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.css b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.css
+index 67bad94..1dd2973 100644
+--- a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.css
++++ b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.css
+@@ -416,6 +416,12 @@ img, svg {
+     border-radius: 50%;
+ }
+
++.avatar svg, .avatar-lg svg {
++    width: 100%;
++    height: 100%;
++    display: block;
++}
++
+ .user-text { min-width: 0; }
+
+ .user-text .uname {
+diff --git a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.html b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.html
+index 2efbd76..1427228 100644
+--- a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.html
++++ b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.html
+@@ -155,7 +155,7 @@
+                 </div>
+                 <div class="user-wrap">
+                     <div class="user" id="userBtn">
+-                        <div class="avatar" id="topbarAvatar">…</div>
++                        <div class="avatar" id="topbarAvatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad1)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="user-text">
+                             <div class="uname" id="topbarUserName">Loading...</div>
+                             <div class="urole">Society Admin</div>
+@@ -184,7 +184,7 @@
+             <div class="card">
+                 <div class="profile-header">
+                     <div class="avatar-lg-wrap">
+-                        <div class="avatar-lg" id="mainAvatar">…</div>
++                        <div class="avatar-lg" id="mainAvatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad2)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="avatar-cam" id="avatarCamBtn">
+                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+diff --git a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.js b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.js
+index ad926cc..622a9d8 100644
+--- a/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.js
++++ b/src/main/resources/static/frontend/All pages/AdminPages/Admin_profile/adminProfile.js
+@@ -181,14 +181,20 @@ const avatarInput = document.getElementById('avatarInput');
+ const mainAvatar = document.getElementById('mainAvatar');
+ const topbarAvatar = document.getElementById('topbarAvatar');
+
++// Default avatar icon (shown whenever the admin hasn't uploaded a real photo yet)
++const DEFAULT_AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGradFallback" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGradFallback)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg>';
++window.DEFAULT_AVATAR_SVG = DEFAULT_AVATAR_SVG;
++
+ // Newly selected photo (base64 data-URL) waiting to be sent on "Save changes".
+ // Stays null until user picks a file; backend leaves the photo untouched if this is null.
+ let selectedAvatarBase64 = null;
+
+ // Show a photo (base64 data-URL) on both avatar circles
+ function renderAvatarImage(imageUrl) {
+-    if (!imageUrl) return;
+-    const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
++    if (!imageUrl || typeof imageUrl !== 'string') return;
++    const isValidSrc = imageUrl.startsWith('data:image') || imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('/');
++    if (!isValidSrc) return;
++    const imgTag = `<img src="${imageUrl}" alt="Profile Photo" onerror="this.parentElement.innerHTML=window.DEFAULT_AVATAR_SVG||'';this.parentElement.style.padding='0';">`;
+     if (mainAvatar) {
+         mainAvatar.innerHTML = imgTag;
+         mainAvatar.style.padding = '0';
+@@ -212,24 +218,15 @@ const emailError = document.getElementById('emailError');
+ const profileDisplayEmail = document.getElementById('profileDisplayEmail');
+ const topbarUserEmail = document.getElementById('topbarUserEmail');
+
+-// Generate initials (e.g. "shaikh arshad" -> "SA")
+-function getAvatarInitials(name) {
+-    if (!name || name.trim() === '') return '?';
+-    const words = name.trim().split(/\s+/);
+-    if (words.length === 1) {
+-        return words[0][0].toUpperCase();
+-    }
+-    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+-}
+-
+-// Update initials on both avatar circles if no photo is set
++// Show the default building icon on both avatar circles if no photo is set
+ function updateAvatarInitials(name) {
+-    const initials = getAvatarInitials(name);
+     if (mainAvatar && !mainAvatar.querySelector('img')) {
+-        mainAvatar.innerText = initials;
++        mainAvatar.innerHTML = DEFAULT_AVATAR_SVG;
++        mainAvatar.style.padding = '0';
+     }
+     if (topbarAvatar && !topbarAvatar.querySelector('img')) {
+-        topbarAvatar.innerText = initials;
++        topbarAvatar.innerHTML = DEFAULT_AVATAR_SVG;
++        topbarAvatar.style.padding = '0';
+     }
+ }
+
+diff --git a/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.css b/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.css
+index d2a2ebc..7c59839 100644
+--- a/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.css
++++ b/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.css
+@@ -372,6 +372,13 @@ img, svg{
+     font-weight:700;
+     font-size:13px;
+     flex-shrink:0;
++    overflow:hidden;
++}
++
++.avatar svg{
++    width:100%;
++    height:100%;
++    display:block;
+ }
+ .user-text{ min-width:0; }
+ .user-text .uname{
+diff --git a/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.html b/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.html
+index 875d0d6..962e516 100644
+--- a/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.html
++++ b/src/main/resources/static/frontend/All pages/AdminPages/Dash_board/adminDashboard.html
+@@ -155,7 +155,7 @@
+                 </div>
+                 <div class="user-wrap">
+                     <div class="user" id="userBtn">
+-                        <div class="avatar">A</div>
++                        <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad1)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="user-text">
+                             <div class="uname">Loading...</div>
+                             <div class="urole">Society Admin</div>
+diff --git a/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.css b/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.css
+index 6ee7564..cfbefa5 100644
+--- a/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.css
++++ b/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.css
+@@ -372,6 +372,13 @@ img, svg{
+     font-weight:700;
+     font-size:13px;
+     flex-shrink:0;
++    overflow:hidden;
++}
++
++.avatar svg{
++    width:100%;
++    height:100%;
++    display:block;
+ }
+ .user-text{ min-width:0; }
+ .user-text .uname{
+diff --git a/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.html b/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.html
+index 0342642..53bf78c 100644
+--- a/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.html
++++ b/src/main/resources/static/frontend/All pages/ResidentPage/Dashboard/mainDashboard.html
+@@ -155,7 +155,7 @@
+                 </div>
+                 <div class="user-wrap">
+                     <div class="user" id="userBtn">
+-                        <div class="avatar">SA</div>
++                        <div class="avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad1)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="user-text">
+                             <div class="uname">shaikh arshad</div>
+                             <div class="urole">Society Resident</div>
+diff --git a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.css b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.css
+index bdae50c..3d676f8 100644
+--- a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.css
++++ b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.css
+@@ -386,6 +386,12 @@ img, svg {
+     border-radius: 50%;
+ }
+
++.avatar svg, .avatar-lg svg {
++    width: 100%;
++    height: 100%;
++    display: block;
++}
++
+ .user-text { min-width: 0; }
+
+ .user-text .uname {
+diff --git a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.html b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.html
+index 5b4e619..450be79 100644
+--- a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.html
++++ b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.html
+@@ -141,7 +141,7 @@
+                 </div>
+                 <div class="user-wrap">
+                     <div class="user" id="userBtn">
+-                        <div class="avatar" id="topbarAvatar">…</div>
++                        <div class="avatar" id="topbarAvatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad1)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="user-text">
+                             <div class="uname" id="topbarUserName">Loading...</div>
+                             <div class="urole">Society Resident</div>
+@@ -169,7 +169,7 @@
+             <div class="card">
+                 <div class="profile-header">
+                     <div class="avatar-lg-wrap">
+-                        <div class="avatar-lg" id="mainAvatar">…</div>
++                        <div class="avatar-lg" id="mainAvatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGrad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGrad2)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg></div>
+                         <div class="avatar-cam" id="avatarCamBtn">
+                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                         </div>
+diff --git a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.js b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.js
+index b81b929..4bf15ec 100644
+--- a/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.js
++++ b/src/main/resources/static/frontend/All pages/ResidentPage/My_profile/myProfile.js
+@@ -156,14 +156,20 @@ const avatarInput = document.getElementById('avatarInput');
+ const mainAvatar = document.getElementById('mainAvatar');
+ const topbarAvatar = document.getElementById('topbarAvatar');
+
++// Default avatar icon (shown whenever the user hasn't uploaded a real photo yet)
++const DEFAULT_AVATAR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="avatar-default-icon"><defs><linearGradient id="avatarGradFallback" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#avatarGradFallback)"/><g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/><path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/><path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/></g></svg>';
++window.DEFAULT_AVATAR_SVG = DEFAULT_AVATAR_SVG;
++
+ // Newly selected photo (base64 data-URL) waiting to be sent on "Save changes".
+ // Stays null until user picks a file; backend leaves the photo untouched if this is null.
+ let selectedAvatarBase64 = null;
+
+ // Show a photo (base64 data-URL) on both avatar circles
+ function renderAvatarImage(imageUrl) {
+-    if (!imageUrl) return;
+-    const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
++    if (!imageUrl || typeof imageUrl !== 'string') return;
++    const isValidSrc = imageUrl.startsWith('data:image') || imageUrl.startsWith('http://') || imageUrl.startsWith('https://') || imageUrl.startsWith('/');
++    if (!isValidSrc) return;
++    const imgTag = `<img src="${imageUrl}" alt="Profile Photo" onerror="this.parentElement.innerHTML=window.DEFAULT_AVATAR_SVG||'';this.parentElement.style.padding='0';">`;
+     if (mainAvatar) {
+         mainAvatar.innerHTML = imgTag;
+         mainAvatar.style.padding = '0';
+@@ -187,25 +193,15 @@ const emailError = document.getElementById('emailError');
+ const profileDisplayEmail = document.getElementById('profileDisplayEmail');
+ const topbarUserEmail = document.getElementById('topbarUserEmail');
+
+-// Generate initials (e.g., "shaikh arshad" -> "SA")
+-function getAvatarInitials(name) {
+-    if (!name || name.trim() === '') return '?';
+-    const words = name.trim().split(/\s+/);
+-    if (words.length === 1) {
+-        return words[0][0].toUpperCase();
+-    } else {
+-        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+-    }
+-}
+-
+-// Update initials on both avatar circles if no photo is set
++// Show the default building icon on both avatar circles if no photo is set
+ function updateAvatarInitials(name) {
+-    const initials = getAvatarInitials(name);
+     if (mainAvatar && !mainAvatar.querySelector('img')) {
+-        mainAvatar.innerText = initials;
++        mainAvatar.innerHTML = DEFAULT_AVATAR_SVG;
++        mainAvatar.style.padding = '0';
+     }
+     if (topbarAvatar && !topbarAvatar.querySelector('img')) {
+-        topbarAvatar.innerText = initials;
++        topbarAvatar.innerHTML = DEFAULT_AVATAR_SVG;
++        topbarAvatar.style.padding = '0';
+     }
+ }
