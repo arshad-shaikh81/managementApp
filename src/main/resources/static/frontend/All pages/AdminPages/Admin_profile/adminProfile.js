@@ -1,31 +1,35 @@
 // ---------- Greeting based on time of day ----------
-(function setGreeting(){
+(function setGreeting() {
     const hour = new Date().getHours();
     let greet = "Good evening";
     if (hour < 12) greet = "Good morning";
     else if (hour < 17) greet = "Good afternoon";
+
     const greetingEl = document.getElementById('greetingText');
     if (greetingEl) {
         greetingEl.innerHTML = `${greet}, shaikh <span class="wave-emoji">👋</span>`;
     }
 })();
 
-// ---------- Mobile sidebar (hamburger drawer) ----------
+// =====================================================
+// ---------- MOBILE SIDEBAR (HAMBURGER DRAWER) ----------
+// =====================================================
 const sidebar = document.getElementById('sidebar');
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-function openSidebar(){
+function openSidebar() {
     if (sidebar) sidebar.classList.add('open');
     if (sidebarOverlay) sidebarOverlay.classList.add('show');
 }
-function closeSidebar(){
+
+function closeSidebar() {
     if (sidebar) sidebar.classList.remove('open');
     if (sidebarOverlay) sidebarOverlay.classList.remove('show');
 }
 
 if (hamburgerBtn) {
-    hamburgerBtn.addEventListener('click', function(e){
+    hamburgerBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         if (sidebar && sidebar.classList.contains('open')) closeSidebar();
         else openSidebar();
@@ -36,43 +40,61 @@ if (sidebarOverlay) {
     sidebarOverlay.addEventListener('click', closeSidebar);
 }
 
-// ---------- Sidebar navigation active state ----------
-document.getElementById('nav').addEventListener('click', function(e){
-    const link = e.target.closest('a');
-    if(!link) return;
+// =====================================================
+// ---------- SIDEBAR NAVIGATION ----------
+// =====================================================
+const navEl = document.getElementById('nav');
+if (navEl) {
+    navEl.addEventListener('click', function (e) {
+        const link = e.target.closest('a');
+        if (!link) return;
 
-    // Allow real navigation links (like Profile) to work normally
-    if (link.getAttribute('href') !== '#') {
+        const href = link.getAttribute('href');
+
+        // Real navigation link — fade out, then navigate
+        if (href !== '#') {
+            e.preventDefault();
+            closeSidebar();
+            document.body.classList.add('page-fade-out');
+            setTimeout(() => {
+                window.location.href = href;
+            }, 280);
+            return;
+        }
+
+        // Placeholder link — just toggle active state
+        e.preventDefault();
+        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
         closeSidebar();
-        return; // don't preventDefault — let it navigate
-    }
+    });
+}
 
-    e.preventDefault();
-    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-    link.classList.add('active');
-    closeSidebar();
-});
-
+// =====================================================
+// ---------- LOGOUT (SIDEBAR BUTTON) ----------
+// =====================================================
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(){
+    logoutBtn.addEventListener('click', function () {
         window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
     });
 }
 
-// ---------- Dropdowns Handler ----------
+// =====================================================
+// ---------- BELL & USER DROPDOWNS ----------
+// =====================================================
 const bellBtn = document.getElementById('bellBtn');
 const notifDropdown = document.getElementById('notifDropdown');
 const userBtn = document.getElementById('userBtn');
 const userDropdown = document.getElementById('userDropdown');
 
-function closeDropdowns(except){
+function closeDropdowns(except) {
     if (except !== notifDropdown && notifDropdown) notifDropdown.classList.remove('show');
     if (except !== userDropdown && userDropdown) userDropdown.classList.remove('show');
 }
 
 if (bellBtn) {
-    bellBtn.addEventListener('click', function(e){
+    bellBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const willShow = notifDropdown && !notifDropdown.classList.contains('show');
         closeDropdowns();
@@ -81,7 +103,7 @@ if (bellBtn) {
 }
 
 if (userBtn) {
-    userBtn.addEventListener('click', function(e){
+    userBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const willShow = userDropdown && !userDropdown.classList.contains('show');
         closeDropdowns();
@@ -91,25 +113,25 @@ if (userBtn) {
 
 const dropdownLogout = document.getElementById('dropdownLogout');
 if (dropdownLogout) {
-    dropdownLogout.addEventListener('click', function(e){
+    dropdownLogout.addEventListener('click', function (e) {
         e.preventDefault();
         window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
     });
 }
 
-document.addEventListener('click', function(){
+document.addEventListener('click', function () {
     closeDropdowns();
 });
 
 // =====================================================
-// ---------- PROFILE LIVE UPDATES & AVATAR HANDLER
+// ---------- PROFILE LIVE UPDATES & AVATAR HANDLER ----------
 // =====================================================
 const avatarCamBtn = document.getElementById('avatarCamBtn');
 const avatarInput = document.getElementById('avatarInput');
 const mainAvatar = document.getElementById('mainAvatar');
 const topbarAvatar = document.getElementById('topbarAvatar');
 
-// Form Input Elements
+// Form input elements
 const fullNameInput = document.getElementById('fullName');
 const profileDisplayName = document.getElementById('profileDisplayName');
 const topbarUserName = document.getElementById('topbarUserName');
@@ -122,15 +144,14 @@ const emailError = document.getElementById('emailError');
 const profileDisplayEmail = document.getElementById('profileDisplayEmail');
 const topbarUserEmail = document.getElementById('topbarUserEmail');
 
-// Generate initials (e.g., "shaikh arshad" -> "SA")
+// Generate initials (e.g. "shaikh arshad" -> "SA")
 function getAvatarInitials(name) {
     if (!name || name.trim() === '') return '?';
     const words = name.trim().split(/\s+/);
     if (words.length === 1) {
         return words[0][0].toUpperCase();
-    } else {
-        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
     }
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
 
 // Update initials on both avatar circles if no photo is set
@@ -144,7 +165,7 @@ function updateAvatarInitials(name) {
     }
 }
 
-// Master Name Sync
+// Master name sync
 function syncProfileName(newName) {
     const displayValue = newName.trim() || 'User Name';
     if (profileDisplayName) profileDisplayName.innerText = displayValue;
@@ -152,34 +173,32 @@ function syncProfileName(newName) {
     updateAvatarInitials(newName);
 }
 
-// Master Email Sync
+// Master email sync
 function syncProfileEmail(newEmail) {
     const displayValue = newEmail.trim() || 'email@example.com';
     if (profileDisplayEmail) profileDisplayEmail.innerText = displayValue;
     if (topbarUserEmail) topbarUserEmail.innerText = displayValue;
 }
 
-// Page Load Initialization
+// Page load initialization
 if (fullNameInput) {
     syncProfileName(fullNameInput.value);
-
-    fullNameInput.addEventListener('input', function(e) {
+    fullNameInput.addEventListener('input', function (e) {
         syncProfileName(e.target.value);
     });
 }
 
 if (emailInput) {
     syncProfileEmail(emailInput.value);
-
-    emailInput.addEventListener('input', function(e) {
+    emailInput.addEventListener('input', function (e) {
         syncProfileEmail(e.target.value);
         validateEmail();
     });
 }
 
-// Restrict phone input to numbers and max length 10
+// Restrict phone input to numbers, max length 10
 if (phoneInput) {
-    phoneInput.addEventListener('input', function(e) {
+    phoneInput.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
         validatePhone();
     });
@@ -192,11 +211,10 @@ function validatePhone() {
         phoneInput.classList.add('input-error');
         if (phoneError) phoneError.style.display = 'block';
         return false;
-    } else {
-        phoneInput.classList.remove('input-error');
-        if (phoneError) phoneError.style.display = 'none';
-        return true;
     }
+    phoneInput.classList.remove('input-error');
+    if (phoneError) phoneError.style.display = 'none';
+    return true;
 }
 
 function validateEmail() {
@@ -207,17 +225,16 @@ function validateEmail() {
         emailInput.classList.add('input-error');
         if (emailError) emailError.style.display = 'block';
         return false;
-    } else {
-        emailInput.classList.remove('input-error');
-        if (emailError) emailError.style.display = 'none';
-        return true;
     }
+    emailInput.classList.remove('input-error');
+    if (emailError) emailError.style.display = 'none';
+    return true;
 }
 
-// Save Changes Form Submit
+// Save changes form submit
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
-    profileForm.addEventListener('submit', function(e) {
+    profileForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const isPhoneValid = validatePhone();
@@ -235,17 +252,17 @@ if (profileForm) {
     });
 }
 
-// Handle Photo Upload
+// Handle photo upload
 if (avatarCamBtn && avatarInput) {
-    avatarCamBtn.addEventListener('click', function() {
+    avatarCamBtn.addEventListener('click', function () {
         avatarInput.click();
     });
 
-    avatarInput.addEventListener('change', function(e) {
+    avatarInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 const imageUrl = event.target.result;
                 const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
                 if (mainAvatar) {

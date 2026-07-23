@@ -39,6 +39,12 @@ html, body {
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     width: 100%;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.page-fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 @media (min-height: 680px) and (min-width: 1024px) {
@@ -47,18 +53,13 @@ html, body {
         overflow: hidden !important;
     }
 }
+
 .app {
     width: 100%;
     min-height: 100vh;
     display: flex;
 }
-.main {
-    animation: pageFadeIn .45s ease both;
-}
-@keyframes pageFadeIn{
-    0%{ opacity: 0; transform: translateY(14px); }
-    100%{ opacity: 1; transform: translateY(0); }
-}
+
 img, svg {
     max-width: 100%;
 }
@@ -187,6 +188,12 @@ img, svg {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    animation: pageFadeIn 0.45s ease both;
+}
+
+@keyframes pageFadeIn {
+    0% { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 /* ---------------- TOPBAR (60% TRANSPARENT) ---------------- */
@@ -209,36 +216,38 @@ img, svg {
 }
 
 /* ---------------- SEARCH BAR ---------------- */
-.search{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:9px 14px;
-    width:340px;
-    max-width:100%;
-    color:var(--text-soft);
-    font-size:14px;
+.search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 14px;
+    width: 340px;
+    max-width: 100%;
+    color: var(--text-soft);
+    font-size: 14px;
 }
-.search input{
-    border:none;
-    outline:none;
-    background:transparent;
-    font-size:14px;
-    flex:1;
-    min-width:0;
-    font-family:inherit;
-    color:var(--text);
+
+.search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    flex: 1;
+    min-width: 0;
+    font-family: inherit;
+    color: var(--text);
 }
-.search kbd{
-    font-size:11px;
-    color:var(--text-soft);
-    background:var(--bg);
-    border-radius:5px;
-    padding:2px 6px;
-    flex-shrink:0;
+
+.search kbd {
+    font-size: 11px;
+    color: var(--text-soft);
+    background: var(--bg);
+    border-radius: 5px;
+    padding: 2px 6px;
+    flex-shrink: 0;
 }
 
 .topbar-right {
@@ -328,6 +337,19 @@ img, svg {
     padding: 16px;
 }
 
+.dropdown-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.notif-empty {
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--text-soft);
+    padding: 20px 0 8px 0;
+}
+
 .user-dropdown {
     width: 230px;
     max-width: calc(100vw - 32px);
@@ -354,16 +376,24 @@ img, svg {
     color: var(--text);
     text-decoration: none;
 }
-.dropdown-item.logout-item{
-    color:#e5484d;
+
+.dropdown-item:hover {
+    background: var(--bg);
 }
-.dropdown-item.logout-item:hover{
-    background:#fdecec;
-    color:#e5484d;
+
+.dropdown-item.logout-item {
+    color: #e5484d;
 }
-.dropdown-item.logout-item svg{
-    color:#e5484d;
+
+.dropdown-item.logout-item:hover {
+    background: #fdecec;
+    color: #e5484d;
 }
+
+.dropdown-item.logout-item svg {
+    color: #e5484d;
+}
+
 .avatar {
     width: 36px;
     height: 36px;
@@ -414,10 +444,9 @@ img, svg {
     flex: 1;
 }
 
-/* 10PX LOWERED HEADING TEXT */
 .content h1 {
     font-size: 30px;
-    margin: 30px 0 2px 0; /* Added 10px top margin */
+    margin: 30px 0 2px 0;
     font-weight: 800;
     letter-spacing: -0.5px;
 }
@@ -428,7 +457,7 @@ img, svg {
     font-size: 14px;
 }
 
-/* CARD BASE - 18PX BOTTOM MARGIN FOR CLEAN GAP */
+/* CARD BASE */
 .card {
     background: var(--card);
     border: 1px solid #eaecf0;
@@ -544,7 +573,7 @@ label {
     color: var(--text);
 }
 
-/* INPUT CLICK / FOCUS BLUE BORDER STYLING (scoped to the profile form only) */
+/* INPUT FOCUS STYLING (scoped to the profile form only) */
 .card-personal input[type="text"],
 .card-personal input[type="tel"],
 .card-personal input[type="email"] {
