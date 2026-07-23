@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -12,9 +13,29 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Fixed secret key (production mein isko application.properties se lena chahiye)
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
+    // FIXED secret key — ab ye application.properties (ya Render environment
+    // variable) se aayega, isliye server restart/sleep hone par bhi same
+    // key rahegi aur purane tokens invalid nahi honge.
+    //
+    // application.properties me ye line add karo:
+    //   jwt.secret=YourVeryLongRandomSecretStringAtLeast32CharactersLong123456
+    //
+    // Render me: Environment tab me JWT_SECRET naam se ek env variable
+    // add karo (32+ characters ka random string), aur application.properties
+    // me likho: jwt.secret=${JWT_SECRET}
+    @Value("${jwt.secret}")
+    private String secret;
+
+    private Key key;
+
+    private Key getKey() {
+        if (key == null) {
+            key = Keys.hmacShaKeyFor(secret.getBytes());
+        }
+        return key;
+    }
+
+    private final long EXPIRATION = 1000L * 60 * 60 * 24 * 7; // 7 days
 
     public String generateToken(String phone, String role) {
         return Jwts.builder()
@@ -22,7 +43,7 @@ public class JwtUtil {
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key)
+                .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -37,7 +58,7 @@ public class JwtUtil {
 
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

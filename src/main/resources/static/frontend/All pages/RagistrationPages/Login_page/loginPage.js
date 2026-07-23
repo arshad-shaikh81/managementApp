@@ -1,6 +1,39 @@
 // Wait for DOM to fully load before running scripts
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ============================================
+    // AUTO-LOGIN CHECK — agar valid token already hai
+    // toh login form dikhane se pehle hi seedha
+    // dashboard pe bhej do (real-world app jaisa behavior)
+    // ============================================
+    const API_BASE_URL_CHECK = 'https://managementapp-38ex.onrender.com';
+    const existingToken = localStorage.getItem('token');
+
+    if (existingToken) {
+        fetch(API_BASE_URL_CHECK + '/api/auth/me', {
+            headers: { 'Authorization': 'Bearer ' + existingToken }
+        })
+            .then(res => {
+                if (res.ok) {
+                    const role = (localStorage.getItem('role') || '').toLowerCase();
+                    const destination = role === 'admin'
+                        ? '../../AdminPages/Dash_board/adminDashboard.html'
+                        : '../../ResidentPage/Dashboard/mainDashboard.html';
+                    window.location.href = destination;
+                } else {
+                    // token expire/invalid — purana data hata do, login form dikhne do
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('name');
+                    localStorage.removeItem('email');
+                }
+            })
+            .catch(() => {
+                // server abhi reachable nahi (sleep se wake ho raha ho sakta hai) —
+                // login form hi dikhne do, force redirect mat karo
+            });
+    }
+
     // ===== DOM Elements =====
     const passwordInput = document.getElementById('password');
     const emailInput = document.getElementById('email');
@@ -194,18 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // If /actuator/health isn't exposed on your backend, replace
         // this with any lightweight GET endpoint that exists.
     });
-
-    // ============================================
-    // Forgot Password Link
-    // Now a plain link with its own href pointing
-    // to the working Forgot Password page, so no
-    // click handler / preventDefault is needed.
-    // ============================================
-
-    // ============================================
-    // "Create an account" is now a plain link with
-    // its own href, so no click handler is needed.
-    // ============================================
 
 });
 
