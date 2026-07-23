@@ -89,7 +89,20 @@
             </div>
 
             <div class="field">
-                <label for="phone">5. Phone Number</label>
+                <label for="flatNumber">5. Flat Number</label>
+                <div class="input-wrap">
+                    <span class="icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/>
+                        </svg>
+                    </span>
+                    <input spellcheck="false" type="text" id="flatNumber" placeholder="e.g. A-101" required>
+                </div>
+                <p class="error-text">Please enter your flat number.</p>
+            </div>
+
+            <div class="field">
+                <label for="phone">6. Phone Number</label>
                 <div class="input-wrap">
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -102,7 +115,7 @@
             </div>
 
             <div class="field">
-                <label for="email">6. Email</label>
+                <label for="email">7. Email</label>
                 <div class="input-wrap">
                     <span class="icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -116,7 +129,7 @@
 
             <div class="field-row">
                 <div class="field">
-                    <label for="password">7. Password (4-digit PIN)</label>
+                    <label for="password">8. Password (4-digit PIN)</label>
                     <div class="input-wrap">
                         <span class="icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -155,6 +168,7 @@
             </div>
 
             <button type="submit" class="submit-btn">Register Society</button>
+            <p class="server-wake-msg" id="serverWakeMsg" style="display:none; text-align:center; margin-top:10px; font-size:13.5px; color:#6b7280;">Waking up the server... this can take up to a minute on first use.</p>
             <p class="signin-row">Already have an account? <a href="../Login_page/loginPage.html" id="signInLink">Log in</a></p>
         </form>
     </div>

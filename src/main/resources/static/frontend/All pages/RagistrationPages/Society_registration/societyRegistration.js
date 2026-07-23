@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
 
-        const requiredFields = ['societyName', 'societyAddress', 'regNumber', 'adminName', 'phone', 'email'];
+        const requiredFields = ['societyName', 'societyAddress', 'regNumber', 'adminName', 'flatNumber', 'phone', 'email'];
         requiredFields.forEach(id => {
             const input = document.getElementById(id);
             const field = input.closest('.field');
@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             address: document.getElementById('societyAddress').value.trim(),
             registrationNumber: document.getElementById('regNumber').value.trim(),
             adminName: document.getElementById('adminName').value.trim(),
+            flatNumber: document.getElementById('flatNumber').value.trim(),
             phone: document.getElementById('phone').value.trim(),
             email: document.getElementById('email').value.trim(),
             password: passwordInput.value
@@ -267,9 +268,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const submitBtn = form.querySelector('.submit-btn');
         const originalBtnText = submitBtn.textContent;
+        const wakeMsg = document.getElementById('serverWakeMsg');
 
         submitBtn.disabled = true;
         submitBtn.textContent = 'Registering...';
+
+        // If the server (Render free tier) is asleep, the first request can
+        // take a while to wake it up. Show a friendly heads-up if it's taking long.
+        const wakeTimer = setTimeout(() => {
+            if (wakeMsg) wakeMsg.style.display = 'block';
+        }, 3000);
 
         fetch(API_BASE_URL + '/api/auth/register-society', {
             method: 'POST',
@@ -296,6 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Fetch error:', error);
             })
             .finally(() => {
+                clearTimeout(wakeTimer);
+                if (wakeMsg) wakeMsg.style.display = 'none';
                 // Only re-enable if we're NOT redirecting (i.e. an error happened)
                 if (!submitBtn.textContent.includes('Redirecting')) {
                     submitBtn.disabled = false;
