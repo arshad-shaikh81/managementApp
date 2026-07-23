@@ -1,0 +1,263 @@
+// ---------- Greeting based on time of day ----------
+(function setGreeting(){
+    const hour = new Date().getHours();
+    let greet = "Good evening";
+    if (hour < 12) greet = "Good morning";
+    else if (hour < 17) greet = "Good afternoon";
+    const greetingEl = document.getElementById('greetingText');
+    if (greetingEl) {
+        greetingEl.innerHTML = `${greet}, shaikh <span class="wave-emoji">👋</span>`;
+    }
+})();
+
+// ---------- Mobile sidebar (hamburger drawer) ----------
+const sidebar = document.getElementById('sidebar');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar(){
+    if (sidebar) sidebar.classList.add('open');
+    if (sidebarOverlay) sidebarOverlay.classList.add('show');
+}
+function closeSidebar(){
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+}
+
+if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (sidebar && sidebar.classList.contains('open')) closeSidebar();
+        else openSidebar();
+    });
+}
+
+if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', closeSidebar);
+}
+
+// ---------- Sidebar navigation active state ----------
+document.getElementById('nav').addEventListener('click', function(e){
+    const link = e.target.closest('a');
+    if(!link) return;
+
+    // Allow real navigation links (like Profile) to work normally
+    if (link.getAttribute('href') !== '#') {
+        closeSidebar();
+        return; // don't preventDefault — let it navigate
+    }
+
+    e.preventDefault();
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    link.classList.add('active');
+    closeSidebar();
+});
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(){
+        window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    });
+}
+
+// ---------- Dropdowns Handler ----------
+const bellBtn = document.getElementById('bellBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+const userBtn = document.getElementById('userBtn');
+const userDropdown = document.getElementById('userDropdown');
+
+function closeDropdowns(except){
+    if (except !== notifDropdown && notifDropdown) notifDropdown.classList.remove('show');
+    if (except !== userDropdown && userDropdown) userDropdown.classList.remove('show');
+}
+
+if (bellBtn) {
+    bellBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const willShow = notifDropdown && !notifDropdown.classList.contains('show');
+        closeDropdowns();
+        if (willShow && notifDropdown) notifDropdown.classList.add('show');
+    });
+}
+
+if (userBtn) {
+    userBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        const willShow = userDropdown && !userDropdown.classList.contains('show');
+        closeDropdowns();
+        if (willShow && userDropdown) userDropdown.classList.add('show');
+    });
+}
+
+const dropdownLogout = document.getElementById('dropdownLogout');
+if (dropdownLogout) {
+    dropdownLogout.addEventListener('click', function(e){
+        e.preventDefault();
+        window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    });
+}
+
+document.addEventListener('click', function(){
+    closeDropdowns();
+});
+
+// =====================================================
+// ---------- PROFILE LIVE UPDATES & AVATAR HANDLER
+// =====================================================
+const avatarCamBtn = document.getElementById('avatarCamBtn');
+const avatarInput = document.getElementById('avatarInput');
+const mainAvatar = document.getElementById('mainAvatar');
+const topbarAvatar = document.getElementById('topbarAvatar');
+
+// Form Input Elements
+const fullNameInput = document.getElementById('fullName');
+const profileDisplayName = document.getElementById('profileDisplayName');
+const topbarUserName = document.getElementById('topbarUserName');
+
+const phoneInput = document.getElementById('phone');
+const phoneError = document.getElementById('phoneError');
+
+const emailInput = document.getElementById('email');
+const emailError = document.getElementById('emailError');
+const profileDisplayEmail = document.getElementById('profileDisplayEmail');
+const topbarUserEmail = document.getElementById('topbarUserEmail');
+
+// Generate initials (e.g., "shaikh arshad" -> "SA")
+function getAvatarInitials(name) {
+    if (!name || name.trim() === '') return '?';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) {
+        return words[0][0].toUpperCase();
+    } else {
+        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+    }
+}
+
+// Update initials on both avatar circles if no photo is set
+function updateAvatarInitials(name) {
+    const initials = getAvatarInitials(name);
+    if (mainAvatar && !mainAvatar.querySelector('img')) {
+        mainAvatar.innerText = initials;
+    }
+    if (topbarAvatar && !topbarAvatar.querySelector('img')) {
+        topbarAvatar.innerText = initials;
+    }
+}
+
+// Master Name Sync
+function syncProfileName(newName) {
+    const displayValue = newName.trim() || 'User Name';
+    if (profileDisplayName) profileDisplayName.innerText = displayValue;
+    if (topbarUserName) topbarUserName.innerText = displayValue;
+    updateAvatarInitials(newName);
+}
+
+// Master Email Sync
+function syncProfileEmail(newEmail) {
+    const displayValue = newEmail.trim() || 'email@example.com';
+    if (profileDisplayEmail) profileDisplayEmail.innerText = displayValue;
+    if (topbarUserEmail) topbarUserEmail.innerText = displayValue;
+}
+
+// Page Load Initialization
+if (fullNameInput) {
+    syncProfileName(fullNameInput.value);
+
+    fullNameInput.addEventListener('input', function(e) {
+        syncProfileName(e.target.value);
+    });
+}
+
+if (emailInput) {
+    syncProfileEmail(emailInput.value);
+
+    emailInput.addEventListener('input', function(e) {
+        syncProfileEmail(e.target.value);
+        validateEmail();
+    });
+}
+
+// Restrict phone input to numbers and max length 10
+if (phoneInput) {
+    phoneInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+        validatePhone();
+    });
+}
+
+function validatePhone() {
+    if (!phoneInput) return true;
+    const val = phoneInput.value.trim();
+    if (val.length > 0 && val.length !== 10) {
+        phoneInput.classList.add('input-error');
+        if (phoneError) phoneError.style.display = 'block';
+        return false;
+    } else {
+        phoneInput.classList.remove('input-error');
+        if (phoneError) phoneError.style.display = 'none';
+        return true;
+    }
+}
+
+function validateEmail() {
+    if (!emailInput) return true;
+    const val = emailInput.value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (val.length > 0 && !emailPattern.test(val)) {
+        emailInput.classList.add('input-error');
+        if (emailError) emailError.style.display = 'block';
+        return false;
+    } else {
+        emailInput.classList.remove('input-error');
+        if (emailError) emailError.style.display = 'none';
+        return true;
+    }
+}
+
+// Save Changes Form Submit
+const profileForm = document.getElementById('profileForm');
+if (profileForm) {
+    profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const isPhoneValid = validatePhone();
+        const isEmailValid = validateEmail();
+
+        if (phoneInput && phoneInput.value.trim().length === 0) {
+            phoneInput.classList.add('input-error');
+            if (phoneError) phoneError.style.display = 'block';
+            return;
+        }
+
+        if (isPhoneValid && isEmailValid) {
+            alert('Profile details saved successfully!');
+        }
+    });
+}
+
+// Handle Photo Upload
+if (avatarCamBtn && avatarInput) {
+    avatarCamBtn.addEventListener('click', function() {
+        avatarInput.click();
+    });
+
+    avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
+                if (mainAvatar) {
+                    mainAvatar.innerHTML = imgTag;
+                    mainAvatar.style.padding = '0';
+                }
+                if (topbarAvatar) {
+                    topbarAvatar.innerHTML = imgTag;
+                    topbarAvatar.style.padding = '0';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
