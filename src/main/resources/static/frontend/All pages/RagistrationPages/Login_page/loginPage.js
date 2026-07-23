@@ -154,8 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 
+                        const destination = (data.role || '').toLowerCase() === 'admin'
+                            ? '../../AdminPages/Dash_board/adminDashboard.html'
+                            : '../../ResidentPage/Dashboard/mainDashboard.html';
+
                         setTimeout(() => {
-                            window.location.href = '../../ResidentPage/Dashboard/mainDashboard.html';
+                            window.location.href = destination;
                         }, 1000);
                     } else {
                         // Wrong email or wrong password -> backend rejects it
