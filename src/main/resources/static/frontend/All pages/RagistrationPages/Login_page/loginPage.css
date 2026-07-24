@@ -60,15 +60,15 @@ body {
     animation-iteration-count: infinite;
     will-change: transform, opacity;
 }
-@keyframes floatUp {
-    0%   { transform: translate(0, 0); opacity: 0; }
-    8%   { opacity: 1; }
-    85%  { opacity: 1; }
-    100% { transform: translate(var(--drift, 0px), calc(-1 * var(--travel, 640px))); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-    .particle { animation: none !important; display: none; }
-}
+/*@keyframes floatUp {*/
+/*    0%   { transform: translate(0, 0); opacity: 0; }*/
+/*    8%   { opacity: 1; }*/
+/*    85%  { opacity: 1; }*/
+/*    100% { transform: translate(var(--drift, 0px), calc(-1 * var(--travel, 640px))); opacity: 0; }*/
+/*}*/
+/*@media (prefers-reduced-motion: r educe) {*/
+/*    .particle { animation: none !important; display: none; }*/
+/*}*/
 
 .screen {
     width: 100%;
@@ -348,7 +348,29 @@ label {
 .forgot-row a:hover {
     text-decoration: underline;
 }
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 8px 0 16px;
+    font-size: 14px;
+}
 
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #8A8FA3;
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #2952E3;
+}
 .btn-login {
     width: 100%;
     padding: 15px;
