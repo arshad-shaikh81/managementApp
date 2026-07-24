@@ -203,7 +203,7 @@ let selectedAvatarBase64 = null;
 // Show a photo (base64 data-URL) on both avatar circles
 function renderAvatarImage(imageUrl) {
     if (!imageUrl) return;
-    const imgTag = `<img src="${imageUrl}" alt="Profile Photo">`;
+    const imgTag = `<img src="${imageUrl}" alt="Profile Photo" onerror="this.onerror=null;this.src='../../images/avatar.png';this.alt='Default Avatar';">`;
     if (mainAvatar) {
         mainAvatar.innerHTML = imgTag;
         mainAvatar.style.padding = '0';

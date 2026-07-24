@@ -455,7 +455,7 @@ async function loadResidentProfile() {
     ) {
 
         topbarAvatar.innerHTML =
-            `<img src="${avatarValue}" alt="Profile">`;
+            `<img src="${avatarValue}" alt="Profile" onerror="this.onerror=null;this.src='../../images/avatar.png';this.alt='Default Avatar';">`;
 
     } else {
 

@@ -45,7 +45,7 @@
 
                 if (avatarEl) {
                     avatarEl.innerHTML = data.avatar
-                        ? `<img src="${data.avatar}" alt="Profile Photo">`
+                        ? `<img src="${data.avatar}" alt="Profile Photo" onerror="this.onerror=null;this.src='../../images/avatar.png';this.alt='Default Avatar';">`
                         : '<img src="../../images/avatar.png" alt="Default Avatar">';
                     avatarEl.style.padding = '0';
                 }
