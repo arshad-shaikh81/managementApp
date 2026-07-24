@@ -440,6 +440,12 @@ if (profileForm) {
                 syncProfileName(data.name || '');
                 syncProfileEmail(data.email || '');
 
+                // Dashboard's instant-paint cache reads from localStorage —
+                // keep it in sync so it doesn't show the old name/email
+                // until the next fresh API fetch happens.
+                if (data.name) localStorage.setItem('name', data.name);
+                if (data.email) localStorage.setItem('email', data.email);
+
                 if (data.avatar) {
                     renderAvatarImage(data.avatar);
                 } else {

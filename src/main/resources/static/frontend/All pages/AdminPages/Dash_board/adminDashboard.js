@@ -1,16 +1,10 @@
 // ---------- Populate logged-in admin's info ----------
 (function populateAdminInfo(){
-    const name = localStorage.getItem('name') || 'Admin';
-    const email = localStorage.getItem('email') || '';
-
-    // Initials for the avatar circle (e.g. "Shaikh Arshad" -> "SA")
-    const initials = name
-        .trim()
-        .split(/\s+/)
-        .map(part => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase();
+    // Instant paint from localStorage (fast, no flash of "Loading...") —
+    // this gets overwritten below with fresh data from the backend, which
+    // is the source of truth (localStorage goes stale after profile edits).
+    const cachedName = localStorage.getItem('name') || 'Admin';
+    const cachedEmail = localStorage.getItem('email') || '';
 
     const avatarEl = document.querySelector('#userBtn .avatar');
     const unameEl = document.querySelector('#userBtn .uname');
@@ -20,39 +14,59 @@
         avatarEl.innerHTML = '<img src="../../images/avatar.png" alt="Default Avatar">';
         avatarEl.style.padding = '0';
     }
-    if (unameEl) unameEl.textContent = name;
-    if (dropdownEmailEl && email) dropdownEmailEl.textContent = email;
+    if (unameEl) unameEl.textContent = cachedName;
+    if (dropdownEmailEl && cachedEmail) dropdownEmailEl.textContent = cachedEmail;
 
-    // Expose the first name for the greeting below
-    window.__loggedInFirstName = name.trim().split(/\s+/)[0] || name;
+    // Expose the first name for the greeting below (updated again once fresh data arrives)
+    window.__loggedInFirstName = cachedName.trim().split(/\s+/)[0] || cachedName;
 
-    // Agar profile photo save hui hai backend me, use yahan bhi dikhao (initials ki jagah)
+    // Fetch the real, up-to-date profile from the backend — this is what
+    // actually drives the name/email/avatar shown, so edits made on the
+    // Profile page show up here immediately instead of the stale login-time cache.
     const token = localStorage.getItem('token');
-    if (avatarEl && token) {
+    if (token) {
         fetch('https://managementapp-38ex.onrender.com/api/auth/me', {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + token }
         })
             .then(res => res.ok ? res.json() : null)
             .then(data => {
-                if (data && data.avatar) {
-                    avatarEl.innerHTML = `<img src="${data.avatar}" alt="Profile Photo">`;
+                if (!data) return;
+
+                const freshName = data.name || cachedName;
+                const freshEmail = data.email || cachedEmail;
+
+                if (unameEl) unameEl.textContent = freshName;
+                if (dropdownEmailEl && freshEmail) dropdownEmailEl.textContent = freshEmail;
+
+                // Keep localStorage in sync too, so the cache isn't stale next load
+                localStorage.setItem('name', freshName);
+                if (freshEmail) localStorage.setItem('email', freshEmail);
+
+                if (avatarEl) {
+                    avatarEl.innerHTML = data.avatar
+                        ? `<img src="${data.avatar}" alt="Profile Photo">`
+                        : '<img src="../../images/avatar.png" alt="Default Avatar">';
                     avatarEl.style.padding = '0';
                 }
+
+                window.__loggedInFirstName = freshName.trim().split(/\s+/)[0] || freshName;
+                refreshGreeting();
             })
-            .catch(() => { /* initials fallback already shown, no big deal */ });
+            .catch(() => { /* cached fallback already shown, no big deal */ });
     }
 })();
 
 // ---------- Greeting based on time of day ----------
-(function setGreeting(){
+function refreshGreeting(){
     const hour = new Date().getHours();
     let greet = "Good evening";
     if (hour < 12) greet = "Good morning";
     else if (hour < 17) greet = "Good afternoon";
     const firstName = window.__loggedInFirstName || 'Admin';
     document.getElementById('greetingText').innerHTML = `${greet}, ${firstName} <span class="wave-emoji">👋</span>`;
-})();
+}
+refreshGreeting();
 
 // ---------- Mobile sidebar (hamburger) ----------
 const sidebar = document.getElementById('sidebar');
