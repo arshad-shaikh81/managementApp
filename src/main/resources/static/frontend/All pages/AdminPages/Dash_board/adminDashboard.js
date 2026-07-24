@@ -96,8 +96,15 @@ document.getElementById('nav').addEventListener('click', function(e){
     link.classList.add('active');
     closeSidebar();
 });
-document.getElementById('logoutBtn').addEventListener('click', function(){
+function performLogout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
     window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+}
+document.getElementById('logoutBtn').addEventListener('click', function(){
+    performLogout();
 });
 
 
@@ -128,7 +135,7 @@ userBtn.addEventListener('click', function(e){
 
 document.getElementById('dropdownLogout').addEventListener('click', function(e){
     e.preventDefault();
-    window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+    performLogout();
 });
 
 document.addEventListener('click', function(){

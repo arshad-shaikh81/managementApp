@@ -1,7 +1,26 @@
 // =====================================================
-// ---------- FETCH REAL LOGGED-IN RESIDENT'S DATA ----------
+// ---------- FETCH REAL LOGGED-IN ADMIN'S DATA ----------
 // =====================================================
 const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
+
+// Default avatar (Management Hub logo) shown when no photo is set.
+// Uses its own gradient id ("g2") so it never collides with the sidebar
+// brand-icon's gradient ("g") when both exist in the DOM at once.
+const DEFAULT_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+        </linearGradient>
+    </defs>
+    <circle cx="32" cy="32" r="32" fill="url(#g2)"/>
+    <g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 21h18"/>
+        <path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/>
+        <path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/>
+        <path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/>
+    </g>
+</svg>`;
 
 function loadRealProfile() {
     const token = localStorage.getItem('token');
@@ -26,6 +45,7 @@ function loadRealProfile() {
                 return;
             }
 
+            // Form fields ko real data se bharo
             const fullNameEl = document.getElementById('fullName');
             const phoneEl = document.getElementById('phone');
             const homeNoEl = document.getElementById('homeNo');
@@ -37,11 +57,16 @@ function loadRealProfile() {
             if (homeNoEl) homeNoEl.value = data.flatNumber || '';
             if (emailEl) emailEl.value = data.email || '';
 
+            // Header / topbar / avatar ko naam-email ke saath sync karo
             syncProfileName(data.name || '');
             syncProfileEmail(data.email || '');
 
-            // Saved profile photo dikhao (agar pehle se database me hai)
-            if (data.avatar) renderAvatarImage(data.avatar);
+            // Saved profile photo dikhao (agar pehle se database me hai), warna default
+            if (data.avatar) {
+                renderAvatarImage(data.avatar);
+            } else {
+                resetAvatarToDefault(false); // false = don't mark this as a pending change
+            }
 
             if (greetingEl) {
                 const hour = new Date().getHours();
@@ -57,22 +82,25 @@ function loadRealProfile() {
         });
 }
 
-// ---------- Mobile sidebar (hamburger drawer) ----------
+// =====================================================
+// ---------- MOBILE SIDEBAR (HAMBURGER DRAWER) ----------
+// =====================================================
 const sidebar = document.getElementById('sidebar');
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-function openSidebar(){
+function openSidebar() {
     if (sidebar) sidebar.classList.add('open');
     if (sidebarOverlay) sidebarOverlay.classList.add('show');
 }
-function closeSidebar(){
+
+function closeSidebar() {
     if (sidebar) sidebar.classList.remove('open');
     if (sidebarOverlay) sidebarOverlay.classList.remove('show');
 }
 
 if (hamburgerBtn) {
-    hamburgerBtn.addEventListener('click', function(e){
+    hamburgerBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         if (sidebar && sidebar.classList.contains('open')) closeSidebar();
         else openSidebar();
@@ -83,43 +111,68 @@ if (sidebarOverlay) {
     sidebarOverlay.addEventListener('click', closeSidebar);
 }
 
-// ---------- Sidebar navigation active state ----------
-document.getElementById('nav').addEventListener('click', function(e){
-    const link = e.target.closest('a');
-    if(!link) return;
+// =====================================================
+// ---------- SIDEBAR NAVIGATION ----------
+// =====================================================
+const navEl = document.getElementById('nav');
+if (navEl) {
+    navEl.addEventListener('click', function (e) {
+        const link = e.target.closest('a');
+        if (!link) return;
 
-    // Allow real navigation links (like Profile) to work normally
-    if (link.getAttribute('href') !== '#') {
+        const href = link.getAttribute('href');
+
+        // Real navigation link — fade out, then navigate
+        if (href !== '#') {
+            e.preventDefault();
+            closeSidebar();
+            document.body.classList.add('page-fade-out');
+            setTimeout(() => {
+                window.location.href = href;
+            }, 280);
+            return;
+        }
+
+        // Placeholder link — just toggle active state
+        e.preventDefault();
+        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
         closeSidebar();
-        return; // don't preventDefault — let it navigate
-    }
-
-    e.preventDefault();
-    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
-    link.classList.add('active');
-    closeSidebar();
-});
-
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(){
-        window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
     });
 }
 
-// ---------- Dropdowns Handler ----------
+// =====================================================
+// ---------- LOGOUT (SIDEBAR BUTTON) ----------
+// =====================================================
+function performLogout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+    window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+}
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function () {
+        performLogout();
+    });
+}
+
+// =====================================================
+// ---------- BELL & USER DROPDOWNS ----------
+// =====================================================
 const bellBtn = document.getElementById('bellBtn');
 const notifDropdown = document.getElementById('notifDropdown');
 const userBtn = document.getElementById('userBtn');
 const userDropdown = document.getElementById('userDropdown');
 
-function closeDropdowns(except){
+function closeDropdowns(except) {
     if (except !== notifDropdown && notifDropdown) notifDropdown.classList.remove('show');
     if (except !== userDropdown && userDropdown) userDropdown.classList.remove('show');
 }
 
 if (bellBtn) {
-    bellBtn.addEventListener('click', function(e){
+    bellBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const willShow = notifDropdown && !notifDropdown.classList.contains('show');
         closeDropdowns();
@@ -128,7 +181,7 @@ if (bellBtn) {
 }
 
 if (userBtn) {
-    userBtn.addEventListener('click', function(e){
+    userBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         const willShow = userDropdown && !userDropdown.classList.contains('show');
         closeDropdowns();
@@ -138,26 +191,29 @@ if (userBtn) {
 
 const dropdownLogout = document.getElementById('dropdownLogout');
 if (dropdownLogout) {
-    dropdownLogout.addEventListener('click', function(e){
+    dropdownLogout.addEventListener('click', function (e) {
         e.preventDefault();
-        window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
+        performLogout();
     });
 }
 
-document.addEventListener('click', function(){
+document.addEventListener('click', function () {
     closeDropdowns();
 });
 
 // =====================================================
-// ---------- PROFILE LIVE UPDATES & AVATAR HANDLER
+// ---------- PROFILE LIVE UPDATES & AVATAR HANDLER ----------
 // =====================================================
 const avatarCamBtn = document.getElementById('avatarCamBtn');
 const avatarInput = document.getElementById('avatarInput');
+const avatarResetBtn = document.getElementById('avatarResetBtn');
 const mainAvatar = document.getElementById('mainAvatar');
 const topbarAvatar = document.getElementById('topbarAvatar');
 
 // Newly selected photo (base64 data-URL) waiting to be sent on "Save changes".
-// Stays null until user picks a file; backend leaves the photo untouched if this is null.
+// Stays null until user picks a file or resets; backend leaves the photo
+// untouched if this is null. Set to the string 'DEFAULT' when the user
+// resets back to the default logo, so the save handler knows to clear it.
 let selectedAvatarBase64 = null;
 
 // Show a photo (base64 data-URL) on both avatar circles
@@ -172,9 +228,45 @@ function renderAvatarImage(imageUrl) {
         topbarAvatar.innerHTML = imgTag;
         topbarAvatar.style.padding = '0';
     }
+    updateResetBtnVisibility();
 }
 
-// Form Input Elements
+// Show/hide the "Set default" pill button — only visible when a real photo is set
+function updateResetBtnVisibility() {
+    if (!avatarResetBtn) return;
+    const hasPhoto = mainAvatar && mainAvatar.querySelector('img');
+    avatarResetBtn.style.display = hasPhoto ? 'flex' : 'none';
+}
+
+// Put both avatar circles back to the default Management Hub logo.
+// markAsChange (default true) controls whether this counts as a pending
+// change to be saved to the backend on next "Save changes" click.
+function resetAvatarToDefault(markAsChange) {
+    if (markAsChange === undefined) markAsChange = true;
+
+    if (mainAvatar) {
+        mainAvatar.innerHTML = DEFAULT_AVATAR_SVG;
+        mainAvatar.style.padding = '0';
+    }
+    if (topbarAvatar) {
+        topbarAvatar.innerHTML = DEFAULT_AVATAR_SVG;
+        topbarAvatar.style.padding = '0';
+    }
+
+    if (markAsChange) {
+        selectedAvatarBase64 = 'DEFAULT';
+    }
+
+    updateResetBtnVisibility();
+}
+
+if (avatarResetBtn) {
+    avatarResetBtn.addEventListener('click', function () {
+        resetAvatarToDefault(true);
+    });
+}
+
+// Form input elements
 const fullNameInput = document.getElementById('fullName');
 const profileDisplayName = document.getElementById('profileDisplayName');
 const topbarUserName = document.getElementById('topbarUserName');
@@ -187,29 +279,28 @@ const emailError = document.getElementById('emailError');
 const profileDisplayEmail = document.getElementById('profileDisplayEmail');
 const topbarUserEmail = document.getElementById('topbarUserEmail');
 
-// Generate initials (e.g., "shaikh arshad" -> "SA")
+// Generate initials (e.g. "shaikh arshad" -> "SA")
 function getAvatarInitials(name) {
     if (!name || name.trim() === '') return '?';
     const words = name.trim().split(/\s+/);
     if (words.length === 1) {
         return words[0][0].toUpperCase();
-    } else {
-        return (words[0][0] + words[words.length - 1][0]).toUpperCase();
     }
+    return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
 
-// Update initials on both avatar circles if no photo is set
+// Update initials on both avatar circles if no photo AND no default logo is set
 function updateAvatarInitials(name) {
     const initials = getAvatarInitials(name);
-    if (mainAvatar && !mainAvatar.querySelector('img')) {
+    if (mainAvatar && !mainAvatar.querySelector('img') && !mainAvatar.querySelector('svg')) {
         mainAvatar.innerText = initials;
     }
-    if (topbarAvatar && !topbarAvatar.querySelector('img')) {
+    if (topbarAvatar && !topbarAvatar.querySelector('img') && !topbarAvatar.querySelector('svg')) {
         topbarAvatar.innerText = initials;
     }
 }
 
-// Master Name Sync
+// Master name sync
 function syncProfileName(newName) {
     const displayValue = newName.trim() || 'User Name';
     if (profileDisplayName) profileDisplayName.innerText = displayValue;
@@ -217,34 +308,32 @@ function syncProfileName(newName) {
     updateAvatarInitials(newName);
 }
 
-// Master Email Sync
+// Master email sync
 function syncProfileEmail(newEmail) {
     const displayValue = newEmail.trim() || 'email@example.com';
     if (profileDisplayEmail) profileDisplayEmail.innerText = displayValue;
     if (topbarUserEmail) topbarUserEmail.innerText = displayValue;
 }
 
-// Page Load Initialization
+// Page load initialization
 if (fullNameInput) {
     if (fullNameInput.value) syncProfileName(fullNameInput.value);
-
-    fullNameInput.addEventListener('input', function(e) {
+    fullNameInput.addEventListener('input', function (e) {
         syncProfileName(e.target.value);
     });
 }
 
 if (emailInput) {
     if (emailInput.value) syncProfileEmail(emailInput.value);
-
-    emailInput.addEventListener('input', function(e) {
+    emailInput.addEventListener('input', function (e) {
         syncProfileEmail(e.target.value);
         validateEmail();
     });
 }
 
-// Restrict phone input to numbers and max length 10
+// Restrict phone input to numbers, max length 10
 if (phoneInput) {
-    phoneInput.addEventListener('input', function(e) {
+    phoneInput.addEventListener('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
         validatePhone();
     });
@@ -257,11 +346,10 @@ function validatePhone() {
         phoneInput.classList.add('input-error');
         if (phoneError) phoneError.style.display = 'block';
         return false;
-    } else {
-        phoneInput.classList.remove('input-error');
-        if (phoneError) phoneError.style.display = 'none';
-        return true;
     }
+    phoneInput.classList.remove('input-error');
+    if (phoneError) phoneError.style.display = 'none';
+    return true;
 }
 
 function validateEmail() {
@@ -272,11 +360,10 @@ function validateEmail() {
         emailInput.classList.add('input-error');
         if (emailError) emailError.style.display = 'block';
         return false;
-    } else {
-        emailInput.classList.remove('input-error');
-        if (emailError) emailError.style.display = 'none';
-        return true;
     }
+    emailInput.classList.remove('input-error');
+    if (emailError) emailError.style.display = 'none';
+    return true;
 }
 
 // =====================================================
@@ -292,6 +379,7 @@ function showToast(message, type) {
     toast.className = 'profile-toast ' + (type === 'error' ? 'profile-toast-error' : 'profile-toast-success');
     toast.textContent = message;
 
+    // Reflow taaki animation dobara trigger ho har baar
     void toast.offsetWidth;
     toast.classList.add('show');
 
@@ -301,10 +389,10 @@ function showToast(message, type) {
     }, 3000);
 }
 
-// Save Changes Form Submit
+// Save changes form submit
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
-    profileForm.addEventListener('submit', function(e) {
+    profileForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const isPhoneValid = validatePhone();
@@ -333,10 +421,15 @@ if (profileForm) {
 
         const homeNoInput = document.getElementById('homeNo');
 
+        // 'DEFAULT' tells the backend to clear the stored avatar (set it to
+        // null/empty) instead of trying to save it as an image string.
+        const avatarPayloadValue = (selectedAvatarBase64 === 'DEFAULT') ? null : selectedAvatarBase64;
+
         const payload = {
             name: fullNameInput ? fullNameInput.value.trim() : '',
             flatNumber: homeNoInput ? homeNoInput.value.trim() : '',
-            avatar: selectedAvatarBase64 // null jab tak koi nayi photo select nahi ki, backend isko ignore karega
+            avatar: avatarPayloadValue, // null jab tak koi nayi photo select nahi ki, backend isko ignore karega
+            clearAvatar: selectedAvatarBase64 === 'DEFAULT' // explicit flag for backend to remove saved avatar
         };
 
         fetch(API_BASE_URL + '/api/auth/me', {
@@ -356,12 +449,20 @@ if (profileForm) {
                     return;
                 }
 
+                // Backend se aaya saved data se form/header sync karo
                 if (fullNameInput && data.name !== undefined) fullNameInput.value = data.name || '';
                 if (homeNoInput && data.flatNumber !== undefined) homeNoInput.value = data.flatNumber || '';
 
                 syncProfileName(data.name || '');
                 syncProfileEmail(data.email || '');
-                if (data.avatar) renderAvatarImage(data.avatar);
+
+                if (data.avatar) {
+                    renderAvatarImage(data.avatar);
+                } else {
+                    // Avatar cleared (reset flow) — show default logo, hide reset button
+                    resetAvatarToDefault(false);
+                }
+
                 selectedAvatarBase64 = null; // already saved, ab tak ka "pending" upload clear karo
 
                 showToast('Profile details saved successfully!', 'success');
@@ -379,21 +480,21 @@ if (profileForm) {
     });
 }
 
-// Ab jaake real data load karo
+// Ab jaake real data load karo (fullNameInput, syncProfileName, syncProfileEmail sab ready hain)
 loadRealProfile();
 
-// Handle Photo Upload
+// Handle photo upload
 if (avatarCamBtn && avatarInput) {
-    avatarCamBtn.addEventListener('click', function() {
+    avatarCamBtn.addEventListener('click', function () {
         avatarInput.click();
     });
 
-    avatarInput.addEventListener('change', function(e) {
+    avatarInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith('image/')) return;
 
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             const rawImageUrl = event.target.result;
 
             // Photo ko chhota kar do (max 300x300) taaki upload fast ho aur
@@ -424,6 +525,7 @@ if (avatarCamBtn && avatarInput) {
                 selectedAvatarBase64 = compressedUrl;
             };
             img.onerror = function () {
+                // Resize fail ho jaye toh bhi original hi use kar lo
                 renderAvatarImage(rawImageUrl);
                 selectedAvatarBase64 = rawImageUrl;
             };
