@@ -169,7 +169,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Profile photo update (base64 data-URL sent from frontend)
-        if (request.getAvatar() != null && !request.getAvatar().trim().isEmpty()) {
+        if (request.isClearAvatar()) {
+            // "Set default" flow — wipe the stored photo so the frontend falls
+            // back to showing avatar.png again.
+            user.setAvatar(null);
+        } else if (request.getAvatar() != null && !request.getAvatar().trim().isEmpty()) {
             user.setAvatar(request.getAvatar().trim());
         }
 

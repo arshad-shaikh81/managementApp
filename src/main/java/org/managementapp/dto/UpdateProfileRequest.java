@@ -5,6 +5,7 @@ public class UpdateProfileRequest {
     private String flatNumber;
     private String address;
     private String avatar; // base64 data-URL, e.g. "data:image/png;base64,...". Null/omitted = leave unchanged.
+    private boolean clearAvatar; // true = user clicked "Set default", remove the stored photo
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -17,4 +18,7 @@ public class UpdateProfileRequest {
 
     public String getAvatar() { return avatar; }
     public void setAvatar(String avatar) { this.avatar = avatar; }
+
+    public boolean isClearAvatar() { return clearAvatar; }
+    public void setClearAvatar(boolean clearAvatar) { this.clearAvatar = clearAvatar; }
 }
