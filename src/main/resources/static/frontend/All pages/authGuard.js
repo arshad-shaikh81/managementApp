@@ -1,3 +1,4 @@
+```
 // authGuard.js
 //
 // Har protected page (dashboard, profile, etc.) ke <head> me sabse pehle
@@ -45,3 +46,4 @@
         // valid user bhi login page pe bounce ho jayega.
     });
 })();
+```
