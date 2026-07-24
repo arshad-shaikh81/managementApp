@@ -488,7 +488,15 @@ img, svg {
 .profile-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
+}
+
+.profile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
 }
 
 .avatar-lg-wrap {
@@ -526,6 +534,38 @@ img, svg {
     z-index: 10;
 }
 
+/* "Set default" — pill button, right side of profile-header */
+.avatar-reset {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.avatar-reset:hover {
+    background: #fdecec;
+    border-color: #f3c6c6;
+    color: #e5484d;
+}
+
+.avatar-reset svg {
+    flex-shrink: 0;
+}
+
+.profile-header .info {
+    min-width: 0;
+}
+
 .profile-header .info h2 {
     margin: 0 0 2px 0;
     font-size: 19px;
@@ -536,6 +576,13 @@ img, svg {
     margin: 0 0 6px 0;
     color: var(--text-mid);
     font-size: 13.5px;
+}
+
+.profile-header .info h2,
+.profile-header .info p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .badge {
@@ -716,8 +763,11 @@ input.input-error {
     .card-personal {
         padding: 20px;
     }
-}
 
+    .card {
+        padding: 16px 18px;
+    }
+}
 @media (max-width: 480px) {
     .search{ padding:9px 11px; width: 200px;}
     .search input{ font-size:14px; width: 200px }
@@ -728,9 +778,22 @@ input.input-error {
     }
 
     .profile-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .profile-header-left {
+        width: 100%;
+    }
+
+    .avatar-reset {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .avatar-reset span {
+        display: inline;
     }
 
     .avatar-lg {
@@ -743,6 +806,10 @@ input.input-error {
         width: 100%;
         text-align: center;
     }
+
+    .search{ padding:9px 11px; width: 160px;margin-right: 10px;}
+    .search input{ font-size:12px; width: 200px;}
+    .bell{margin-right: -10px;margin-left: -10px;}
 }
 /* =====================================================
    TOAST NOTIFICATION (replaces browser alert())
