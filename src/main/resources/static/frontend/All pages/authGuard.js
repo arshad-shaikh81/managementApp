@@ -17,13 +17,13 @@
     // TODO: apna actual login page ka relative path yahan set karo
     const LOGIN_PAGE_PATH = '../../LoginPage/loginPage.html';
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     function clearSessionAndRedirect() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('name');
-        localStorage.removeItem('email');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('role');
+        sessionStorage.removeItem('name');
+        sessionStorage.removeItem('email');
         window.location.href = LOGIN_PAGE_PATH;
     }
 

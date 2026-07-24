@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // dashboard pe bhej do (real-world app jaisa behavior)
     // ============================================
     const API_BASE_URL_CHECK = 'https://managementapp-38ex.onrender.com';
-    const existingToken = localStorage.getItem('token');
+    const existingToken = sessionStorage.getItem('token');
 
     if (existingToken) {
         fetch(API_BASE_URL_CHECK + '/api/auth/me', {
@@ -15,17 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(res => {
                 if (res.ok) {
-                    const role = (localStorage.getItem('role') || '').toLowerCase();
+                    const role = (sessionStorage.getItem('role') || '').toLowerCase();
                     const destination = role === 'admin'
                         ? '../../AdminPages/Dash_board/adminDashboard.html'
                         : '../../ResidentPage/Dashboard/mainDashboard.html';
                     window.location.href = destination;
                 } else {
                     // token expire/invalid — purana data hata do, login form dikhne do
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('role');
-                    localStorage.removeItem('name');
-                    localStorage.removeItem('email');
+                    sessionStorage.removeItem('token');
+                    sessionStorage.removeItem('role');
+                    sessionStorage.removeItem('name');
+                    sessionStorage.removeItem('email');
                 }
             })
             .catch(() => {
@@ -181,10 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (response.ok) {
                         // Backend confirmed the email + password match.
                         // Save session info so the dashboard can identify the user.
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('role', data.role);
-                        localStorage.setItem('name', data.name);
-                        localStorage.setItem('email', email);
+                        sessionStorage.setItem('token', data.token);
+                        sessionStorage.setItem('role', data.role);
+                        sessionStorage.setItem('name', data.name);
+                        sessionStorage.setItem('email', email);
 
                         showMessage(`Welcome back, ${data.name}! Redirecting...`, 'success');
 

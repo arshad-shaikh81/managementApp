@@ -1,10 +1,10 @@
 // ---------- Populate logged-in admin's info ----------
 (function populateAdminInfo(){
-    // Instant paint from localStorage (fast, no flash of "Loading...") —
+    // Instant paint from sessionStorage (fast, no flash of "Loading...") —
     // this gets overwritten below with fresh data from the backend, which
-    // is the source of truth (localStorage goes stale after profile edits).
-    const cachedName = localStorage.getItem('name') || 'Admin';
-    const cachedEmail = localStorage.getItem('email') || '';
+    // is the source of truth (sessionStorage goes stale after profile edits).
+    const cachedName = sessionStorage.getItem('name') || 'Admin';
+    const cachedEmail = sessionStorage.getItem('email') || '';
 
     const avatarEl = document.querySelector('#userBtn .avatar');
     const unameEl = document.querySelector('#userBtn .uname');
@@ -23,7 +23,7 @@
     // Fetch the real, up-to-date profile from the backend — this is what
     // actually drives the name/email/avatar shown, so edits made on the
     // Profile page show up here immediately instead of the stale login-time cache.
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
         fetch('https://managementapp-38ex.onrender.com/api/auth/me', {
             method: 'GET',
@@ -39,9 +39,9 @@
                 if (unameEl) unameEl.textContent = freshName;
                 if (dropdownEmailEl && freshEmail) dropdownEmailEl.textContent = freshEmail;
 
-                // Keep localStorage in sync too, so the cache isn't stale next load
-                localStorage.setItem('name', freshName);
-                if (freshEmail) localStorage.setItem('email', freshEmail);
+                // Keep sessionStorage in sync too, so the cache isn't stale next load
+                sessionStorage.setItem('name', freshName);
+                if (freshEmail) sessionStorage.setItem('email', freshEmail);
 
                 if (avatarEl) {
                     avatarEl.innerHTML = data.avatar
@@ -114,10 +114,10 @@ document.getElementById('nav').addEventListener('click', function(e){
     closeSidebar();
 });
 function performLogout(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('email');
     window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
 }
 document.getElementById('logoutBtn').addEventListener('click', function(){

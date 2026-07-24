@@ -53,10 +53,10 @@ document.getElementById('nav').addEventListener('click', function(e){
     closeSidebar();
 });
 function performLogout(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('email');
     window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
 }
 document.getElementById('logoutBtn').addEventListener('click', function(){
@@ -416,7 +416,7 @@ const API_BASE_URL = "https://managementapp-38ex.onrender.com";
 
 async function loadResidentProfile() {
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if(!token){
         window.location.href="../../RagistrationPages/Login_page/loginPage.html";

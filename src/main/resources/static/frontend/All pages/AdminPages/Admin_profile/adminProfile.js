@@ -7,7 +7,7 @@ const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
 const DEFAULT_AVATAR_IMG = '<img src="../../images/avatar.png" alt="Default Avatar">';
 
 function loadRealProfile() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     // No session -> back to login
     if (!token) {
@@ -24,7 +24,7 @@ function loadRealProfile() {
 
             if (!response.ok) {
                 // Token invalid/expired -> session khatam, dobara login karo
-                localStorage.clear();
+                sessionStorage.clear();
                 window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
                 return;
             }
@@ -131,10 +131,10 @@ if (navEl) {
 // ---------- LOGOUT (SIDEBAR BUTTON) ----------
 // =====================================================
 function performLogout(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('name');
+    sessionStorage.removeItem('email');
     window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
 }
 const logoutBtn = document.getElementById('logoutBtn');
@@ -392,7 +392,7 @@ if (profileForm) {
 
         if (!isPhoneValid || !isEmailValid) return;
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) {
             window.location.href = "../../RagistrationPages/Login_page/loginPage.html";
             return;
@@ -445,11 +445,11 @@ if (profileForm) {
                 syncProfileName(data.name || '');
                 syncProfileEmail(data.email || '');
 
-                // Dashboard's instant-paint cache reads from localStorage —
+                // Dashboard's instant-paint cache reads from sessionStorage —
                 // keep it in sync so it doesn't show the old name/email
                 // until the next fresh API fetch happens.
-                if (data.name) localStorage.setItem('name', data.name);
-                if (data.email) localStorage.setItem('email', data.email);
+                if (data.name) sessionStorage.setItem('name', data.name);
+                if (data.email) sessionStorage.setItem('email', data.email);
 
                 if (data.avatar) {
                     renderAvatarImage(data.avatar);
