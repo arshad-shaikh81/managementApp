@@ -369,6 +369,7 @@ img, svg{
     display:flex;
     justify-content:center;
     align-items:center;
+    flex-shrink:0;
 }
 
 .avatar img{
@@ -376,6 +377,7 @@ img, svg{
     height:100%;
     object-fit:cover;
     display:block;
+    border-radius:50%;
 }
 .user-text{ min-width:0; }
 .user-text .uname{
