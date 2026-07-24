@@ -17,7 +17,7 @@
     const dropdownEmailEl = document.querySelector('.dropdown-email');
 
     if (avatarEl) {
-        avatarEl.innerHTML = '<img src="/frontend/All%20pages/images/avatar.png" alt="Default Avatar">';
+        avatarEl.innerHTML = '<img src="../../images/avatar.png" alt="Default Avatar">';
         avatarEl.style.padding = '0';
     }
     if (unameEl) unameEl.textContent = name;

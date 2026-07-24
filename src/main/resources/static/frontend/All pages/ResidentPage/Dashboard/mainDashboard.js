@@ -451,7 +451,7 @@ async function loadResidentProfile() {
     if (
         avatarValue &&
         typeof avatarValue === "string" &&
-        (avatarValue.startsWith("http") || avatarValue.startsWith("/"))
+        (avatarValue.startsWith("http") || avatarValue.startsWith("/") || avatarValue.startsWith("data:image"))
     ) {
 
         topbarAvatar.innerHTML =
@@ -460,7 +460,7 @@ async function loadResidentProfile() {
     } else {
 
         topbarAvatar.innerHTML =
-            `<img src="/frontend/All%20pages/images/avatar.png" alt="Default Avatar">`;
+            `<img src="../../images/avatar.png" alt="Default Avatar">`;
 
     }
 

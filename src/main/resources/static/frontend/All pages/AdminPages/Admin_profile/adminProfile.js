@@ -4,7 +4,7 @@
 const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
 
 // Default avatar image shown when the admin hasn't uploaded a profile photo yet.
-const DEFAULT_AVATAR_IMG = '<img src="/frontend/All%20pages/images/avatar.png" alt="Default Avatar">';
+const DEFAULT_AVATAR_IMG = '<img src="../../images/avatar.png" alt="Default Avatar">';
 
 function loadRealProfile() {
     const token = localStorage.getItem('token');
