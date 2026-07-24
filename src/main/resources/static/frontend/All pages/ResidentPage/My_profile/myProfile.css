@@ -18,7 +18,6 @@
     --shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
 }
 
-/* Hide scrollbars globally */
 * {
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -30,7 +29,6 @@
     height: 0 !important;
 }
 
-/* LOCK DESKTOP SCREEN (NO SCROLL ON DESKTOP) */
 html, body {
     min-height: 100vh;
     -webkit-tap-highlight-color: transparent;
@@ -39,6 +37,12 @@ html, body {
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     width: 100%;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.page-fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 @media (min-height: 680px) and (min-width: 1024px) {
@@ -47,23 +51,17 @@ html, body {
         overflow: hidden !important;
     }
 }
+
 .app {
     width: 100%;
     min-height: 100vh;
     display: flex;
 }
-.main {
-    animation: pageFadeIn .45s ease both;
-}
-@keyframes pageFadeIn{
-    0%{ opacity: 0; transform: translateY(14px); }
-    100%{ opacity: 1; transform: translateY(0); }
-}
+
 img, svg {
     max-width: 100%;
 }
 
-/* ---------------- SIDEBAR ---------------- */
 .sidebar {
     width: 250px;
     flex-shrink: 0;
@@ -177,7 +175,6 @@ img, svg {
 }
 .logout:hover svg { color: #e5484d; }
 
-/* ---------------- MAIN CONTAINER ---------------- */
 .main {
     flex: 1;
     min-width: 0;
@@ -187,9 +184,14 @@ img, svg {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    animation: pageFadeIn 0.45s ease both;
 }
 
-/* ---------------- TOPBAR (60% TRANSPARENT) ---------------- */
+@keyframes pageFadeIn {
+    0% { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
 .topbar {
     display: flex;
     align-items: center;
@@ -208,37 +210,38 @@ img, svg {
     flex-shrink: 0;
 }
 
-/* ---------------- SEARCH BAR ---------------- */
-.search{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:9px 14px;
-    width:340px;
-    max-width:100%;
-    color:var(--text-soft);
-    font-size:14px;
+.search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 14px;
+    width: 340px;
+    max-width: 100%;
+    color: var(--text-soft);
+    font-size: 14px;
 }
-.search input{
-    border:none;
-    outline:none;
-    background:transparent;
-    font-size:14px;
-    flex:1;
-    min-width:0;
-    font-family:inherit;
-    color:var(--text);
+
+.search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    flex: 1;
+    min-width: 0;
+    font-family: inherit;
+    color: var(--text);
 }
-.search kbd{
-    font-size:11px;
-    color:var(--text-soft);
-    background:var(--bg);
-    border-radius:5px;
-    padding:2px 6px;
-    flex-shrink:0;
+
+.search kbd {
+    font-size: 11px;
+    color: var(--text-soft);
+    background: var(--bg);
+    border-radius: 5px;
+    padding: 2px 6px;
+    flex-shrink: 0;
 }
 
 .topbar-right {
@@ -248,7 +251,6 @@ img, svg {
     flex-shrink: 0;
 }
 
-/* ---------------- HAMBURGER MENU ---------------- */
 .hamburger {
     display: none;
     align-items: center;
@@ -263,7 +265,6 @@ img, svg {
     flex-shrink: 0;
 }
 
-/* ---------------- OVERLAY FOR MOBILE ---------------- */
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -301,7 +302,6 @@ img, svg {
     min-width: 0;
 }
 
-/* ---------------- DROPDOWNS ---------------- */
 .dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -326,6 +326,19 @@ img, svg {
     width: 280px;
     max-width: calc(100vw - 32px);
     padding: 16px;
+}
+
+.dropdown-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.notif-empty {
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--text-soft);
+    padding: 20px 0 8px 0;
 }
 
 .user-dropdown {
@@ -354,16 +367,24 @@ img, svg {
     color: var(--text);
     text-decoration: none;
 }
-.dropdown-item.logout-item{
-    color:#e5484d;
+
+.dropdown-item:hover {
+    background: var(--bg);
 }
-.dropdown-item.logout-item:hover{
-    background:#fdecec;
-    color:#e5484d;
+
+.dropdown-item.logout-item {
+    color: #e5484d;
 }
-.dropdown-item.logout-item svg{
-    color:#e5484d;
+
+.dropdown-item.logout-item:hover {
+    background: #fdecec;
+    color: #e5484d;
 }
+
+.dropdown-item.logout-item svg {
+    color: #e5484d;
+}
+
 .avatar {
     width: 36px;
     height: 36px;
@@ -402,7 +423,6 @@ img, svg {
     color: var(--text-soft);
 }
 
-/* ---------------- CONTENT ---------------- */
 .content {
     padding: 4px 0 0 0;
     max-width: 700px;
@@ -414,10 +434,9 @@ img, svg {
     flex: 1;
 }
 
-/* 10PX LOWERED HEADING TEXT */
 .content h1 {
     font-size: 30px;
-    margin: 30px 0 2px 0; /* Added 10px top margin */
+    margin: 30px 0 2px 0;
     font-weight: 800;
     letter-spacing: -0.5px;
 }
@@ -428,7 +447,6 @@ img, svg {
     font-size: 14px;
 }
 
-/* CARD BASE - 18PX BOTTOM MARGIN FOR CLEAN GAP */
 .card {
     background: var(--card);
     border: 1px solid #eaecf0;
@@ -455,11 +473,18 @@ img, svg {
     color: var(--text-mid);
 }
 
-/* PROFILE HEADER */
 .profile-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
+}
+
+.profile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
 }
 
 .avatar-lg-wrap {
@@ -497,6 +522,37 @@ img, svg {
     z-index: 10;
 }
 
+.avatar-reset {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.avatar-reset:hover {
+    background: #fdecec;
+    border-color: #f3c6c6;
+    color: #e5484d;
+}
+
+.avatar-reset svg {
+    flex-shrink: 0;
+}
+
+.profile-header .info {
+    min-width: 0;
+}
+
 .profile-header .info h2 {
     margin: 0 0 2px 0;
     font-size: 19px;
@@ -507,6 +563,13 @@ img, svg {
     margin: 0 0 6px 0;
     color: var(--text-mid);
     font-size: 13.5px;
+}
+
+.profile-header .info h2,
+.profile-header .info p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .badge {
@@ -524,7 +587,6 @@ img, svg {
     line-height: 1;
 }
 
-/* FORM LAYOUT */
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -544,7 +606,6 @@ label {
     color: var(--text);
 }
 
-/* INPUT CLICK / FOCUS BLUE BORDER STYLING (scoped to the profile form only) */
 .card-personal input[type="text"],
 .card-personal input[type="tel"],
 .card-personal input[type="email"] {
@@ -622,9 +683,6 @@ input.input-error {
     flex-shrink: 0;
     color:#2fa860;
 }
-/* =======================================================
-   RESPONSIVE BREAKPOINTS
-======================================================== */
 
 @media (max-width: 1023px) {
     .main {
@@ -687,12 +745,14 @@ input.input-error {
     .card-personal {
         padding: 20px;
     }
-}
 
-@media (max-width: 480px) {
-    .search {
-        width: 220px;
+    .card {
+        padding: 16px 18px;
     }
+}
+@media (max-width: 480px) {
+    .search{ padding:9px 11px; width: 200px;}
+    .search input{ font-size:14px; width: 200px }
 
     .content h1 {
         font-size: 24px;
@@ -700,9 +760,22 @@ input.input-error {
     }
 
     .profile-header {
-        flex-direction: row;
-        align-items: center;
-        gap: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .profile-header-left {
+        width: 100%;
+    }
+
+    .avatar-reset {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .avatar-reset span {
+        display: inline;
     }
 
     .avatar-lg {
@@ -715,10 +788,11 @@ input.input-error {
         width: 100%;
         text-align: center;
     }
+
+    .search{ padding:9px 11px; width: 160px;margin-right: 10px;}
+    .search input{ font-size:12px; width: 200px;}
+    .bell{margin-right: -10px;margin-left: -10px;}
 }
-/* =====================================================
-   TOAST NOTIFICATION (replaces browser alert())
-===================================================== */
 .profile-toast {
     position: fixed;
     left: 50%;

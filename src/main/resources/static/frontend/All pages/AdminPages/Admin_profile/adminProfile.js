@@ -3,6 +3,25 @@
 // =====================================================
 const API_BASE_URL = 'https://managementapp-38ex.onrender.com';
 
+// Default avatar (Management Hub logo) shown when no photo is set.
+// Uses its own gradient id ("g2") so it never collides with the sidebar
+// brand-icon's gradient ("g") when both exist in the DOM at once.
+const DEFAULT_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#1d4ed8"/>
+        </linearGradient>
+    </defs>
+    <circle cx="32" cy="32" r="32" fill="url(#g2)"/>
+    <g transform="translate(15,15) scale(1.45)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 21h18"/>
+        <path d="M5 21V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v14"/>
+        <path d="M14 21V11a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v10"/>
+        <path d="M8 9h1M8 12h1M8 15h1M8 18h1M11 9h1M11 12h1M11 15h1M11 18h1M17 13h1M17 16h1" stroke-width="1.6"/>
+    </g>
+</svg>`;
+
 function loadRealProfile() {
     const token = localStorage.getItem('token');
 
@@ -44,8 +63,12 @@ function loadRealProfile() {
             syncProfileName(data.name || '');
             syncProfileEmail(data.email || '');
 
-            // Saved profile photo dikhao (agar pehle se database me hai)
-            if (data.avatar) renderAvatarImage(data.avatar);
+            // Saved profile photo dikhao (agar pehle se database me hai), warna default
+            if (data.avatar) {
+                renderAvatarImage(data.avatar);
+            } else {
+                resetAvatarToDefault(false); // false = don't mark this as a pending change
+            }
 
             if (greetingEl) {
                 const hour = new Date().getHours();
@@ -178,11 +201,14 @@ document.addEventListener('click', function () {
 // =====================================================
 const avatarCamBtn = document.getElementById('avatarCamBtn');
 const avatarInput = document.getElementById('avatarInput');
+const avatarResetBtn = document.getElementById('avatarResetBtn');
 const mainAvatar = document.getElementById('mainAvatar');
 const topbarAvatar = document.getElementById('topbarAvatar');
 
 // Newly selected photo (base64 data-URL) waiting to be sent on "Save changes".
-// Stays null until user picks a file; backend leaves the photo untouched if this is null.
+// Stays null until user picks a file or resets; backend leaves the photo
+// untouched if this is null. Set to the string 'DEFAULT' when the user
+// resets back to the default logo, so the save handler knows to clear it.
 let selectedAvatarBase64 = null;
 
 // Show a photo (base64 data-URL) on both avatar circles
@@ -197,6 +223,42 @@ function renderAvatarImage(imageUrl) {
         topbarAvatar.innerHTML = imgTag;
         topbarAvatar.style.padding = '0';
     }
+    updateResetBtnVisibility();
+}
+
+// Show/hide the "Set default" pill button — only visible when a real photo is set
+function updateResetBtnVisibility() {
+    if (!avatarResetBtn) return;
+    const hasPhoto = mainAvatar && mainAvatar.querySelector('img');
+    avatarResetBtn.style.display = hasPhoto ? 'flex' : 'none';
+}
+
+// Put both avatar circles back to the default Management Hub logo.
+// markAsChange (default true) controls whether this counts as a pending
+// change to be saved to the backend on next "Save changes" click.
+function resetAvatarToDefault(markAsChange) {
+    if (markAsChange === undefined) markAsChange = true;
+
+    if (mainAvatar) {
+        mainAvatar.innerHTML = DEFAULT_AVATAR_SVG;
+        mainAvatar.style.padding = '0';
+    }
+    if (topbarAvatar) {
+        topbarAvatar.innerHTML = DEFAULT_AVATAR_SVG;
+        topbarAvatar.style.padding = '0';
+    }
+
+    if (markAsChange) {
+        selectedAvatarBase64 = 'DEFAULT';
+    }
+
+    updateResetBtnVisibility();
+}
+
+if (avatarResetBtn) {
+    avatarResetBtn.addEventListener('click', function () {
+        resetAvatarToDefault(true);
+    });
 }
 
 // Form input elements
@@ -222,13 +284,13 @@ function getAvatarInitials(name) {
     return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
 
-// Update initials on both avatar circles if no photo is set
+// Update initials on both avatar circles if no photo AND no default logo is set
 function updateAvatarInitials(name) {
     const initials = getAvatarInitials(name);
-    if (mainAvatar && !mainAvatar.querySelector('img')) {
+    if (mainAvatar && !mainAvatar.querySelector('img') && !mainAvatar.querySelector('svg')) {
         mainAvatar.innerText = initials;
     }
-    if (topbarAvatar && !topbarAvatar.querySelector('img')) {
+    if (topbarAvatar && !topbarAvatar.querySelector('img') && !topbarAvatar.querySelector('svg')) {
         topbarAvatar.innerText = initials;
     }
 }
@@ -355,11 +417,16 @@ if (profileForm) {
         const homeNoInput = document.getElementById('homeNo');
         const addressInput = document.getElementById('address');
 
+        // 'DEFAULT' tells the backend to clear the stored avatar (set it to
+        // null/empty) instead of trying to save it as an image string.
+        const avatarPayloadValue = (selectedAvatarBase64 === 'DEFAULT') ? null : selectedAvatarBase64;
+
         const payload = {
             name: fullNameInput ? fullNameInput.value.trim() : '',
             flatNumber: homeNoInput ? homeNoInput.value.trim() : '',
             address: addressInput ? addressInput.value.trim() : '',
-            avatar: selectedAvatarBase64 // null jab tak koi nayi photo select nahi ki, backend isko ignore karega
+            avatar: avatarPayloadValue, // null jab tak koi nayi photo select nahi ki, backend isko ignore karega
+            clearAvatar: selectedAvatarBase64 === 'DEFAULT' // explicit flag for backend to remove saved avatar
         };
 
         fetch(API_BASE_URL + '/api/auth/me', {
@@ -386,7 +453,14 @@ if (profileForm) {
 
                 syncProfileName(data.name || '');
                 syncProfileEmail(data.email || '');
-                if (data.avatar) renderAvatarImage(data.avatar);
+
+                if (data.avatar) {
+                    renderAvatarImage(data.avatar);
+                } else {
+                    // Avatar cleared (reset flow) — show default logo, hide reset button
+                    resetAvatarToDefault(false);
+                }
+
                 selectedAvatarBase64 = null; // already saved, ab tak ka "pending" upload clear karo
 
                 showToast('Profile details saved successfully!', 'success');

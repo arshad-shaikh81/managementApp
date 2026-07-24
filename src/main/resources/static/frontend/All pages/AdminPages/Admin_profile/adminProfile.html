@@ -184,28 +184,40 @@
 
             <div class="card">
                 <div class="profile-header">
-                    <div class="avatar-lg-wrap">
-                        <div class="avatar-lg" id="mainAvatar">…</div>
-                        <div class="avatar-cam" id="avatarCamBtn">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                                <circle cx="12" cy="13" r="4"/>
-                            </svg>
+                    <div class="profile-header-left">
+                        <div class="avatar-lg-wrap">
+                            <div class="avatar-lg" id="mainAvatar">…</div>
+                            <div class="avatar-cam" id="avatarCamBtn" title="Change photo">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                    <circle cx="12" cy="13" r="4"/>
+                                </svg>
+                            </div>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
                         </div>
-                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        <div class="info">
+                            <h2 id="profileDisplayName">Loading...</h2>
+                            <p id="profileDisplayEmail">...</p>
+                            <span class="badge">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    <polyline points="9 12 11 14 15 10"></polyline>
+                                </svg>
+                                Admin
+                            </span>
+                        </div>
                     </div>
-                    <div class="info">
-                        <h2 id="profileDisplayName">Loading...</h2>
-                        <p id="profileDisplayEmail">...</p>
-                        <span class="badge">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                                <polyline points="9 12 11 14 15 10"></polyline>
-                            </svg>
-                            Admin
-                        </span>
-                    </div>
+                    <button type="button" class="avatar-reset" id="avatarResetBtn" title="Remove photo and use default">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6"/>
+                            <path d="M14 11v6"/>
+                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
+                        <span>Set default</span>
+                    </button>
                 </div>
             </div>
 
